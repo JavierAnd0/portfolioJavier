@@ -20,7 +20,7 @@ const Counter = ({ end, suffix = '', duration = 2 }: CounterProps) => {
         value: end,
         duration,
         ease: 'power2.out',
-        onUpdate: function() {
+        onUpdate: function () {
           setCount(Math.floor(this.targets()[0].value));
         },
       });
@@ -37,9 +37,9 @@ const Counter = ({ end, suffix = '', duration = 2 }: CounterProps) => {
 const CodeDisplay = () => {
   const codeLines = [
     { text: 'const developer = {', color: 'text-pink' },
-    { text: '  name: "Tu Nombre",', color: 'text-white/80' },
-    { text: '  role: "Full Stack Dev",', color: 'text-white/80' },
-    { text: '  skills: ["React", "Node", "TypeScript"],', color: 'text-red' },
+    { text: '  name: "Javier Andrade",', color: 'text-white/80' },
+    { text: '  role: "Full Stack Developer",', color: 'text-white/80' },
+    { text: '  skills: ["React", "Next", "TypeScript", "Python", "MongoDB"],', color: 'text-red' },
     { text: '  passion: "Building apps",', color: 'text-white/80' },
     { text: '  available: true', color: 'text-green-400' },
     { text: '};', color: 'text-pink' },
@@ -60,7 +60,7 @@ const CodeDisplay = () => {
           <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
           <div className="w-3 h-3 rounded-full bg-green-500/80" />
         </div>
-        
+
         {/* Code Content */}
         <div className="font-mono text-sm md:text-base">
           {codeLines.map((line, index) => (
@@ -79,7 +79,7 @@ const CodeDisplay = () => {
             </motion.div>
           ))}
         </div>
-        
+
         {/* Blinking Cursor */}
         <motion.span
           animate={{ opacity: [1, 0] }}
@@ -87,7 +87,7 @@ const CodeDisplay = () => {
           className="inline-block w-2 h-5 bg-red ml-10 mt-1"
         />
       </div>
-      
+
       {/* Decorative Elements */}
       <div className="absolute -top-4 -right-4 w-20 h-20 border border-red/30 rounded-lg -z-10" />
       <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-red/10 rounded-lg -z-10" />
@@ -110,7 +110,7 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="relative min-h-screen w-full bg-black py-24 md:py-32">
+    <section id="about" className="relative min-h-screen w-full bg-black py-24 md:py-32 overflow-hidden">
       {/* Section Title */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}

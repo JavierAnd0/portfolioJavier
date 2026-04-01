@@ -163,7 +163,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
 
 const Projects = () => {
   return (
-    <section id="projects" className="relative min-h-screen w-full bg-black py-24 md:py-32">
+    <section id="projects" className="relative min-h-screen w-full bg-black py-24 md:py-32 overflow-hidden">
       {/* Section Header */}
       <div className="max-w-7xl mx-auto px-6 md:px-10 mb-16">
         <motion.div

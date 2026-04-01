@@ -42,7 +42,7 @@ const NeonRing = () => {
           <stop offset="50%" stopColor="#ff6b9d" />
           <stop offset="100%" stopColor="#ff0066" />
         </linearGradient>
-        
+
         {/* Filtro de brillo */}
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="8" result="coloredBlur" />
@@ -51,7 +51,7 @@ const NeonRing = () => {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        
+
         {/* Filtro de brillo intenso */}
         <filter id="glow-intense" x="-100%" y="-100%" width="300%" height="300%">
           <feGaussianBlur stdDeviation="15" result="coloredBlur" />
@@ -63,7 +63,7 @@ const NeonRing = () => {
           </feMerge>
         </filter>
       </defs>
-      
+
       {/* Círculo de brillo exterior */}
       <circle
         ref={glowRef}
@@ -76,7 +76,7 @@ const NeonRing = () => {
         opacity="0.8"
         filter="url(#glow-intense)"
       />
-      
+
       {/* Anillo principal */}
       <circle
         cx="200"
@@ -139,7 +139,7 @@ const Hero = () => {
           className="text-right"
         >
           <h2 className="font-heading font-bold text-lg md:text-2xl tracking-[0.1em] text-pink text-glow-pink">
-            TU NOMBRE
+            Javier Andrade
           </h2>
         </motion.div>
       </motion.header>
@@ -179,7 +179,7 @@ const Hero = () => {
           className="relative mb-8"
         >
           <NeonRing />
-          
+
           {/* Silueta central (opcional - código representado) */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -230,14 +230,14 @@ const Hero = () => {
             Software Engineer
           </p>
           <p className="font-light text-xs md:text-sm text-white/50">
-            From <span className="text-red font-medium">ES</span>
+            From <span className="text-red font-medium">CO</span>
           </p>
         </div>
 
         {/* Social Icons */}
         <div className="flex gap-4">
           {[
-            { Icon: Github, href: '#' },
+            { Icon: Github, href: 'https://github.com/JavierAnd0' },
             { Icon: Linkedin, href: '#' },
             { Icon: Twitter, href: '#' },
           ].map(({ Icon, href }, index) => (
