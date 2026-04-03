@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './sections/Hero';
 import About from './sections/About';
@@ -167,17 +167,74 @@ const MobileNav = () => {
 // Scroll Progress Indicator
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
+  const scrollEventsRef = useRef(0);
+  const rafPendingRef = useRef(false);
+  const lastProgressRef = useRef(0);
+  const latestScrollTopRef = useRef(0);
+  const committedUpdatesRef = useRef(0);
+  const skippedUpdatesRef = useRef(0);
+  const resizeEventsRef = useRef(0);
+  const resizeRafPendingRef = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollProgress = (scrollTop / docHeight) * 100;
-      setProgress(scrollProgress);
+      latestScrollTopRef.current = scrollTop;
+      scrollEventsRef.current += 1;
+      if (rafPendingRef.current) {
+        return;
+      }
+
+      rafPendingRef.current = true;
+      requestAnimationFrame(() => {
+        rafPendingRef.current = false;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const nextProgress = docHeight > 0 ? (latestScrollTopRef.current / docHeight) * 100 : 0;
+        const roundedProgress = Math.max(0, Math.min(100, Number(nextProgress.toFixed(2))));
+        if (Math.abs(roundedProgress - lastProgressRef.current) < 0.5) {
+          skippedUpdatesRef.current += 1;
+        } else {
+          lastProgressRef.current = roundedProgress;
+          committedUpdatesRef.current += 1;
+          setProgress(roundedProgress);
+        }
+
+      });
     };
 
+    const handleResize = () => {
+      resizeEventsRef.current += 1;
+      if (resizeRafPendingRef.current) {
+        return;
+      }
+
+      resizeRafPendingRef.current = true;
+      requestAnimationFrame(() => {
+        resizeRafPendingRef.current = false;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const nextProgress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+        const roundedProgress = Math.max(0, Math.min(100, Number(nextProgress.toFixed(2))));
+        if (Math.abs(roundedProgress - lastProgressRef.current) >= 0.5) {
+          lastProgressRef.current = roundedProgress;
+          setProgress(roundedProgress);
+        }
+      });
+    };
+
+    handleResize();
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+      if (rafPendingRef.current) {
+        rafPendingRef.current = false;
+      }
+      if (resizeRafPendingRef.current) {
+        resizeRafPendingRef.current = false;
+      }
+    };
   }, []);
 
   return (

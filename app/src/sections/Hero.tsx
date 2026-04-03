@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, ChevronDown } from 'lucide-react';
+import { Github, Linkedin, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 
 const NeonRing = () => {

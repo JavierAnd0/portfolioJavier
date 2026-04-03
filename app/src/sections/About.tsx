@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Download, Code2, Terminal, Braces } from 'lucide-react';
+import { Code2, Terminal, Braces } from 'lucide-react';
 import gsap from 'gsap';
 
 interface CounterProps {
