@@ -11,10 +11,18 @@ import './App.css';
 // Loading Screen Component
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
     const timer = setTimeout(() => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
       onComplete();
     }, 2500);
-    return () => clearTimeout(timer);
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      clearTimeout(timer);
+    };
   }, [onComplete]);
 
   return (
@@ -22,9 +30,10 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: 'easeInOut' }}
-      className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+      className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center gap-10"
     >
-      <div className="relative">
+      {/* Logo + Ring container */}
+      <div className="relative w-20 h-20">
         {/* Animated Logo */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -67,17 +76,17 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
             </defs>
           </svg>
         </motion.div>
-
-        {/* Loading Text */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-sm font-heading tracking-wider whitespace-nowrap"
-        >
-          Loading...
-        </motion.p>
       </div>
+
+      {/* Loading Text */}
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+        className="text-white/50 text-sm font-heading tracking-wider"
+      >
+        Loading...
+      </motion.p>
     </motion.div>
   );
 };

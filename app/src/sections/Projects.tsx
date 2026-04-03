@@ -13,16 +13,15 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: 'E-Commerce Platform',
-    description: 'Plataforma de comercio electrónico completa con carrito, pagos integrados y panel de administración intuitivo.',
-    tech: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-    image: 'gradient-1',
-    github: '#',
-    demo: '#',
+    title: 'Sitio web para la escuela de manejo Andres Avelino Longas',
+    description: 'Sitio web para la escuela Andres Avelino Longas con panel de administración intuitivo (CMS).',
+    tech: ['Next.js', 'Node.js', 'MongoDB'],
+    image: '/projects/screencapture-andresavelinolongas-app-2026-04-02-20_38_48.png',
+    demo: 'https://andresavelinolongas.app/',
     featured: true,
   },
   {
-    title: 'Task Management App',
+    title: 'Movie as you feel',
     description: 'Aplicación de gestión de tareas con colaboración en tiempo real, notificaciones y tableros Kanban.',
     tech: ['Next.js', 'TypeScript', 'PostgreSQL', 'Socket.io'],
     image: 'gradient-2',
@@ -59,8 +58,8 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay: index * 0.15,
         ease: [0.25, 0.46, 0.45, 0.94]
       }}
@@ -78,29 +77,39 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
         </div>
 
         {/* Image/Gradient Area */}
-        <div className={`relative h-48 md:h-56 overflow-hidden bg-gradient-to-br ${gradientMap[project.image]}`}>
-          {/* Pattern Overlay */}
-          <div className="absolute inset-0 opacity-30">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <defs>
-                <pattern id={`grid-${index}`} width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
-                </pattern>
-              </defs>
-              <rect width="100" height="100" fill={`url(#grid-${index})`} />
-            </svg>
-          </div>
-          
-          {/* Floating Icon */}
-          <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center">
-              <Layers className="w-8 h-8 text-red" />
-            </div>
-          </motion.div>
+        <div className={`relative h-48 md:h-56 overflow-hidden ${project.image.startsWith('/') ? 'bg-black' : `bg-gradient-to-br ${gradientMap[project.image]}`}`}>
+          {project.image.startsWith('/') ? (
+            <img
+              src={project.image}
+              alt={project.title}
+              className="w-full h-full object-cover object-top"
+            />
+          ) : (
+            <>
+              {/* Pattern Overlay */}
+              <div className="absolute inset-0 opacity-30">
+                <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <defs>
+                    <pattern id={`grid-${index}`} width="10" height="10" patternUnits="userSpaceOnUse">
+                      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5" />
+                    </pattern>
+                  </defs>
+                  <rect width="100" height="100" fill={`url(#grid-${index})`} />
+                </svg>
+              </div>
+
+              {/* Floating Icon */}
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                  <Layers className="w-8 h-8 text-red" />
+                </div>
+              </motion.div>
+            </>
+          )}
 
           {/* Hover Overlay */}
           <motion.div
@@ -139,7 +148,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
           <p className="text-white/60 text-sm md:text-base leading-relaxed mb-4">
             {project.description}
           </p>
-          
+
           {/* Tech Stack */}
           <div className="flex flex-wrap gap-2">
             {project.tech.map((tech, techIndex) => (

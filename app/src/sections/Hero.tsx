@@ -114,7 +114,7 @@ const Hero = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-6 md:p-10"
+        className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-6 pr-20 md:pr-10 md:p-10"
       >
         {/* Logo */}
         <motion.div
@@ -238,8 +238,7 @@ const Hero = () => {
         <div className="flex gap-4">
           {[
             { Icon: Github, href: 'https://github.com/JavierAnd0' },
-            { Icon: Linkedin, href: '#' },
-            { Icon: Twitter, href: '#' },
+            { Icon: Linkedin, href: '#' }
           ].map(({ Icon, href }, index) => (
             <motion.a
               key={index}

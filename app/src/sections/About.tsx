@@ -97,9 +97,8 @@ const CodeDisplay = () => {
 
 const About = () => {
   const stats = [
-    { value: 5, suffix: '+', label: 'Years Experience' },
-    { value: 50, suffix: '+', label: 'Projects Completed' },
-    { value: 20, suffix: '+', label: 'Happy Clients' },
+    { value: 1, suffix: '+', label: 'Years Experience' },
+    { value: 5, suffix: '+', label: 'Projects Completed' },
     { value: 100, suffix: '%', label: 'Commitment' },
   ];
 
@@ -145,10 +144,10 @@ const About = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-6">
-                Soy un <span className="text-red font-medium">desarrollador de software</span> apasionado por crear soluciones digitales innovadoras. Con experiencia en desarrollo full-stack, me especializo en construir aplicaciones web modernas, escalables y centradas en el usuario.
+                Soy un <span className="text-red font-medium">desarrollador de software</span> apasionado por crear soluciones digitales innovadoras. Con experiencia en desarrollo full-stack, tengo experiencia en construir aplicaciones web modernas, escalables y centradas en el usuario.
               </p>
               <p className="text-base md:text-lg text-white/60 leading-relaxed">
-                Mi enfoque combina código limpio, arquitectura sólida y diseño intuitivo para entregar productos que no solo funcionan perfectamente, sino que también ofrecen experiencias memorables.
+                Un enfoque que combina código limpio, arquitectura sólida y diseño intuitivo para entregar productos que no solo funcionan perfectamente, sino que también ofrecen experiencias memorables.
               </p>
             </motion.div>
 
@@ -187,14 +186,20 @@ const About = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.6 }}
             >
-              <motion.button
+              {/* 
+              <motion.a
+                href="/cv.pdf"
+                download="CV_Javier_Andrade.pdf"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 className="group flex items-center gap-3 px-8 py-4 bg-transparent border-2 border-red text-white font-heading font-medium rounded-full hover:bg-red hover:glow-red transition-all duration-300"
               >
+                
                 <Download className="w-5 h-5" />
                 Download CV
-              </motion.button>
+              </motion.a>
+              */}
+
             </motion.div>
           </div>
 
@@ -208,7 +213,7 @@ const About = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
+          className="mt-20 flex flex-wrap justify-center gap-6 md:gap-8"
         >
           {stats.map((stat, index) => (
             <motion.div
@@ -218,7 +223,7 @@ const About = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
               whileHover={{ y: -5 }}
-              className="text-center p-6 rounded-2xl border border-white/10 hover:border-red/50 hover:glow-red transition-all duration-300"
+              className="text-center p-6 rounded-2xl border border-white/10 hover:border-red/50 hover:glow-red transition-all duration-300 w-48"
             >
               <div className="font-heading text-4xl md:text-5xl font-bold text-gradient mb-2">
                 <Counter end={stat.value} suffix={stat.suffix} />
