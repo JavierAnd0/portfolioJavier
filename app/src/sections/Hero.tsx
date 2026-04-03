@@ -124,11 +124,8 @@ const Hero = () => {
           className="flex items-center gap-3"
         >
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-red flex items-center justify-center glow-red">
-            <span className="font-heading font-bold text-lg md:text-xl text-white">D</span>
+            <span className="font-heading font-bold text-lg md:text-xl text-white">JA</span>
           </div>
-          <span className="font-heading font-semibold text-sm md:text-base tracking-[0.2em] text-white hidden sm:block">
-            DEV
-          </span>
         </motion.div>
 
         {/* Name */}
