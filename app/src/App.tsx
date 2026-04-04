@@ -6,6 +6,7 @@ import Projects from './sections/Projects';
 import Skills from './sections/Skills';
 import Contact from './sections/Contact';
 import Footer from './sections/Footer';
+import { StatusBar } from './components/StatusBar';
 import './App.css';
 
 // Loading Screen Component
@@ -273,7 +274,7 @@ function App() {
           <ScrollProgress />
           <MobileNav />
           
-          <main className="relative">
+          <main className="relative pb-8">
             <Hero />
             <About />
             <Projects />
@@ -281,6 +282,7 @@ function App() {
             <Contact />
             <Footer />
           </main>
+          <StatusBar />
         </motion.div>
       )}
     </>

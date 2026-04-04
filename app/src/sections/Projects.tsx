@@ -66,14 +66,13 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
       className={`group relative ${project.featured ? 'md:col-span-2' : ''}`}
     >
       <motion.div
-        whileHover={{ y: -12 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="relative h-full rounded-2xl overflow-hidden border border-white/10 hover:border-red/50 transition-all duration-400"
+        whileHover={{ y: -8 }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
+        className="relative h-full rounded-2xl overflow-hidden border border-white/10 hover:border-red/50 transition-colors duration-300"
       >
         {/* Glow Effect on Hover */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none">
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-b from-red/10 to-transparent" />
-          <div className="absolute inset-0 shadow-glow-lg" />
         </div>
 
         {/* Image/Gradient Area */}
@@ -112,11 +111,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
           )}
 
           {/* Hover Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileHover={{ opacity: 1 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          >
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             {project.demo && (
               <motion.a
                 href={project.demo}
@@ -137,7 +132,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
                 <Github className="w-5 h-5" />
               </motion.a>
             )}
-          </motion.div>
+          </div>
         </div>
 
         {/* Content */}

@@ -46,20 +46,23 @@ const skillCategories: SkillCategory[] = [
   },
 ];
 
+const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 768;
+
 const ProgressBar = ({ level, delay }: { level: number; delay: number }) => {
   const barRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(barRef, { once: true });
+  const isInView = useInView(barRef, { once: true, margin: '0px' });
 
   useEffect(() => {
     if (isInView && barRef.current) {
+      const mobile = isMobile();
       gsap.fromTo(
         barRef.current,
         { width: '0%' },
-        { 
-          width: `${level}%`, 
-          duration: 1.2, 
-          delay,
-          ease: 'power3.out'
+        {
+          width: `${level}%`,
+          duration: mobile ? 0.7 : 1.2,
+          delay: mobile ? delay * 0.4 : delay,
+          ease: 'power3.out',
         }
       );
     }
@@ -77,15 +80,16 @@ const ProgressBar = ({ level, delay }: { level: number; delay: number }) => {
 };
 
 const SkillCard = ({ category, index }: { category: SkillCategory; index: number }) => {
+  const mobile = isMobile();
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: mobile ? 20 : 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ 
-        duration: 0.6, 
-        delay: index * 0.15,
-        ease: [0.25, 0.46, 0.45, 0.94]
+      viewport={{ once: true, margin: '0px' }}
+      transition={{
+        duration: mobile ? 0.4 : 0.6,
+        delay: mobile ? index * 0.08 : index * 0.15,
+        ease: [0.25, 0.46, 0.45, 0.94],
       }}
       className="group"
     >
