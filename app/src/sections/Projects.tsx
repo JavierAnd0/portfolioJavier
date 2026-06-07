@@ -21,12 +21,11 @@ const projects: Project[] = [
     featured: true,
   },
   {
-    title: 'Movie as you feel',
-    description: 'Aplicación de gestión de tareas con colaboración en tiempo real, notificaciones y tableros Kanban.',
-    tech: ['Next.js', 'TypeScript', 'PostgreSQL', 'Socket.io'],
+    title: 'Restaurante Fuego',
+    description: 'Sitio web para restaurante con menú interactivo, información del local y diseño atractivo orientado a la experiencia del cliente.',
+    tech: ['HTML', 'CSS', 'JavaScript'],
     image: 'gradient-2',
-    github: '#',
-    demo: '#',
+    demo: 'https://restaurantefuego.duckdns.org',
   },
   {
     title: 'Portfolio Dashboard',
