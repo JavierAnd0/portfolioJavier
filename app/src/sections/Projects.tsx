@@ -28,11 +28,11 @@ const projects: Project[] = [
     demo: 'https://restaurantefuego.duckdns.org',
   },
   {
-    title: 'Portfolio Dashboard',
-    description: 'Dashboard interactivo para visualización de datos financieros en tiempo real con gráficos avanzados.',
-    tech: ['Vue.js', 'D3.js', 'Python', 'FastAPI'],
+    title: 'Movie as you feel',
+    description: 'Aplicación que recomienda películas según tu estado de ánimo, con búsqueda inteligente y catálogo interactivo.',
+    tech: ['Next.js', 'TypeScript', 'TMDB API'],
     image: 'gradient-3',
-    github: '#',
+    demo: 'https://movie-as-u-feel.vercel.app/',
   },
   {
     title: 'Social Media API',
