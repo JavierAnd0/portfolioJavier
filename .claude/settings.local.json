@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npx --yes capture-website --version)",
+      "Read(//usr/local/bin/**)",
+      "Bash(npm list *)",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --screenshot=\"/Users/javier/portfolioJavier/app/public/projects/restaurantefuego.png\" --window-size=1280,720 --virtual-time-budget=5000 \"https://restaurantefuego.duckdns.org\")",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --screenshot=\"/Users/javier/portfolioJavier/app/public/projects/movie-as-u-feel.png\" --window-size=1280,720 --virtual-time-budget=5000 \"https://movie-as-u-feel.vercel.app/\")"
     ]
   }
 }

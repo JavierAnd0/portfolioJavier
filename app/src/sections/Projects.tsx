@@ -24,14 +24,14 @@ const projects: Project[] = [
     title: 'Restaurante Fuego',
     description: 'Sitio web para restaurante con menú interactivo, información del local y diseño atractivo orientado a la experiencia del cliente.',
     tech: ['HTML', 'CSS', 'JavaScript'],
-    image: 'gradient-2',
+    image: '/projects/restaurantefuego.png',
     demo: 'https://restaurantefuego.duckdns.org',
   },
   {
     title: 'Movie as you feel',
     description: 'Aplicación que recomienda películas según tu estado de ánimo, con búsqueda inteligente y catálogo interactivo.',
     tech: ['Next.js', 'TypeScript', 'TMDB API'],
-    image: 'gradient-3',
+    image: '/projects/movie-as-u-feel.png',
     demo: 'https://movie-as-u-feel.vercel.app/',
   },
   {
