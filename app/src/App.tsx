@@ -11,23 +11,20 @@ import IntroScreen from './components/persona/IntroScreen';
 import { shouldPlayIntro } from './components/persona/config';
 import PauseMenu from './components/persona/PauseMenu';
 import SideNav from './components/persona/SideNav';
+import LanguageSwitch from './components/persona/LanguageSwitch';
+import { useI18n } from './i18n/context';
+import type { Dictionary } from './i18n/en';
 import './App.css';
 
-const AWAY_TITLE = '★ ¡Vuelve, Phantom Thief!';
-
 // Swap the tab title while the visitor is on another tab.
-const useAwayTitle = () => {
+const useAwayTitle = ({ title, awayTitle }: Dictionary['meta']) => {
   useEffect(() => {
-    const original = document.title;
     const onChange = () => {
-      document.title = document.hidden ? AWAY_TITLE : original;
+      document.title = document.hidden ? awayTitle : title;
     };
     document.addEventListener('visibilitychange', onChange);
-    return () => {
-      document.removeEventListener('visibilitychange', onChange);
-      document.title = original;
-    };
-  }, []);
+    return () => document.removeEventListener('visibilitychange', onChange);
+  }, [title, awayTitle]);
 };
 
 const useHeroOnScreen = () => {
@@ -47,6 +44,7 @@ const useHeroOnScreen = () => {
 
 // On small screens the hamburger opens the same pause menu over a red backdrop.
 const MobileNav = ({ visible }: { visible: boolean }) => {
+  const { t, lang } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const close = useCallback(() => setIsOpen(false), []);
 
@@ -68,7 +66,7 @@ const MobileNav = ({ visible }: { visible: boolean }) => {
             exit={{ opacity: 0, scale: 0.6 }}
             onClick={() => setIsOpen((open) => !open)}
             aria-expanded={isOpen}
-            aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-label={isOpen ? t.a11y.closeMenu : t.a11y.openMenu}
             className="fixed right-5 top-5 z-[60] flex h-12 w-12 flex-col items-center justify-center gap-1.5 border-[3px] border-black bg-white shadow-[4px_4px_0_#e60012] lg:hidden"
           >
             <motion.span
@@ -92,7 +90,7 @@ const MobileNav = ({ visible }: { visible: boolean }) => {
           <motion.div
             role="dialog"
             aria-modal="true"
-            aria-label="Menú"
+            aria-label={t.a11y.menu}
             initial={{ clipPath: 'polygon(100% 0, 100% 0, 100% 0, 100% 0)' }}
             animate={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
             exit={{ clipPath: 'polygon(100% 0, 100% 0, 100% 0, 100% 0)' }}
@@ -100,8 +98,12 @@ const MobileNav = ({ visible }: { visible: boolean }) => {
             className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#e60012] lg:hidden"
           >
             <div aria-hidden="true" className="hero-rays" />
+            <LanguageSwitch className="absolute left-5 top-6" />
             <div aria-hidden="true" className="hero-halftone" />
-            <div className="relative -rotate-[9deg] pl-[1.3em] text-[clamp(2.1rem,9.6vw,3.1rem)]">
+            <div
+              className="relative -rotate-[9deg] pl-[1.3em] text-[clamp(2.1rem,9.6vw,3.1rem)]"
+              style={{ fontSize: lang === 'es' ? 'clamp(1.8rem,8vw,2.6rem)' : undefined }}
+            >
               <PauseMenu ready keyboardEnabled onNavigate={close} />
             </div>
           </motion.div>
@@ -146,7 +148,8 @@ function App() {
   const [showIntro, setShowIntro] = useState(shouldPlayIntro);
   const [ready, setReady] = useState(!showIntro);
   const heroOnScreen = useHeroOnScreen();
-  useAwayTitle();
+  const { t } = useI18n();
+  useAwayTitle(t.meta);
 
   const reveal = useCallback(() => setReady(true), []);
   const finishIntro = useCallback(() => setShowIntro(false), []);

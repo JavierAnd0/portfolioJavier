@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import RansomText from './RansomText';
+import { useI18n } from '@/i18n/context';
 
 const TIMEZONE = 'America/Bogota';
 
-const PERIODS = [
-  { from: 0, label: 'LATE NIGHT' },
-  { from: 5, label: 'MORNING' },
-  { from: 12, label: 'AFTERNOON' },
-  { from: 18, label: 'EVENING' },
-  { from: 22, label: 'LATE NIGHT' },
+type PeriodKey = 'lateNight' | 'morning' | 'afternoon' | 'evening';
+
+const PERIODS: { from: number; key: PeriodKey }[] = [
+  { from: 0, key: 'lateNight' },
+  { from: 5, key: 'morning' },
+  { from: 12, key: 'afternoon' },
+  { from: 18, key: 'evening' },
+  { from: 22, key: 'lateNight' },
 ];
 
-const readClock = () => {
+const readClock = (locale: string, timestamp: number) => {
+  const now = new Date(timestamp);
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: TIMEZONE,
     month: 'numeric',
@@ -20,27 +24,37 @@ const readClock = () => {
     weekday: 'short',
     hour: 'numeric',
     hourCycle: 'h23',
-  }).formatToParts(new Date());
+  }).formatToParts(now);
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
   const hour = Number(get('hour'));
-  const period = [...PERIODS].reverse().find((p) => hour >= p.from)?.label ?? 'MORNING';
+  const weekday = new Intl.DateTimeFormat(locale, { timeZone: TIMEZONE, weekday: 'short' })
+    .format(now)
+    .replace('.', '')
+    .toUpperCase();
   return {
     month: get('month'),
     day: get('day'),
-    weekday: get('weekday').toUpperCase(),
-    period,
-    isWeekend: ['SAT', 'SUN'].includes(get('weekday').toUpperCase()),
+    weekday,
+    period: [...PERIODS].reverse().find((p) => hour >= p.from)?.key ?? 'morning',
+    isWeekend: ['Sat', 'Sun'].includes(get('weekday')),
   };
 };
 
 /** P5-style calendar widget showing the date and time of day in Colombia. */
 const CalendarHud = ({ ready }: { ready: boolean }) => {
-  const [clock, setClock] = useState(readClock);
+  const { t, lang } = useI18n();
+  const [now, setNow] = useState(Date.now);
 
   useEffect(() => {
-    const id = setInterval(() => setClock(readClock()), 60_000);
+    const id = setInterval(() => setNow(Date.now()), 60_000);
     return () => clearInterval(id);
   }, []);
+
+  const clock = readClock(t.locale, now);
+
+  // Colombia writes day/month; the game's M/D stays for English.
+  const [first, second] = lang === 'es' ? [clock.day, clock.month] : [clock.month, clock.day];
+  const period = t.calendar.periods[clock.period];
 
   return (
     <motion.div
@@ -48,16 +62,16 @@ const CalendarHud = ({ ready }: { ready: boolean }) => {
       initial={{ x: -80, opacity: 0, rotate: -14 }}
       animate={ready ? { x: 0, opacity: 1, rotate: -7 } : undefined}
       transition={{ type: 'spring', stiffness: 380, damping: 26, delay: 0.05 }}
-      aria-label={`Hoy en Colombia: ${clock.weekday} ${clock.month}/${clock.day}, ${clock.period}`}
+      aria-label={t.calendar.today(`${clock.weekday} ${first}/${second}`, period)}
       role="img"
     >
       <div className="flex items-end gap-[0.12em] text-[3.1rem] md:text-[4.4rem]">
-        <RansomText text={clock.month} uniformFont="Anton" />
+        <RansomText text={first} uniformFont="Anton" />
         <span
           aria-hidden="true"
           className="mb-[0.1em] h-[0.8em] w-[0.12em] rotate-[24deg] bg-white shadow-[-3px_3px_0_#0a0a0a]"
         />
-        <RansomText text={clock.day} uniformFont="Anton" />
+        <RansomText text={second} uniformFont="Anton" />
         <span
           aria-hidden="true"
           className={`mb-[0.18em] ml-[0.08em] -rotate-3 px-[0.22em] py-[0.02em] font-heavy text-[0.3em] leading-tight text-white shadow-[3px_3px_0_#0a0a0a] ${
@@ -74,7 +88,7 @@ const CalendarHud = ({ ready }: { ready: boolean }) => {
       >
         <span className="text-[0.7rem] text-[#e60012]">★</span>
         <span className="font-heavy text-[0.8rem] tracking-[0.08em] text-black md:text-sm">
-          {clock.period}
+          {period}
         </span>
         <span className="font-mono text-[0.6rem] font-bold text-black/50">COL</span>
       </div>

@@ -1,8 +1,13 @@
+import type { Dictionary } from '@/i18n/en';
+import type { Language } from '@/i18n/language';
+
+export type MenuKey = keyof Dictionary['menu'];
+
 export interface PauseMenuItem {
-  label: string;
-  hint: string;
+  key: MenuKey;
   href: string;
-  seed: number;
+  /** Per-language seed picked by eye so each word reads cleanly. */
+  seeds: Record<Language, number>;
   /** Horizontal stagger in em, gives the cascading zig-zag. */
   offset: number;
   tilt: number;
@@ -10,15 +15,14 @@ export interface PauseMenuItem {
 }
 
 export const MENU_ITEMS: PauseMenuItem[] = [
-  { label: 'PROFILE', hint: 'Sobre mí', href: '#about', seed: 85, offset: 1.5, tilt: -3 },
-  { label: 'TARGETS', hint: 'Proyectos', href: '#projects', seed: 204, offset: 0.2, tilt: 2.5 },
-  { label: 'SKILLS', hint: 'Habilidades', href: '#skills', seed: 85, offset: 1.9, tilt: -2 },
-  { label: 'REQUEST', hint: 'Contacto', href: '#contact', seed: 85, offset: 0.7, tilt: 3 },
+  { key: 'about', href: '#about', seeds: { en: 85, es: 85 }, offset: 1.5, tilt: -3 },
+  { key: 'projects', href: '#projects', seeds: { en: 204, es: 85 }, offset: 0.2, tilt: 2.5 },
+  { key: 'skills', href: '#skills', seeds: { en: 85, es: 187 }, offset: 1.9, tilt: -2 },
+  { key: 'contact', href: '#contact', seeds: { en: 85, es: 119 }, offset: 0.7, tilt: 3 },
   {
-    label: 'GITHUB',
-    hint: 'Repositorios',
+    key: 'github',
     href: 'https://github.com/JavierAnd0',
-    seed: 85,
+    seeds: { en: 85, es: 85 },
     offset: 2.3,
     tilt: -4,
     external: true,

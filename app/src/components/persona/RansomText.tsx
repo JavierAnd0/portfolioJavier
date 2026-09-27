@@ -37,18 +37,25 @@ const buildLetters = (text: string, seed: number, uniformFont?: string): LetterS
   }
   const rand = mulberry32(seed);
   let prevFont = -1;
+  let ringUsed = false;
   return [...text].map((char, i) => {
     let fontIdx = Math.floor(rand() * FONTS.length);
     if (fontIdx === prevFont) fontIdx = (fontIdx + 1) % FONTS.length;
     prevFont = fontIdx;
     const first = i === 0;
+    // One ring per word at most, never the lead letter, so the word stays readable.
+    const ring = char === 'O' && !first && !ringUsed;
+    ringUsed ||= ring;
+    const rotate = first ? -6 + rand() * 4 : -9 + rand() * 18;
+    const y = first ? 0.04 : -0.07 + rand() * 0.14;
+    const jitter = first ? 0 : rand();
     return {
       char,
       font: first ? '"Dela Gothic One"' : FONTS[fontIdx],
-      rotate: first ? -6 + rand() * 4 : -9 + rand() * 18,
-      y: first ? 0.04 : -0.07 + rand() * 0.14,
-      scale: first ? 1.34 : char === 'O' ? 1.02 + rand() * 0.1 : 0.86 + rand() * 0.24,
-      ring: char === 'O',
+      rotate,
+      y,
+      scale: first ? 1.34 : ring ? 1.02 + jitter * 0.1 : 0.86 + jitter * 0.24,
+      ring,
     };
   });
 };

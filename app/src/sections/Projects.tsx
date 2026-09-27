@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { ExternalLink, Github, Layers } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
+import type { Dictionary } from '@/i18n/en';
+
+type ProjectKey = keyof Dictionary['projects']['items'];
 
 interface Project {
-  title: string;
-  description: string;
+  key: ProjectKey;
   tech: string[];
   image: string;
   github?: string;
@@ -13,30 +16,26 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: 'Sitio web para la escuela de manejo Andres Avelino Longas',
-    description: 'Sitio web para la escuela Andres Avelino Longas con panel de administración intuitivo (CMS).',
+    key: 'avelino',
     tech: ['Next.js', 'Node.js', 'MongoDB'],
     image: '/projects/screencapture-andresavelinolongas-app-2026-04-02-20_38_48.png',
     demo: 'https://andresavelinolongas.app/',
     featured: true,
   },
   {
-    title: 'Restaurante Fuego',
-    description: 'Sitio web para restaurante con menú interactivo, información del local y diseño atractivo orientado a la experiencia del cliente.',
+    key: 'fuego',
     tech: ['HTML', 'CSS', 'JavaScript'],
     image: '/projects/restaurantefuego.png',
     demo: 'https://restaurantefuego.duckdns.org',
   },
   {
-    title: 'Movie as you feel',
-    description: 'Aplicación que recomienda películas según tu estado de ánimo, con búsqueda inteligente y catálogo interactivo.',
+    key: 'movie',
     tech: ['Next.js', 'TypeScript', 'TMDB API'],
     image: '/projects/movie-as-u-feel.png',
     demo: 'https://movie-as-u-feel.vercel.app/',
   },
   {
-    title: 'Social Media API',
-    description: 'API RESTful escalable para red social con autenticación JWT, websockets y caché distribuido.',
+    key: 'socialApi',
     tech: ['Node.js', 'Express', 'Redis', 'Docker'],
     image: 'gradient-4',
     github: '#',
@@ -45,6 +44,8 @@ const projects: Project[] = [
 ];
 
 const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+  const { t } = useI18n();
+  const { title, description } = t.projects.items[project.key];
   return (
     <motion.div
       initial={{ opacity: 0, y: 60 }}
@@ -65,7 +66,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
         {/* Target tag */}
         <div className="absolute top-0 left-0 z-20 bg-red border-b-2 border-r-2 border-black px-4 py-1.5 cut-corner-tag">
           <span className="font-mono text-[10px] text-black tracking-[0.2em] font-bold">
-            TARGET {String(index + 1).padStart(2, '0')}
+            {t.projects.target} {String(index + 1).padStart(2, '0')}
           </span>
         </div>
 
@@ -74,7 +75,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
           {project.image.startsWith('/') ? (
             <img
               src={project.image}
-              alt={project.title}
+              alt={title}
               className="w-full h-full object-cover object-top grayscale-[20%] group-hover:grayscale-0 transition-all duration-500"
             />
           ) : (
@@ -102,7 +103,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
                 className="flex items-center gap-2 px-4 py-2.5 bg-red text-black font-display text-xs tracking-wide cut-corners border-2 border-black"
               >
                 <ExternalLink className="w-4 h-4" />
-                INFILTRATE
+                {t.projects.infiltrate}
               </motion.a>
             )}
             {project.github && (
@@ -113,7 +114,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
                 className="flex items-center gap-2 px-4 py-2.5 bg-white text-black font-display text-xs tracking-wide cut-corners border-2 border-black"
               >
                 <Github className="w-4 h-4" />
-                TREASURE
+                {t.projects.treasure}
               </motion.a>
             )}
           </div>
@@ -122,10 +123,10 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
         {/* Content */}
         <div className="p-6 bg-dark-grey/90">
           <h3 className="font-display text-xl md:text-2xl font-normal text-white mb-2 group-hover:text-red transition-colors duration-300">
-            {project.title}
+            {title}
           </h3>
           <p className="text-white/60 text-sm md:text-base leading-relaxed mb-4">
-            {project.description}
+            {description}
           </p>
 
           {/* Tech Stack */}
@@ -150,6 +151,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
 };
 
 const Projects = () => {
+  const { t } = useI18n();
   return (
     <section id="projects" className="relative min-h-screen w-full bg-black py-24 md:py-32 overflow-hidden">
       {/* Section Header */}
@@ -161,10 +163,10 @@ const Projects = () => {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block font-mono text-xs tracking-[0.3em] text-red mb-2">
-            MEMENTOS LOG — TARGETS ACQUIRED
+            {t.projects.kicker}
           </span>
           <h2 className="font-display text-5xl md:text-7xl font-normal text-white/10 uppercase tracking-[0.06em]">
-            Targets
+            {t.projects.backdrop}
           </h2>
           <motion.h3
             initial={{ opacity: 0, x: -30 }}
@@ -173,7 +175,9 @@ const Projects = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-display text-3xl md:text-4xl font-normal text-white -mt-8 md:-mt-12 ml-2"
           >
-            Featured <span className="text-red">Heists</span>
+            {t.projects.title.before}
+            <span className="text-red">{t.projects.title.accent}</span>
+            {t.projects.title.after}
           </motion.h3>
         </motion.div>
 
@@ -184,7 +188,7 @@ const Projects = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-6 text-white/60 text-lg max-w-2xl"
         >
-          Una selección de proyectos que demuestran mi experiencia en desarrollo full-stack, desde aplicaciones web complejas hasta APIs escalables.
+          {t.projects.intro}
         </motion.p>
       </div>
 
@@ -192,7 +196,7 @@ const Projects = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
           {projects.map((project, index) => (
-            <ProjectCard key={project.title} project={project} index={index} />
+            <ProjectCard key={project.key} project={project} index={index} />
           ))}
         </div>
 
@@ -211,7 +215,7 @@ const Projects = () => {
             className="inline-flex items-center gap-3 px-8 py-4 border-2 border-white/30 text-white font-display tracking-wide cut-corners hover:border-red hover:text-red transition-all duration-300"
           >
             <Github className="w-5 h-5" />
-            VIEW FULL RAP SHEET ON GITHUB
+            {t.projects.viewAll}
           </motion.a>
         </motion.div>
       </div>

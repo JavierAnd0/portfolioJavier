@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, Send, Github, Linkedin, Twitter, CheckCircle } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 const Contact = () => {
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,8 +37,8 @@ const Contact = () => {
   };
 
   const contactInfo = [
-    { icon: Mail, label: 'Email', value: 'tu@email.com', href: 'mailto:tu@email.com' },
-    { icon: MapPin, label: 'Location', value: 'Tu Ciudad, País', href: '#' },
+    { id: 'email', icon: Mail, label: t.contact.emailLabel, value: t.contact.emailValue, href: `mailto:${t.contact.emailValue}` },
+    { id: 'location', icon: MapPin, label: t.contact.locationLabel, value: t.contact.locationValue, href: '#' },
   ];
 
   const socialLinks = [
@@ -56,10 +58,10 @@ const Contact = () => {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block font-mono text-xs tracking-[0.3em] text-red mb-2">
-            REQUEST FOR COOPERATION
+            {t.contact.kicker}
           </span>
           <h2 className="font-display text-5xl md:text-7xl font-normal text-white/10 uppercase tracking-[0.06em]">
-            Contact
+            {t.contact.backdrop}
           </h2>
           <motion.h3
             initial={{ opacity: 0, x: -30 }}
@@ -68,7 +70,9 @@ const Contact = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-display text-3xl md:text-4xl font-normal text-white -mt-8 md:-mt-12 ml-2"
           >
-            Join The <span className="text-red">Team</span>
+            {t.contact.title.before}
+            <span className="text-red">{t.contact.title.accent}</span>
+            {t.contact.title.after}
           </motion.h3>
         </motion.div>
 
@@ -79,7 +83,7 @@ const Contact = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-6 text-white/60 text-lg max-w-2xl"
         >
-          ¿Tienes un proyecto en mente? ¡Hablemos! Estoy siempre abierto a nuevas oportunidades y colaboraciones.
+          {t.contact.intro}
         </motion.p>
       </div>
 
@@ -96,11 +100,12 @@ const Contact = () => {
           >
             <div>
               <h4 className="font-display text-2xl md:text-3xl font-normal text-white mb-4">
-                Let's steal something{' '}
-                <span className="text-gradient">amazing</span> together
+                {t.contact.pitch.before}
+                <span className="text-gradient">{t.contact.pitch.accent}</span>
+                {t.contact.pitch.after}
               </h4>
               <p className="text-white/60 leading-relaxed">
-                Ya sea que tengas una idea que quieras materializar o necesites ayuda con un proyecto existente, estaré encantado de escucharte. Sin calling card, sin Metaverso — solo un correo.
+                {t.contact.body}
               </p>
             </div>
 
@@ -108,7 +113,7 @@ const Contact = () => {
             <div className="space-y-4">
               {contactInfo.map((item, index) => (
                 <motion.a
-                  key={item.label}
+                  key={item.id}
                   href={item.href}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -130,7 +135,7 @@ const Contact = () => {
 
             {/* Social Links */}
             <div>
-              <p className="text-sm text-white/50 mb-4 font-mono tracking-wide">FOLLOW THE THIEVES</p>
+              <p className="text-sm text-white/50 mb-4 font-mono tracking-wide">{t.contact.follow}</p>
               <div className="flex gap-3">
                 {socialLinks.map((social, index) => (
                   <motion.a
@@ -159,7 +164,7 @@ const Contact = () => {
           >
             <form onSubmit={handleSubmit} className="space-y-6 border-2 border-red cut-corners p-6 md:p-8 bg-dark-grey/40">
               <p className="font-hand text-red text-sm tracking-wide -mt-2 mb-2">
-                fill in your request for cooperation
+                {t.contact.formHint}
               </p>
               {/* Name Field */}
               <div className="relative">
@@ -172,7 +177,7 @@ const Contact = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute left-4 top-4 text-white/50 pointer-events-none origin-left font-mono text-sm"
                 >
-                  Your Name
+                  {t.contact.name}
                 </motion.label>
                 <input
                   type="text"
@@ -197,7 +202,7 @@ const Contact = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute left-4 top-4 text-white/50 pointer-events-none origin-left font-mono text-sm"
                 >
-                  Your Email
+                  {t.contact.email}
                 </motion.label>
                 <input
                   type="email"
@@ -222,7 +227,7 @@ const Contact = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute left-4 top-4 text-white/50 pointer-events-none origin-left font-mono text-sm"
                 >
-                  Your Message
+                  {t.contact.message}
                 </motion.label>
                 <textarea
                   name="message"
@@ -257,12 +262,12 @@ const Contact = () => {
                 ) : isSubmitted ? (
                   <>
                     <CheckCircle className="w-5 h-5" />
-                    CALLING CARD SENT!
+                    {t.contact.sent}
                   </>
                 ) : (
                   <>
                     <Send className="w-5 h-5" />
-                    SEND THE CALLING CARD
+                    {t.contact.send}
                   </>
                 )}
               </motion.button>

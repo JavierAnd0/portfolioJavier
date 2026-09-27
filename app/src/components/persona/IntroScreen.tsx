@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import RansomText from './RansomText';
+import { useI18n } from '@/i18n/context';
 import { markIntroSeen } from './config';
 
 const HOLD_MS = 1900;
@@ -13,6 +14,7 @@ interface IntroScreenProps {
 }
 
 const IntroScreen = ({ onReveal, onDone }: IntroScreenProps) => {
+  const { t } = useI18n();
   const [leaving, setLeaving] = useState(false);
   const leavingRef = useRef(false);
 
@@ -103,7 +105,7 @@ const IntroScreen = ({ onReveal, onDone }: IntroScreenProps) => {
           className="relative border-[5px] border-black bg-[#e60012] px-6 pb-6 pt-5 shadow-[12px_12px_0_#ffffff] md:px-10 md:pb-8"
         >
           <div className="pointer-events-none absolute inset-0 hero-halftone opacity-40" />
-          <p className="relative mb-2 font-hand text-sm text-white md:text-lg">a calling card from —</p>
+          <p className="relative mb-2 font-hand text-sm text-white md:text-lg">{t.intro.callingCard}</p>
           <div className="relative text-[2.3rem] sm:text-[3rem] md:text-[4.4rem]">
             <RansomText text="JAVIER" seed={85} animateIn delay={0.45} />
             <span className="inline-block w-[0.3em]" />
@@ -111,10 +113,10 @@ const IntroScreen = ({ onReveal, onDone }: IntroScreenProps) => {
           </div>
           <div className="relative mt-4 flex items-center justify-between gap-4">
             <span className="whitespace-nowrap bg-black px-3 py-1 font-heavy text-[0.65rem] tracking-[0.12em] text-white sm:text-xs md:text-sm">
-              FULL STACK DEVELOPER
+              {t.intro.role}
             </span>
             <span className="hidden whitespace-nowrap font-hand text-sm text-black sm:inline md:text-base">
-              take your time ★
+              {t.intro.tagline}
             </span>
           </div>
         </motion.div>
@@ -126,8 +128,8 @@ const IntroScreen = ({ onReveal, onDone }: IntroScreenProps) => {
         animate={leaving ? { opacity: 0 } : { opacity: [0, 1, 0.35, 1] }}
         transition={leaving ? { duration: 0.1 } : { delay: 1.1, duration: 1.2 }}
       >
-        <span className="md:hidden">TOCA PARA CONTINUAR</span>
-        <span className="hidden md:inline">PULSA CUALQUIER TECLA</span>
+        <span className="md:hidden">{t.intro.tap}</span>
+        <span className="hidden md:inline">{t.intro.pressKey}</span>
       </motion.p>
     </div>
   );

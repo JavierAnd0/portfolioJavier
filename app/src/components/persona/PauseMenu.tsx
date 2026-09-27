@@ -2,38 +2,40 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import RansomText from './RansomText';
 import { MENU_ITEMS } from './config';
+import { useI18n } from '@/i18n/context';
 
 const isTypingTarget = (el: EventTarget | null) =>
   el instanceof HTMLElement &&
   (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
 
-// White plate + CMYK prism smear behind the selected entry.
+// White plate on a black shard, with a red wedge — kept inside the site palette.
 const SelectionPlate = () => (
   <motion.span
     aria-hidden="true"
-    className="pointer-events-none absolute -inset-x-[0.32em] -inset-y-[0.16em] -z-10"
+    className="pointer-events-none absolute -inset-y-[0.12em] -left-[0.5em] -right-[0.32em] -z-10"
     initial={{ scaleX: 0, opacity: 0 }}
     animate={{ scaleX: 1, opacity: 1 }}
     transition={{ duration: 0.16, ease: [0.2, 0.9, 0.3, 1] }}
     style={{ transformOrigin: '0% 50%' }}
   >
     <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible">
-      <defs>
-        <linearGradient id="prism" x1="0" y1="0" x2="1" y2="0.35">
-          <stop offset="0" stopColor="#fff200" />
-          <stop offset="0.28" stopColor="#3dff6e" />
-          <stop offset="0.5" stopColor="#00d9ff" />
-          <stop offset="0.72" stopColor="#3d5afe" />
-          <stop offset="1" stopColor="#ff2bd6" />
-        </linearGradient>
-      </defs>
       <g className="plate-boil">
-        <polygon points="10,-5 104,-9 101,26 4,31" fill="url(#prism)" />
+        <polygon points="5,9 105,4 102,44 2,43" fill="#0a0a0a" />
       </g>
-      <polygon points="1,5 99,1 96,38 -1,40" fill="#0a0a0a" />
+      <polygon points="1,3 99,1 96,38 -1,39" fill="#0a0a0a" />
       <g className="plate-boil plate-boil--alt">
-        <polygon points="3,7 97,3 94,35 1,37" fill="#ffffff" />
+        <polygon points="3,5 97,3 94,36 1,37" fill="#ffffff" />
       </g>
+    </svg>
+    {/* Red slashes live in their own tail so they never sit between letters. */}
+    <svg
+      viewBox="0 0 20 40"
+      preserveAspectRatio="none"
+      className="absolute -right-[0.34em] top-[0.1em] h-[calc(100%-0.2em)] w-[0.5em] overflow-visible"
+    >
+      <polygon points="0,1 20,0 17,40 -3,40" fill="#0a0a0a" />
+      <polygon points="3,4 8,4 5,37 0,37" fill="#e60012" />
+      <polygon points="11,3.5 16,3.4 13,36.6 8,36.8" fill="#e60012" />
     </svg>
   </motion.span>
 );
@@ -41,7 +43,7 @@ const SelectionPlate = () => (
 const Cursor = ({ index }: { index: number }) => (
   <motion.span
     aria-hidden="true"
-    className="pointer-events-none absolute right-full top-[18%] mr-[0.18em]"
+    className="pointer-events-none absolute right-full top-[18%] mr-[0.42em]"
     initial={{ x: -30, opacity: 0 }}
     animate={{ x: [0, -7, 0], opacity: 1 }}
     transition={{
@@ -88,6 +90,7 @@ interface PauseMenuProps {
 }
 
 const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
+  const { t, lang } = useI18n();
   const [active, setActive] = useState(0);
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
@@ -125,13 +128,14 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
   }, [keyboardEnabled, ready, active, move]);
 
   return (
-    <nav aria-label="Menú principal" className="pause-menu">
-      <ul className="flex flex-col gap-[0.02em]">
+    <nav aria-label={t.a11y.mainMenu} className="pause-menu">
+      <ul className="flex flex-col gap-[0.1em]">
         {MENU_ITEMS.map((item, i) => {
           const isActive = active === i;
+          const { label, hint } = t.menu[item.key];
           return (
             <motion.li
-              key={item.label}
+              key={item.key}
               className="relative"
               style={{ marginLeft: `${item.offset}em`, rotate: `${item.tilt}deg`, zIndex: isActive ? 10 : 1 }}
               initial={{ x: '60vw', opacity: 0, skewX: -20 }}
@@ -149,7 +153,7 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
                 aria-current={isActive ? 'true' : undefined}
-                aria-label={`${item.label} — ${item.hint}${item.external ? ' (abre en otra pestaña)' : ''}`}
+                aria-label={`${label} — ${hint}${item.external ? ` ${t.a11y.opensNewTab}` : ''}`}
                 className="group relative isolate inline-block px-[0.08em] outline-none"
               >
                 {isActive && <SelectionPlate key={`plate-${i}`} />}
@@ -159,9 +163,9 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
                   animate={{ scale: isActive ? 1.1 : 1, x: isActive ? '0.12em' : 0 }}
                   transition={{ type: 'spring', stiffness: 600, damping: 24 }}
                 >
-                  <RansomText text={item.label} seed={item.seed} tone={isActive ? 'dark' : 'light'} />
+                  <RansomText text={label} seed={item.seeds[lang]} tone={isActive ? 'dark' : 'light'} />
                 </motion.span>
-                {isActive && <HintTag text={item.hint} />}
+                {isActive && <HintTag text={hint} />}
               </a>
             </motion.li>
           );

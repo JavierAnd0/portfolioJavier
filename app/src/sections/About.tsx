@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Code2, Terminal, Braces } from 'lucide-react';
 import gsap from 'gsap';
+import { useI18n } from '@/i18n/context';
 
 interface CounterProps {
   end: number;
@@ -92,10 +93,11 @@ const CodeDisplay = () => {
 };
 
 const About = () => {
+  const { t } = useI18n();
   const stats = [
-    { value: 1, suffix: '+', label: 'Years in the field' },
-    { value: 5, suffix: '+', label: 'Heists completed' },
-    { value: 100, suffix: '%', label: 'Commitment' },
+    { value: 1, suffix: '+', label: t.about.stats.years },
+    { value: 5, suffix: '+', label: t.about.stats.heists },
+    { value: 100, suffix: '%', label: t.about.stats.commitment },
   ];
 
   const techIcons = [
@@ -115,10 +117,10 @@ const About = () => {
         className="max-w-7xl mx-auto px-6 md:px-10 mb-16"
       >
         <span className="inline-block font-mono text-xs tracking-[0.3em] text-red mb-2">
-          CONFIDANT FILE — 01
+          {t.about.kicker}
         </span>
         <h2 className="font-display text-5xl md:text-7xl font-normal text-white/10 uppercase tracking-[0.06em]">
-          Profile
+          {t.about.backdrop}
         </h2>
         <motion.h3
           initial={{ opacity: 0, x: -30 }}
@@ -127,7 +129,9 @@ const About = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-display text-3xl md:text-4xl font-normal text-white -mt-8 md:-mt-12 ml-2"
         >
-          Who's <span className="text-red">Behind the Mask</span>
+          {t.about.title.before}
+          <span className="text-red">{t.about.title.accent}</span>
+          {t.about.title.after}
         </motion.h3>
       </motion.div>
 
@@ -143,10 +147,12 @@ const About = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-6">
-                Soy un <span className="text-red font-medium">desarrollador de software</span> apasionado por crear soluciones digitales innovadoras. Con experiencia en desarrollo full-stack, construyo aplicaciones web modernas, escalables y centradas en el usuario.
+                {t.about.intro.before}
+                <span className="text-red font-medium">{t.about.intro.accent}</span>
+                {t.about.intro.after}
               </p>
               <p className="text-base md:text-lg text-white/60 leading-relaxed">
-                Un enfoque que combina código limpio, arquitectura sólida y diseño intuitivo para entregar productos que no solo funcionan perfectamente, sino que también ofrecen experiencias memorables. Cada proyecto es un objetivo, cada bug una sombra por vencer.
+                {t.about.body}
               </p>
             </motion.div>
 
@@ -193,7 +199,7 @@ const About = () => {
         >
           {stats.map((stat, index) => (
             <motion.div
-              key={stat.label}
+              key={`${stat.value}${stat.suffix}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

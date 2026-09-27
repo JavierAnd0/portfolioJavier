@@ -1,16 +1,18 @@
 import { useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import gsap from 'gsap';
+import { useI18n } from '@/i18n/context';
+import type { Dictionary } from '@/i18n/en';
 
 interface SkillCategory {
-  name: string;
+  name: keyof Dictionary['skills']['categories'];
   arcana: string;
   skills: { name: string; level: number }[];
 }
 
 const skillCategories: SkillCategory[] = [
   {
-    name: 'Frontend',
+    name: 'frontend',
     arcana: 'MAGICIAN',
     skills: [
       { name: 'React / Next.js', level: 95 },
@@ -20,7 +22,7 @@ const skillCategories: SkillCategory[] = [
     ],
   },
   {
-    name: 'Backend',
+    name: 'backend',
     arcana: 'EMPEROR',
     skills: [
       { name: 'Node.js', level: 90 },
@@ -30,7 +32,7 @@ const skillCategories: SkillCategory[] = [
     ],
   },
   {
-    name: 'Database',
+    name: 'database',
     arcana: 'HIEROPHANT',
     skills: [
       { name: 'PostgreSQL', level: 88 },
@@ -40,7 +42,7 @@ const skillCategories: SkillCategory[] = [
     ],
   },
   {
-    name: 'DevOps',
+    name: 'devops',
     arcana: 'CHARIOT',
     skills: [
       { name: 'Docker', level: 85 },
@@ -85,6 +87,8 @@ const ProgressBar = ({ level, delay }: { level: number; delay: number }) => {
 };
 
 const SkillCard = ({ category, index }: { category: SkillCategory; index: number }) => {
+  const { t } = useI18n();
+  const name = t.skills.categories[category.name];
   const mobile = isMobile();
   return (
     <motion.div
@@ -103,14 +107,14 @@ const SkillCard = ({ category, index }: { category: SkillCategory; index: number
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-red flex items-center justify-center cut-corner-tag">
-              <span className="font-display text-black">{category.name[0]}</span>
+              <span className="font-display text-black">{name[0]}</span>
             </div>
             <h4 className="font-display text-xl font-normal text-white group-hover:text-red transition-colors">
-              {category.name}
+              {name}
             </h4>
           </div>
           <span className="font-mono text-[10px] text-white/30 tracking-[0.2em] uppercase">
-            Persona: {category.arcana}
+            {t.skills.persona}: {category.arcana}
           </span>
         </div>
 
@@ -132,6 +136,7 @@ const SkillCard = ({ category, index }: { category: SkillCategory; index: number
 };
 
 const Skills = () => {
+  const { t } = useI18n();
   return (
     <section id="skills" className="relative min-h-screen w-full bg-black py-24 md:py-32 overflow-hidden">
       {/* Section Header */}
@@ -143,10 +148,10 @@ const Skills = () => {
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block font-mono text-xs tracking-[0.3em] text-red mb-2">
-            SKILL TREE — ALL-OUT ATTACK READY
+            {t.skills.kicker}
           </span>
           <h2 className="font-display text-5xl md:text-7xl font-normal text-white/10 uppercase tracking-[0.06em]">
-            Abilities
+            {t.skills.backdrop}
           </h2>
           <motion.h3
             initial={{ opacity: 0, x: -30 }}
@@ -155,7 +160,9 @@ const Skills = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-display text-3xl md:text-4xl font-normal text-white -mt-8 md:-mt-12 ml-2"
           >
-            Tech <span className="text-red">Arsenal</span>
+            {t.skills.title.before}
+            <span className="text-red">{t.skills.title.accent}</span>
+            {t.skills.title.after}
           </motion.h3>
         </motion.div>
 
@@ -166,7 +173,7 @@ const Skills = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-6 text-white/60 text-lg max-w-2xl"
         >
-          Tecnologías y herramientas que utilizo para construir aplicaciones modernas, escalables y de alto rendimiento.
+          {t.skills.intro}
         </motion.p>
       </div>
 

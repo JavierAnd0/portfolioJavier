@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
 import { ChevronUp } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
+import { MENU_ITEMS } from '@/components/persona/config';
 
 const Footer = () => {
+  const { t } = useI18n();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -22,10 +25,10 @@ const Footer = () => {
             className="text-center md:text-left"
           >
             <p className="text-white/70 text-sm">
-              © {currentYear} <span className="text-white font-medium">Javier Andrade</span>. All rights reserved.
+              © {currentYear} <span className="text-white font-medium">Javier Andrade</span>. {t.footer.rights}
             </p>
             <p className="font-hand text-red text-xs mt-1">
-              — the Phantom Thief of Code
+              {t.footer.signature}
             </p>
           </motion.div>
 
@@ -37,18 +40,13 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="flex gap-6 font-mono text-xs tracking-widest"
           >
-            {[
-              { label: 'PROFILE', id: 'about' },
-              { label: 'TARGETS', id: 'projects' },
-              { label: 'ABILITIES', id: 'skills' },
-              { label: 'COOPERATION', id: 'contact' },
-            ].map((item) => (
+            {MENU_ITEMS.filter((item) => !item.external).map((item) => (
               <a
-                key={item.id}
-                href={`#${item.id}`}
+                key={item.key}
+                href={item.href}
                 className="text-white/50 hover:text-red transition-colors duration-200 relative group"
               >
-                {item.label}
+                {t.menu[item.key].label}
                 <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-red group-hover:w-full transition-all duration-300" />
               </a>
             ))}
@@ -61,6 +59,7 @@ const Footer = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
             onClick={scrollToTop}
+            aria-label={t.a11y.backToTop}
             whileHover={{ scale: 1.1, y: -3, rotate: -6 }}
             whileTap={{ scale: 0.95 }}
             className="w-10 h-10 border-2 border-white/20 cut-corner-tag flex items-center justify-center text-white/50 hover:text-black hover:bg-red hover:border-red transition-all duration-300"

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import LanguageSwitch from './persona/LanguageSwitch';
+import { useI18n } from '@/i18n/context';
 
 const WORK_START = 8;
 const WORK_END = 18;
@@ -23,16 +25,13 @@ const getColombiaTime = () => {
 };
 
 export const StatusBar = () => {
+  const { t } = useI18n();
   const [time, setTime] = useState(getColombiaTime);
 
   useEffect(() => {
     const id = setInterval(() => setTime(getColombiaTime()), 1000);
     return () => clearInterval(id);
   }, []);
-
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <motion.div
@@ -42,14 +41,7 @@ export const StatusBar = () => {
       className="fixed bottom-0 left-0 right-0 z-40 h-9 bg-black border-t-2 border-red flex items-center justify-between px-4 md:px-6 select-none"
       style={{ fontFamily: "'JetBrains Mono', monospace" }}
     >
-      {/* Left — Contact */}
-      <button
-        onClick={scrollToContact}
-        className="group hidden items-center gap-1.5 font-mono text-[11px] tracking-widest text-white/40 transition-colors duration-200 hover:text-red sm:flex"
-      >
-        <span className="text-red">▸</span>
-        <span>REQUEST COOPERATION</span>
-      </button>
+      <LanguageSwitch variant="bar" />
 
       {/* Center — Clock */}
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 font-mono text-[11px] tracking-widest text-white/40">
@@ -59,7 +51,7 @@ export const StatusBar = () => {
             animate={{ opacity: [1, 0, 1] }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           >
-            {' '}
+            :
           </motion.span>
           {time.minute}
         </span>
@@ -69,7 +61,7 @@ export const StatusBar = () => {
       {/* Right — Work status */}
       <div className="flex items-center gap-2 font-mono text-[11px] tracking-widest">
         <span className={time.isWorking ? 'text-red' : 'text-white/30'}>
-          {time.isWorking ? 'ON DUTY' : 'OFF DUTY'}
+          {time.isWorking ? t.status.onDuty : t.status.offDuty}
         </span>
         <motion.span
           animate={{ rotate: 360 }}
