@@ -9,7 +9,7 @@ import Footer from './sections/Footer';
 import { StatusBar } from './components/StatusBar';
 import './App.css';
 
-// Loading Screen Component
+// Calling Card Loading Screen — Phantom Thieves style
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -18,7 +18,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
       onComplete();
-    }, 2500);
+    }, 2600);
     return () => {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
@@ -30,64 +30,65 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
-      className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center gap-10"
+      transition={{ duration: 0.5, ease: 'easeInOut' }}
+      className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center gap-6 overflow-hidden"
     >
-      {/* Logo + Ring container */}
-      <div className="relative w-20 h-20">
-        {/* Animated Logo */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-20 h-20 rounded-full border-2 border-red flex items-center justify-center glow-red"
-        >
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-            className="font-heading font-bold text-2xl text-white"
-          >
-            D
-          </motion.span>
-        </motion.div>
+      {/* Diagonal slash bands sweeping in */}
+      <motion.div
+        initial={{ x: '-100%' }}
+        animate={{ x: '0%' }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute inset-y-0 left-0 w-full slash-stripes opacity-90"
+        style={{ transform: 'skewX(-12deg) scaleX(1.3)' }}
+      />
+      <div className="absolute inset-0 bg-black/70" />
 
-        {/* Loading Ring */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-          className="absolute inset-0 w-20 h-20"
-        >
-          <svg viewBox="0 0 80 80" className="w-full h-full">
-            <circle
-              cx="40"
-              cy="40"
-              r="38"
-              fill="none"
-              stroke="url(#loadingGradient)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeDasharray="60 180"
-            />
-            <defs>
-              <linearGradient id="loadingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#ff0000" />
-                <stop offset="100%" stopColor="#ff6b9d" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </motion.div>
-      </div>
+      <motion.div
+        initial={{ scale: 1.6, rotate: -6, opacity: 0 }}
+        animate={{ scale: 1, rotate: -6, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+        className="relative border-4 border-white bg-black px-8 py-5 cut-corner-tag"
+      >
+        <p className="font-hand text-red text-sm md:text-base tracking-widest mb-1">
+          a calling card from —
+        </p>
+        <h1 className="font-display text-3xl md:text-5xl text-white leading-none">
+          JAVIER ANDRADE
+        </h1>
+      </motion.div>
 
-      {/* Loading Text */}
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="text-white/50 text-sm font-heading tracking-wider"
+        transition={{ duration: 0.4, delay: 0.9 }}
+        className="relative font-mono text-xs md:text-sm text-white/60 tracking-[0.3em] uppercase"
       >
-        Loading...
+        Infiltrating the portfolio<span className="animate-pulse">...</span>
       </motion.p>
+    </motion.div>
+  );
+};
+
+// Scrolling ticker banner — iconic Persona menu marquee
+const Marquee = () => {
+  const text = 'PHANTOM THIEF OF CODE ★ FULL STACK DEVELOPER ★ TAKE YOUR HEART ★ ';
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 2, duration: 0.4 }}
+      className="relative z-30 w-full bg-red border-y-2 border-black overflow-hidden py-1.5"
+    >
+      <div className="flex whitespace-nowrap w-max marquee-track">
+        {[0, 1].map((i) => (
+          <span
+            key={i}
+            className="font-display text-black text-xs md:text-sm tracking-[0.15em] px-4"
+          >
+            {text.repeat(4)}
+          </span>
+        ))}
+      </div>
     </motion.div>
   );
 };
@@ -96,10 +97,10 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
 const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navItems = [
-    { label: 'About', id: 'about' },
-    { label: 'Projects', id: 'projects' },
-    { label: 'Skills', id: 'skills' },
-    { label: 'Contact', id: 'contact' },
+    { label: 'PROFILE', id: 'about' },
+    { label: 'TARGETS', id: 'projects' },
+    { label: 'ABILITIES', id: 'skills' },
+    { label: 'COOPERATION', id: 'contact' },
   ];
 
   const scrollToSection = (id: string) => {
@@ -116,21 +117,21 @@ const MobileNav = () => {
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
+        transition={{ delay: 2.2 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-6 right-6 z-50 w-10 h-10 flex flex-col items-center justify-center gap-1.5"
+        className="lg:hidden fixed top-6 right-6 z-50 w-11 h-11 flex flex-col items-center justify-center gap-1.5 bg-red cut-corners border-2 border-black"
       >
         <motion.span
           animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-          className="w-6 h-0.5 bg-white block"
+          className="w-6 h-0.5 bg-black block"
         />
         <motion.span
           animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-          className="w-6 h-0.5 bg-white block"
+          className="w-6 h-0.5 bg-black block"
         />
         <motion.span
           animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-          className="w-6 h-0.5 bg-white block"
+          className="w-6 h-0.5 bg-black block"
         />
       </motion.button>
 
@@ -141,18 +142,19 @@ const MobileNav = () => {
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="lg:hidden fixed inset-0 z-40 bg-black/95 backdrop-blur-lg"
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:hidden fixed inset-0 z-40 bg-black/97"
           >
-            <nav className="flex flex-col items-center justify-center h-full gap-8">
+            <div className="absolute inset-0 slash-stripes opacity-[0.06]" />
+            <nav className="relative flex flex-col items-center justify-center h-full gap-8">
               {navItems.map((item, index) => (
                 <motion.button
                   key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                   onClick={() => scrollToSection(item.id)}
-                  className="font-heading text-2xl text-white hover:text-red transition-colors"
+                  className="font-display text-3xl text-white hover:text-red transition-colors tracking-wide"
                 >
                   {item.label}
                 </motion.button>
@@ -168,20 +170,15 @@ const MobileNav = () => {
 // Scroll Progress Indicator
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
-  const scrollEventsRef = useRef(0);
   const rafPendingRef = useRef(false);
   const lastProgressRef = useRef(0);
   const latestScrollTopRef = useRef(0);
-  const committedUpdatesRef = useRef(0);
-  const skippedUpdatesRef = useRef(0);
-  const resizeEventsRef = useRef(0);
   const resizeRafPendingRef = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
       latestScrollTopRef.current = scrollTop;
-      scrollEventsRef.current += 1;
       if (rafPendingRef.current) {
         return;
       }
@@ -192,19 +189,14 @@ const ScrollProgress = () => {
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const nextProgress = docHeight > 0 ? (latestScrollTopRef.current / docHeight) * 100 : 0;
         const roundedProgress = Math.max(0, Math.min(100, Number(nextProgress.toFixed(2))));
-        if (Math.abs(roundedProgress - lastProgressRef.current) < 0.5) {
-          skippedUpdatesRef.current += 1;
-        } else {
+        if (Math.abs(roundedProgress - lastProgressRef.current) >= 0.5) {
           lastProgressRef.current = roundedProgress;
-          committedUpdatesRef.current += 1;
           setProgress(roundedProgress);
         }
-
       });
     };
 
     const handleResize = () => {
-      resizeEventsRef.current += 1;
       if (resizeRafPendingRef.current) {
         return;
       }
@@ -229,12 +221,6 @@ const ScrollProgress = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
-      if (rafPendingRef.current) {
-        rafPendingRef.current = false;
-      }
-      if (resizeRafPendingRef.current) {
-        resizeRafPendingRef.current = false;
-      }
     };
   }, []);
 
@@ -243,10 +229,10 @@ const ScrollProgress = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 2 }}
-      className="fixed top-0 left-0 right-0 z-50 h-[2px] bg-white/10"
+      className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-white/10"
     >
       <motion.div
-        className="h-full bg-gradient-to-r from-red via-pink to-magenta"
+        className="h-full bg-red"
         style={{ width: `${progress}%` }}
       />
     </motion.div>
@@ -273,7 +259,8 @@ function App() {
         >
           <ScrollProgress />
           <MobileNav />
-          
+          <Marquee />
+
           <main className="relative pb-8">
             <Hero />
             <About />

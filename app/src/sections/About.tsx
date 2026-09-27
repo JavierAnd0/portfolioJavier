@@ -36,13 +36,13 @@ const Counter = ({ end, suffix = '', duration = 2 }: CounterProps) => {
 
 const CodeDisplay = () => {
   const codeLines = [
-    { text: 'const developer = {', color: 'text-pink' },
-    { text: '  name: "Javier Andrade",', color: 'text-white/80' },
+    { text: 'const phantomThief = {', color: 'text-white' },
+    { text: '  codename: "Javier Andrade",', color: 'text-white/80' },
     { text: '  role: "Full Stack Developer",', color: 'text-white/80' },
-    { text: '  skills: ["React", "Next", "TypeScript", "Python", "MongoDB"],', color: 'text-red' },
-    { text: '  passion: "Building apps",', color: 'text-white/80' },
+    { text: '  arsenal: ["React", "Next", "TypeScript", "Python", "MongoDB"],', color: 'text-red' },
+    { text: '  motto: "Take your (digital) heart",', color: 'text-white/80' },
     { text: '  available: true', color: 'text-green-400' },
-    { text: '};', color: 'text-pink' },
+    { text: '};', color: 'text-white' },
   ];
 
   return (
@@ -53,15 +53,13 @@ const CodeDisplay = () => {
       transition={{ duration: 0.8, delay: 0.3 }}
       className="relative"
     >
-      <div className="glass rounded-2xl p-6 border border-white/10">
-        {/* Window Controls */}
+      <div className="bg-ink border-2 border-red cut-corners p-6">
         <div className="flex gap-2 mb-4">
-          <div className="w-3 h-3 rounded-full bg-red/80" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+          <div className="w-3 h-3 rounded-full bg-red" />
+          <div className="w-3 h-3 rounded-full bg-white/40" />
+          <div className="w-3 h-3 rounded-full bg-white/40" />
         </div>
 
-        {/* Code Content */}
         <div className="font-mono text-sm md:text-base">
           {codeLines.map((line, index) => (
             <motion.div
@@ -80,7 +78,6 @@ const CodeDisplay = () => {
           ))}
         </div>
 
-        {/* Blinking Cursor */}
         <motion.span
           animate={{ opacity: [1, 0] }}
           transition={{ duration: 0.8, repeat: Infinity }}
@@ -88,17 +85,16 @@ const CodeDisplay = () => {
         />
       </div>
 
-      {/* Decorative Elements */}
-      <div className="absolute -top-4 -right-4 w-20 h-20 border border-red/30 rounded-lg -z-10" />
-      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-red/10 rounded-lg -z-10" />
+      <div className="absolute -top-4 -right-4 w-16 h-16 slash-stripes opacity-20 -z-10" />
+      <div className="absolute -bottom-4 -left-4 w-14 h-14 bg-red/10 -z-10" />
     </motion.div>
   );
 };
 
 const About = () => {
   const stats = [
-    { value: 1, suffix: '+', label: 'Years Experience' },
-    { value: 5, suffix: '+', label: 'Projects Completed' },
+    { value: 1, suffix: '+', label: 'Years in the field' },
+    { value: 5, suffix: '+', label: 'Heists completed' },
     { value: 100, suffix: '%', label: 'Commitment' },
   ];
 
@@ -118,17 +114,20 @@ const About = () => {
         transition={{ duration: 0.6 }}
         className="max-w-7xl mx-auto px-6 md:px-10 mb-16"
       >
-        <h2 className="font-heading text-5xl md:text-7xl font-bold text-white/10 uppercase tracking-[0.1em]">
-          About
+        <span className="inline-block font-mono text-xs tracking-[0.3em] text-red mb-2">
+          CONFIDANT FILE — 01
+        </span>
+        <h2 className="font-display text-5xl md:text-7xl font-normal text-white/10 uppercase tracking-[0.06em]">
+          Profile
         </h2>
         <motion.h3
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="font-heading text-3xl md:text-4xl font-semibold text-white -mt-8 md:-mt-12 ml-2"
+          className="font-display text-3xl md:text-4xl font-normal text-white -mt-8 md:-mt-12 ml-2"
         >
-          About <span className="text-red">Me</span>
+          Who's <span className="text-red">Behind the Mask</span>
         </motion.h3>
       </motion.div>
 
@@ -144,10 +143,10 @@ const About = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-6">
-                Soy un <span className="text-red font-medium">desarrollador de software</span> apasionado por crear soluciones digitales innovadoras. Con experiencia en desarrollo full-stack, tengo experiencia en construir aplicaciones web modernas, escalables y centradas en el usuario.
+                Soy un <span className="text-red font-medium">desarrollador de software</span> apasionado por crear soluciones digitales innovadoras. Con experiencia en desarrollo full-stack, construyo aplicaciones web modernas, escalables y centradas en el usuario.
               </p>
               <p className="text-base md:text-lg text-white/60 leading-relaxed">
-                Un enfoque que combina código limpio, arquitectura sólida y diseño intuitivo para entregar productos que no solo funcionan perfectamente, sino que también ofrecen experiencias memorables.
+                Un enfoque que combina código limpio, arquitectura sólida y diseño intuitivo para entregar productos que no solo funcionan perfectamente, sino que también ofrecen experiencias memorables. Cada proyecto es un objetivo, cada bug una sombra por vencer.
               </p>
             </motion.div>
 
@@ -166,40 +165,17 @@ const About = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
-                  whileHover={{ scale: 1.1, y: -5 }}
+                  whileHover={{ scale: 1.1, y: -5, rotate: -3 }}
                   className="flex flex-col items-center gap-2 group"
                 >
-                  <div className="w-14 h-14 rounded-xl border border-white/20 flex items-center justify-center group-hover:border-red group-hover:glow-red transition-all duration-300">
+                  <div className="w-14 h-14 border-2 border-white/20 cut-corners flex items-center justify-center group-hover:border-red group-hover:bg-red/10 transition-all duration-300">
                     <Icon className="w-6 h-6 text-white/60 group-hover:text-red transition-colors" />
                   </div>
-                  <span className="text-xs text-white/40 group-hover:text-white/60 transition-colors">
+                  <span className="text-xs text-white/40 group-hover:text-white/60 transition-colors font-mono tracking-wide">
                     {label}
                   </span>
                 </motion.div>
               ))}
-            </motion.div>
-
-            {/* CTA Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              {/* 
-              <motion.a
-                href="/cv.pdf"
-                download="CV_Javier_Andrade.pdf"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="group flex items-center gap-3 px-8 py-4 bg-transparent border-2 border-red text-white font-heading font-medium rounded-full hover:bg-red hover:glow-red transition-all duration-300"
-              >
-                
-                <Download className="w-5 h-5" />
-                Download CV
-              </motion.a>
-              */}
-
             </motion.div>
           </div>
 
@@ -207,7 +183,7 @@ const About = () => {
           <CodeDisplay />
         </div>
 
-        {/* Stats Section */}
+        {/* Stats Section — status bars like a character sheet */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -223,12 +199,12 @@ const About = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
               whileHover={{ y: -5 }}
-              className="text-center p-6 rounded-2xl border border-white/10 hover:border-red/50 hover:glow-red transition-all duration-300 w-48"
+              className="text-center p-6 border-2 border-white/15 hover:border-red cut-corners bg-dark-grey/50 transition-all duration-300 w-52"
             >
-              <div className="font-heading text-4xl md:text-5xl font-bold text-gradient mb-2">
+              <div className="font-display text-4xl md:text-5xl font-normal text-red mb-2">
                 <Counter end={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-sm text-white/50 uppercase tracking-wider">
+              <div className="text-xs text-white/50 uppercase tracking-[0.15em] font-mono">
                 {stat.label}
               </div>
             </motion.div>
@@ -238,7 +214,7 @@ const About = () => {
 
       {/* Background Decoration */}
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-red/5 rounded-full blur-[150px] -z-10" />
-      <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-pink/5 rounded-full blur-[100px] -z-10" />
+      <div className="absolute bottom-1/4 left-0 w-64 h-64 halftone opacity-10 -z-10" />
     </section>
   );
 };

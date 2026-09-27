@@ -22,17 +22,6 @@ const getColombiaTime = () => {
   return { hour, minute, isWorking };
 };
 
-const Asterisk = ({ isWorking }: { isWorking: boolean }) => (
-  <motion.span
-    animate={{ rotate: 360 }}
-    transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-    className="inline-block text-base leading-none"
-    style={{ color: isWorking ? '#4ade80' : '#ff0000' }}
-  >
-    ✳
-  </motion.span>
-);
-
 export const StatusBar = () => {
   const [time, setTime] = useState(getColombiaTime);
 
@@ -49,21 +38,21 @@ export const StatusBar = () => {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 2.2 }}
-      className="fixed bottom-0 left-0 right-0 z-40 h-8 bg-[#080808] border-t border-white/[0.06] flex items-center justify-between px-4 md:px-6 select-none"
-      style={{ fontFamily: "'Geist Mono', monospace" }}
+      transition={{ duration: 0.6, delay: 2.4 }}
+      className="fixed bottom-0 left-0 right-0 z-40 h-9 bg-black border-t-2 border-red flex items-center justify-between px-4 md:px-6 select-none"
+      style={{ fontFamily: "'JetBrains Mono', monospace" }}
     >
       {/* Left — Contact */}
       <button
         onClick={scrollToContact}
-        className="group flex items-center gap-1.5 font-mono text-[11px] tracking-widest text-white/30 hover:text-white/60 transition-colors duration-200"
+        className="group flex items-center gap-1.5 font-mono text-[11px] tracking-widest text-white/40 hover:text-red transition-colors duration-200"
       >
-        <span className="text-white/15 group-hover:text-red transition-colors duration-200">\</span>
-        <span>CONTACT</span>
+        <span className="text-red">▸</span>
+        <span>REQUEST COOPERATION</span>
       </button>
 
       {/* Center — Clock */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 font-mono text-[11px] tracking-widest text-white/25">
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 font-mono text-[11px] tracking-widest text-white/40">
         <span>
           {time.hour}
           <motion.span
@@ -74,15 +63,21 @@ export const StatusBar = () => {
           </motion.span>
           {time.minute}
         </span>
-        <span className="text-white/10">{TIMEZONE_LABEL}</span>
+        <span className="text-white/20">{TIMEZONE_LABEL}</span>
       </div>
 
       {/* Right — Work status */}
       <div className="flex items-center gap-2 font-mono text-[11px] tracking-widest">
-        <span className={time.isWorking ? 'text-green-400/60' : 'text-white/25'}>
-          {time.isWorking ? 'IN WORK' : 'OFF WORK'}
+        <span className={time.isWorking ? 'text-red' : 'text-white/30'}>
+          {time.isWorking ? 'ON DUTY' : 'OFF DUTY'}
         </span>
-        <Asterisk isWorking={time.isWorking} />
+        <motion.span
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+          className="inline-block text-sm leading-none text-red"
+        >
+          ✦
+        </motion.span>
       </div>
     </motion.div>
   );

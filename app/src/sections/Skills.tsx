@@ -4,12 +4,14 @@ import gsap from 'gsap';
 
 interface SkillCategory {
   name: string;
+  arcana: string;
   skills: { name: string; level: number }[];
 }
 
 const skillCategories: SkillCategory[] = [
   {
     name: 'Frontend',
+    arcana: 'MAGICIAN',
     skills: [
       { name: 'React / Next.js', level: 95 },
       { name: 'TypeScript', level: 90 },
@@ -19,6 +21,7 @@ const skillCategories: SkillCategory[] = [
   },
   {
     name: 'Backend',
+    arcana: 'EMPEROR',
     skills: [
       { name: 'Node.js', level: 90 },
       { name: 'Python', level: 85 },
@@ -28,6 +31,7 @@ const skillCategories: SkillCategory[] = [
   },
   {
     name: 'Database',
+    arcana: 'HIEROPHANT',
     skills: [
       { name: 'PostgreSQL', level: 88 },
       { name: 'MongoDB', level: 85 },
@@ -37,6 +41,7 @@ const skillCategories: SkillCategory[] = [
   },
   {
     name: 'DevOps',
+    arcana: 'CHARIOT',
     skills: [
       { name: 'Docker', level: 85 },
       { name: 'AWS', level: 78 },
@@ -69,10 +74,10 @@ const ProgressBar = ({ level, delay }: { level: number; delay: number }) => {
   }, [isInView, level, delay]);
 
   return (
-    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+    <div className="h-3 bg-white/10 border border-white/10 overflow-hidden">
       <div
         ref={barRef}
-        className="h-full rounded-full bg-gradient-to-r from-red via-pink to-magenta"
+        className="h-full slash-stripes"
         style={{ width: '0%' }}
       />
     </div>
@@ -93,15 +98,20 @@ const SkillCard = ({ category, index }: { category: SkillCategory; index: number
       }}
       className="group"
     >
-      <div className="p-6 md:p-8 rounded-2xl border border-white/10 hover:border-red/50 bg-dark-grey/50 backdrop-blur-sm hover:glow-red transition-all duration-400">
+      <div className="p-6 md:p-8 border-2 border-white/15 hover:border-red cut-corners bg-dark-grey/60 transition-all duration-400">
         {/* Category Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-red/20 flex items-center justify-center">
-            <span className="font-heading font-bold text-red">{category.name[0]}</span>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red flex items-center justify-center cut-corner-tag">
+              <span className="font-display text-black">{category.name[0]}</span>
+            </div>
+            <h4 className="font-display text-xl font-normal text-white group-hover:text-red transition-colors">
+              {category.name}
+            </h4>
           </div>
-          <h4 className="font-heading text-xl font-semibold text-white group-hover:text-red transition-colors">
-            {category.name}
-          </h4>
+          <span className="font-mono text-[10px] text-white/30 tracking-[0.2em] uppercase">
+            Persona: {category.arcana}
+          </span>
         </div>
 
         {/* Skills List */}
@@ -109,8 +119,8 @@ const SkillCard = ({ category, index }: { category: SkillCategory; index: number
           {category.skills.map((skill, skillIndex) => (
             <div key={skill.name}>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-white/70">{skill.name}</span>
-                <span className="text-sm text-white/40 font-mono">{skill.level}%</span>
+                <span className="text-sm text-white/70 font-mono">{skill.name}</span>
+                <span className="text-sm text-red font-mono font-bold">LV.{Math.round(skill.level / 10)}</span>
               </div>
               <ProgressBar level={skill.level} delay={0.3 + skillIndex * 0.1} />
             </div>
@@ -132,17 +142,20 @@ const Skills = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-heading text-5xl md:text-7xl font-bold text-white/10 uppercase tracking-[0.1em]">
-            Skills
+          <span className="inline-block font-mono text-xs tracking-[0.3em] text-red mb-2">
+            SKILL TREE — ALL-OUT ATTACK READY
+          </span>
+          <h2 className="font-display text-5xl md:text-7xl font-normal text-white/10 uppercase tracking-[0.06em]">
+            Abilities
           </h2>
           <motion.h3
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-heading text-3xl md:text-4xl font-semibold text-white -mt-8 md:-mt-12 ml-2"
+            className="font-display text-3xl md:text-4xl font-normal text-white -mt-8 md:-mt-12 ml-2"
           >
-            Tech <span className="text-red">Stack</span>
+            Tech <span className="text-red">Arsenal</span>
           </motion.h3>
         </motion.div>
 
@@ -164,13 +177,11 @@ const Skills = () => {
             <SkillCard key={category.name} category={category} index={index} />
           ))}
         </div>
-
-
       </div>
 
       {/* Background Decorations */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-magenta/5 rounded-full blur-[150px] -z-10" />
-      <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-red/5 rounded-full blur-[100px] -z-10" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-red/5 rounded-full blur-[150px] -z-10" />
+      <div className="absolute bottom-1/4 left-0 w-64 h-64 halftone opacity-10 -z-10" />
     </section>
   );
 };

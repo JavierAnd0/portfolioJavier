@@ -3,27 +3,17 @@ import { motion } from 'framer-motion';
 import { Github, Linkedin, ChevronDown } from 'lucide-react';
 import gsap from 'gsap';
 
-const NeonRing = () => {
+// Rotating red emblem — stands in for the Phantom Thieves insignia
+const Emblem = () => {
   const ringRef = useRef<SVGSVGElement>(null);
-  const glowRef = useRef<SVGCircleElement>(null);
 
   useEffect(() => {
-    if (ringRef.current && glowRef.current) {
-      // Rotación continua del anillo
+    if (ringRef.current) {
       gsap.to(ringRef.current, {
         rotation: 360,
-        duration: 20,
+        duration: 26,
         repeat: -1,
         ease: 'none',
-      });
-
-      // Efecto de pulso en el brillo
-      gsap.to(glowRef.current, {
-        opacity: 0.6,
-        duration: 1.5,
-        repeat: -1,
-        yoyo: true,
-        ease: 'power1.inOut',
       });
     }
   }, []);
@@ -32,62 +22,48 @@ const NeonRing = () => {
     <svg
       ref={ringRef}
       viewBox="0 0 400 400"
-      className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px]"
+      className="w-[260px] h-[260px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px]"
       style={{ transformOrigin: 'center' }}
     >
       <defs>
-        {/* Gradiente para el anillo */}
-        <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ff0000" />
-          <stop offset="50%" stopColor="#ff6b9d" />
-          <stop offset="100%" stopColor="#ff0066" />
-        </linearGradient>
-
-        {/* Filtro de brillo */}
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+          <feGaussianBlur stdDeviation="6" result="coloredBlur" />
           <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-
-        {/* Filtro de brillo intenso */}
-        <filter id="glow-intense" x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur stdDeviation="15" result="coloredBlur" />
-          <feGaussianBlur stdDeviation="25" result="coloredBlur2" />
-          <feMerge>
-            <feMergeNode in="coloredBlur2" />
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
       </defs>
 
-      {/* Círculo de brillo exterior */}
-      <circle
-        ref={glowRef}
-        cx="200"
-        cy="200"
-        r="160"
+      {/* Outer diamond ring */}
+      <polygon
+        points="200,20 380,200 200,380 20,200"
         fill="none"
-        stroke="url(#ringGradient)"
-        strokeWidth="2"
-        opacity="0.8"
-        filter="url(#glow-intense)"
-      />
-
-      {/* Anillo principal */}
-      <circle
-        cx="200"
-        cy="200"
-        r="150"
-        fill="none"
-        stroke="url(#ringGradient)"
-        strokeWidth="8"
-        strokeLinecap="round"
+        stroke="#ff0022"
+        strokeWidth="4"
         filter="url(#glow)"
       />
+      {/* Inner diamond */}
+      <polygon
+        points="200,80 320,200 200,320 80,200"
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="2"
+        opacity="0.7"
+      />
+      {/* Corner ticks */}
+      {[0, 90, 180, 270].map((deg) => (
+        <line
+          key={deg}
+          x1="200"
+          y1="4"
+          x2="200"
+          y2="34"
+          stroke="#ff0022"
+          strokeWidth="4"
+          transform={`rotate(${deg} 200 200)`}
+        />
+      ))}
     </svg>
   );
 };
@@ -101,10 +77,10 @@ const Hero = () => {
   };
 
   const navItems = [
-    { label: 'ABOUT', id: 'about' },
-    { label: 'PROJECTS', id: 'projects' },
-    { label: 'SKILLS', id: 'skills' },
-    { label: 'CONTACT', id: 'contact' },
+    { label: 'PROFILE', id: 'about' },
+    { label: 'TARGETS', id: 'projects' },
+    { label: 'ABILITIES', id: 'skills' },
+    { label: 'COOPERATION', id: 'contact' },
   ];
 
   return (
@@ -114,30 +90,31 @@ const Hero = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-6 pr-20 md:pr-10 md:p-10"
+        className="relative z-20 flex justify-between items-center p-6 pr-20 md:pr-10 md:p-10"
       >
-        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
           className="flex items-center gap-3"
         >
-          <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-red flex items-center justify-center glow-red">
-            <span className="font-heading font-bold text-lg md:text-xl text-white">JA</span>
+          <div className="w-11 h-11 md:w-14 md:h-14 bg-red border-2 border-white cut-corner-tag flex items-center justify-center">
+            <span className="font-display text-lg md:text-2xl text-black">JA</span>
           </div>
         </motion.div>
 
-        {/* Name */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-right"
         >
-          <h2 className="font-heading font-bold text-lg md:text-2xl tracking-[0.1em] text-pink text-glow-pink">
+          <h2 className="font-display text-lg md:text-2xl tracking-[0.08em] text-white">
             Javier Andrade
           </h2>
+          <p className="font-mono text-[10px] md:text-xs text-red tracking-[0.2em]">
+            RANK: FULL STACK
+          </p>
         </motion.div>
       </motion.header>
 
@@ -155,40 +132,35 @@ const Hero = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 1.2 + index * 0.1 }}
             onClick={() => scrollToSection(item.id)}
-            className="group relative font-heading text-xs tracking-[0.2em] text-white/70 hover:text-red transition-all duration-300"
+            className="group relative font-display text-xs tracking-[0.2em] text-white/70 hover:text-red transition-all duration-300"
             style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
           >
-            <span className="group-hover:tracking-[0.3em] transition-all duration-300">
+            <span className="group-hover:tracking-[0.35em] transition-all duration-300">
               {item.label}
             </span>
-            <span className="absolute -right-3 top-0 w-[2px] h-0 bg-red group-hover:h-full transition-all duration-300" />
+            <span className="absolute -right-3 top-0 w-[3px] h-0 bg-red group-hover:h-full transition-all duration-300" />
           </motion.button>
         ))}
       </motion.nav>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center relative z-10 px-4">
-        {/* Neon Ring Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-          className="relative mb-8"
+          className="relative mb-4"
         >
-          <NeonRing />
-
-          {/* Silueta central (opcional - código representado) */}
+          <Emblem />
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.2 }}
             className="absolute inset-0 flex items-center justify-center"
           >
-            <div className="text-center">
-              <code className="font-mono text-xs md:text-sm text-white/50">
-                &lt;/&gt;
-              </code>
-            </div>
+            <code className="font-mono text-xs md:text-sm text-white/60">
+              &lt;/&gt;
+            </code>
           </motion.div>
         </motion.div>
 
@@ -197,19 +169,23 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1 }}
-          className="text-center"
+          className="text-center -mt-6"
         >
-          <h1 className="font-heading font-bold text-4xl md:text-6xl lg:text-7xl text-white tracking-[0.05em] mb-4">
-            Full Stack
-            <span className="text-gradient"> Developer</span>
+          <p className="font-hand text-red text-base md:text-lg mb-2 tracking-wide">
+            a calling card from the
+          </p>
+          <h1 className="font-display font-normal text-4xl md:text-6xl lg:text-8xl text-white tracking-[0.02em] leading-[0.95] mb-4">
+            PHANTOM THIEF
+            <br />
+            <span className="text-outline">OF CODE</span>
           </h1>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 1.3 }}
-            className="font-light text-lg md:text-xl text-white/60"
+            className="font-mono text-base md:text-lg text-white/60 tracking-wide"
           >
-            Building digital experiences with code
+            Full Stack Developer — building digital experiences worth stealing.
           </motion.p>
         </motion.div>
       </div>
@@ -219,19 +195,17 @@ const Hero = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1.5 }}
-        className="absolute bottom-0 left-0 right-0 z-20 flex justify-between items-end p-6 md:p-10"
+        className="relative z-20 flex justify-between items-end p-6 md:p-10"
       >
-        {/* Role & Location */}
         <div className="text-left">
-          <p className="font-heading text-sm md:text-base text-white/80 mb-1">
+          <p className="font-display text-sm md:text-base text-white/90 mb-1 tracking-wide">
             Software Engineer
           </p>
-          <p className="font-light text-xs md:text-sm text-white/50">
-            From <span className="text-red font-medium">CO</span>
+          <p className="font-mono text-xs md:text-sm text-white/50">
+            Operating from <span className="text-red font-medium">COLOMBIA</span>
           </p>
         </div>
 
-        {/* Social Icons */}
         <div className="flex gap-4">
           {[
             { Icon: Github, href: 'https://github.com/JavierAnd0' },
@@ -243,8 +217,8 @@ const Hero = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.7 + index * 0.1 }}
-              whileHover={{ scale: 1.2 }}
-              className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-red hover:border-red hover:glow-red transition-all duration-300"
+              whileHover={{ scale: 1.1, rotate: -4 }}
+              className="w-11 h-11 border-2 border-white/30 cut-corners flex items-center justify-center text-white/70 hover:text-black hover:bg-red hover:border-red transition-all duration-300"
             >
               <Icon size={18} />
             </motion.a>
@@ -257,7 +231,7 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 2 }}
-        className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20"
+        className="absolute bottom-28 left-1/2 -translate-x-1/2 z-20"
       >
         <motion.button
           onClick={() => scrollToSection('about')}
@@ -269,9 +243,11 @@ const Hero = () => {
         </motion.button>
       </motion.div>
 
-      {/* Background Gradient */}
+      {/* Background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red/5 rounded-full blur-[150px]" />
+        <div className="absolute inset-0 halftone opacity-20" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-red/5 rounded-full blur-[150px]" />
+        <div className="absolute -bottom-24 -right-24 w-72 h-72 slash-stripes opacity-[0.08] rotate-12" />
       </div>
     </section>
   );
