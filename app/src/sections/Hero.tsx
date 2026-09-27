@@ -3,7 +3,6 @@ import { Github } from 'lucide-react';
 import RansomText from '@/components/persona/RansomText';
 import PauseMenu from '@/components/persona/PauseMenu';
 import CalendarHud from '@/components/persona/CalendarHud';
-import CitySkyline from '@/components/persona/CitySkyline';
 import LanguageSwitch from '@/components/persona/LanguageSwitch';
 import { useI18n } from '@/i18n/context';
 
@@ -60,19 +59,35 @@ const MarqueeBand = () => {
   );
 };
 
+const CITY_SRC = `${import.meta.env.BASE_URL}bg/city-night.webp`;
+
+// Both copies share the same box so the skyline lines up across the diagonal.
+const CityImage = ({ ready, className }: { ready: boolean; className: string }) => (
+  <motion.img
+    src={CITY_SRC}
+    alt=""
+    draggable={false}
+    className={`absolute inset-0 h-full w-full select-none object-cover object-[50%_80%] ${className}`}
+    initial={{ scale: 1.12 }}
+    animate={ready ? { scale: 1 } : undefined}
+    transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+  />
+);
+
 const Backdrop = ({ ready }: { ready: boolean }) => (
   <div aria-hidden="true" className="absolute inset-0">
+    {/* Black side: the city sunk into the dark. */}
+    <CityImage ready={ready} className="grayscale brightness-[0.55] contrast-[1.15]" />
+    <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/60" />
     <div className="absolute inset-0 halftone opacity-[0.14]" />
+
     <div className="hero-edge" />
+    {/* Red side: same city multiplied into the red, like the P5 menus. */}
     <div className="hero-panel">
-      <div className="hero-rays" />
+      <CityImage ready={ready} className="grayscale contrast-[1.25] brightness-[1.15] mix-blend-multiply" />
+      <div className="hero-rays opacity-60" />
       <div className="hero-halftone" />
     </div>
-
-    <CitySkyline
-      ready={ready}
-      className="absolute inset-x-0 bottom-0 h-[62%] w-full lg:h-[80%]"
-    />
   </div>
 );
 
