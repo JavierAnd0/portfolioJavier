@@ -156,8 +156,7 @@
     white-space: nowrap;
     --ransom-fill: #ffffff;
     --ransom-stroke: #0a0a0a;
-    --ransom-extrude: #4a4a4a;
-    --ransom-shadow: #0a0a0a;
+    --ransom-extrude: #0a0a0a;
     --ransom-star: #0a0a0a;
   }
 
@@ -165,7 +164,6 @@
     --ransom-fill: #0a0a0a;
     --ransom-stroke: #ffffff;
     --ransom-extrude: #0a0a0a;
-    --ransom-shadow: #0a0a0a;
     --ransom-star: #ffffff;
   }
 
@@ -173,7 +171,6 @@
   .ransom--red {
     --ransom-stroke: #e60012;
     --ransom-extrude: #e60012;
-    --ransom-shadow: #e60012;
   }
 
   .ransom-letter {
@@ -191,31 +188,22 @@
     position: relative;
   }
 
-  /* Grey 3D side of the letter, outlined in black like the P5 menu. */
-  .ransom-shadow {
-    z-index: 0;
-    left: -0.125em;
-    top: 0.14em;
-    color: var(--ransom-shadow);
-    -webkit-text-stroke: 0.22em var(--ransom-shadow);
-  }
-
   .ransom-extrude {
-    z-index: 1;
-    left: -0.1em;
-    top: 0.115em;
+    z-index: 0;
+    left: -0.08em;
+    top: 0.09em;
     color: var(--ransom-extrude);
-    -webkit-text-stroke: 0.1em var(--ransom-extrude);
+    -webkit-text-stroke: 0.17em var(--ransom-extrude);
   }
 
   .ransom-stroke {
-    z-index: 2;
+    z-index: 1;
     color: var(--ransom-stroke);
     -webkit-text-stroke: 0.13em var(--ransom-stroke);
   }
 
   .ransom-fill {
-    z-index: 3;
+    z-index: 2;
     color: var(--ransom-fill);
   }
 
@@ -239,14 +227,41 @@
     animation-direction: reverse;
   }
 
-  .ransom-ring-shadow { fill: var(--ransom-shadow); }
   .ransom-ring-extrude { fill: var(--ransom-extrude); }
   .ransom-ring-stroke { fill: var(--ransom-stroke); }
   .ransom-ring-fill { fill: var(--ransom-fill); }
   .ransom-ring-star { fill: var(--ransom-star); }
 }
 
-/* ─── Shared backdrop pieces (intro, mobile menu) ─────────────────────────── */
+/* ─── Hero backdrop ───────────────────────────────────────────────────────── */
+.hero-edge,
+.hero-panel {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 47%, 100% 33%, 100% 100%, 0 100%);
+}
+
+.hero-edge {
+  background: #ffffff;
+  transform: translateY(-10px);
+}
+
+.hero-panel {
+  background: #e60012;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .hero-edge,
+  .hero-panel {
+    clip-path: polygon(47% 0, 100% 0, 100% 100%, 27% 100%);
+  }
+
+  .hero-edge {
+    transform: translateX(-12px);
+  }
+}
+
 .hero-rays {
   position: absolute;
   left: 62%;
