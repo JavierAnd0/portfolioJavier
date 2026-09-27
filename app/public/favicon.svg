@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#e60012"/>
+  <g transform="rotate(-12 32 32)">
+    <path fill="#0a0a0a" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" fill-rule="evenodd"
+      d="M4 32C6 20 16 14 26 17C29 18 31 21 32 22C33 21 35 18 38 17C48 14 58 20 60 32C58 42 50 48 40 46C36 45 34 41 32 41C30 41 28 45 24 46C14 48 6 42 4 32ZM13 32C17 25 25 26 28 33C24 38 17 38 13 32ZM51 32C47 25 39 26 36 33C40 38 47 38 51 32Z"/>
+  </g>
+</svg>

@@ -50,10 +50,12 @@ module.exports = {
         "dark-grey": "#161616",
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Space Grotesk', 'sans-serif'],
         heading: ['Space Grotesk', 'sans-serif'],
-        display: ['Anton', 'Space Grotesk', 'sans-serif'],
-        hand: ['Permanent Marker', 'cursive'],
+        display: ['Anton', 'Impact', 'sans-serif'],
+        heavy: ['"Bowlby One SC"', 'Anton', 'sans-serif'],
+        block: ['"Dela Gothic One"', 'Anton', 'sans-serif'],
+        hand: ['"Permanent Marker"', 'cursive'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       borderRadius: {

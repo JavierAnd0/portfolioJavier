@@ -45,7 +45,7 @@ export const StatusBar = () => {
       {/* Left — Contact */}
       <button
         onClick={scrollToContact}
-        className="group flex items-center gap-1.5 font-mono text-[11px] tracking-widest text-white/40 hover:text-red transition-colors duration-200"
+        className="group hidden items-center gap-1.5 font-mono text-[11px] tracking-widest text-white/40 transition-colors duration-200 hover:text-red sm:flex"
       >
         <span className="text-red">▸</span>
         <span>REQUEST COOPERATION</span>

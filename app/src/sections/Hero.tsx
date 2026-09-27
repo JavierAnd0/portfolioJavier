@@ -1,254 +1,161 @@
-import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, ChevronDown } from 'lucide-react';
-import gsap from 'gsap';
+import { Github } from 'lucide-react';
+import RansomText from '@/components/persona/RansomText';
+import PauseMenu from '@/components/persona/PauseMenu';
+import CalendarHud from '@/components/persona/CalendarHud';
+import PhantomMask from '@/components/persona/PhantomMask';
 
-// Rotating red emblem — stands in for the Phantom Thieves insignia
-const Emblem = () => {
-  const ringRef = useRef<SVGSVGElement>(null);
+const MARQUEE_TEXT =
+  'TAKE YOUR TIME ★ JAVIER ANDRADE ★ FULL STACK DEVELOPER ★ PHANTOM THIEF OF CODE ★ ';
 
-  useEffect(() => {
-    if (ringRef.current) {
-      gsap.to(ringRef.current, {
-        rotation: 360,
-        duration: 26,
-        repeat: -1,
-        ease: 'none',
-      });
-    }
-  }, []);
+const Key = ({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) => (
+  <kbd
+    className={`inline-flex h-7 items-center justify-center bg-white font-heavy text-[0.7rem] text-black shadow-[3px_3px_0_#e60012] ${
+      wide ? 'px-2' : 'w-7'
+    }`}
+  >
+    {children}
+  </kbd>
+);
 
-  return (
-    <svg
-      ref={ringRef}
-      viewBox="0 0 400 400"
-      className="w-[260px] h-[260px] md:w-[340px] md:h-[340px] lg:w-[420px] lg:h-[420px]"
-      style={{ transformOrigin: 'center' }}
-    >
-      <defs>
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="6" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
+const ControlsHint = ({ ready }: { ready: boolean }) => (
+  <motion.div
+    aria-hidden="true"
+    className="flex -rotate-3 items-center gap-2 font-heavy text-xs tracking-[0.12em] text-white"
+    initial={{ opacity: 0, y: 20 }}
+    animate={ready ? { opacity: 1, y: 0 } : undefined}
+    transition={{ delay: 0.9, duration: 0.3 }}
+  >
+    <Key>↑</Key>
+    <Key>↓</Key>
+    <span className="mr-3 bg-black px-2 py-1">SELECCIONAR</span>
+    <Key wide>ENTER</Key>
+    <span className="bg-black px-2 py-1">CONFIRMAR</span>
+  </motion.div>
+);
 
-      {/* Outer diamond ring */}
-      <polygon
-        points="200,20 380,200 200,380 20,200"
-        fill="none"
-        stroke="#ff0022"
-        strokeWidth="4"
-        filter="url(#glow)"
-      />
-      {/* Inner diamond */}
-      <polygon
-        points="200,80 320,200 200,320 80,200"
-        fill="none"
-        stroke="#ffffff"
-        strokeWidth="2"
-        opacity="0.7"
-      />
-      {/* Corner ticks */}
-      {[0, 90, 180, 270].map((deg) => (
-        <line
-          key={deg}
-          x1="200"
-          y1="4"
-          x2="200"
-          y2="34"
-          stroke="#ff0022"
-          strokeWidth="4"
-          transform={`rotate(${deg} 200 200)`}
-        />
+const MarqueeBand = () => (
+  <div
+    aria-hidden="true"
+    className="absolute -left-[5%] bottom-12 z-20 w-[110%] -rotate-2 overflow-hidden border-y-[3px] border-white bg-black py-1.5 md:bottom-14"
+  >
+    <div className="flex w-max animate-marquee whitespace-nowrap">
+      {[0, 1].map((i) => (
+        <span key={i} className="px-4 font-display text-sm tracking-[0.18em] text-white md:text-base">
+          {MARQUEE_TEXT.repeat(3)
+            .split('★')
+            .map((chunk, j, arr) => (
+              <span key={j}>
+                {chunk}
+                {j < arr.length - 1 && <span className="text-[#e60012]">★</span>}
+              </span>
+            ))}
+        </span>
       ))}
-    </svg>
-  );
-};
+    </div>
+  </div>
+);
 
-const Hero = () => {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+const Backdrop = ({ ready }: { ready: boolean }) => (
+  <div aria-hidden="true" className="absolute inset-0">
+    <div className="absolute inset-0 halftone opacity-[0.14]" />
+    <div className="hero-edge" />
+    <div className="hero-panel">
+      <div className="hero-rays" />
+      <div className="hero-halftone" />
+    </div>
 
-  const navItems = [
-    { label: 'PROFILE', id: 'about' },
-    { label: 'TARGETS', id: 'projects' },
-    { label: 'ABILITIES', id: 'skills' },
-    { label: 'COOPERATION', id: 'contact' },
-  ];
+    <div className="absolute right-[-12vw] top-[4.5%] w-[66vw] max-w-[420px] lg:left-[37%] lg:right-auto lg:top-[40%] lg:w-[min(44vw,80vh)] lg:max-w-[760px] lg:-translate-x-1/2 lg:-translate-y-1/2">
+      <motion.div
+        initial={{ scale: 1.5, opacity: 0, rotate: -30 }}
+        animate={ready ? { scale: 1, opacity: 1, rotate: -13 } : undefined}
+        transition={{ type: 'spring', stiffness: 160, damping: 18, delay: 0.1 }}
+      >
+        <motion.div
+          animate={{ y: [0, -10, 0], rotate: [0, 1.2, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <PhantomMask className="h-auto w-full drop-shadow-[0_18px_0_rgba(0,0,0,0.35)]" />
+        </motion.div>
+      </motion.div>
+    </div>
+  </div>
+);
 
+interface HeroProps {
+  ready: boolean;
+  isOnScreen: boolean;
+}
+
+const Hero = ({ ready, isOnScreen }: HeroProps) => {
   return (
-    <section className="relative min-h-screen w-full bg-black overflow-hidden flex flex-col">
-      {/* Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="relative z-20 flex justify-between items-center p-6 pr-20 md:pr-10 md:p-10"
-      >
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex items-center gap-3"
-        >
-          <div className="w-11 h-11 md:w-14 md:h-14 bg-red border-2 border-white cut-corner-tag flex items-center justify-center">
-            <span className="font-display text-lg md:text-2xl text-black">JA</span>
+    <section
+      id="home"
+      aria-label="Inicio"
+      className="relative min-h-[100svh] w-full overflow-hidden bg-black"
+    >
+      <Backdrop ready={ready} />
+
+      <div className="relative z-10 flex min-h-[100svh] flex-col px-5 pb-32 pt-5 md:px-10 lg:block lg:p-0">
+        {/* Calendar */}
+        <div className="order-1 origin-top-left scale-[0.82] md:scale-100 lg:absolute lg:left-12 lg:top-9">
+          <CalendarHud ready={ready} />
+        </div>
+
+        {/* Menu */}
+        <div className="order-3 mt-8 flex flex-1 items-center justify-center text-[clamp(1.9rem,min(9.6vw,5.2vh),3.1rem)] lg:absolute lg:right-[5vw] lg:top-[46%] lg:mt-0 lg:block lg:-translate-y-1/2 lg:text-[clamp(2.9rem,min(4.3vw,7.4vh),4.6rem)]">
+          <div className="-rotate-[9deg] pl-[1.3em]">
+            <PauseMenu ready={ready} keyboardEnabled={isOnScreen} />
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-right"
-        >
-          <h2 className="font-display text-lg md:text-2xl tracking-[0.08em] text-white">
-            Javier Andrade
-          </h2>
-          <p className="font-mono text-[10px] md:text-xs text-red tracking-[0.2em]">
-            RANK: FULL STACK
-          </p>
-        </motion.div>
-      </motion.header>
-
-      {/* Navigation - Vertical Right */}
-      <motion.nav
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 1 }}
-        className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 z-30 flex-col gap-8"
-      >
-        {navItems.map((item, index) => (
-          <motion.button
-            key={item.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 1.2 + index * 0.1 }}
-            onClick={() => scrollToSection(item.id)}
-            className="group relative font-display text-xs tracking-[0.2em] text-white/70 hover:text-red transition-all duration-300"
-            style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
-          >
-            <span className="group-hover:tracking-[0.35em] transition-all duration-300">
-              {item.label}
-            </span>
-            <span className="absolute -right-3 top-0 w-[3px] h-0 bg-red group-hover:h-full transition-all duration-300" />
-          </motion.button>
-        ))}
-      </motion.nav>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center relative z-10 px-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-          className="relative mb-4"
-        >
-          <Emblem />
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.2 }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            <code className="font-mono text-xs md:text-sm text-white/60">
-              &lt;/&gt;
-            </code>
-          </motion.div>
-        </motion.div>
-
-        {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="text-center -mt-6"
-        >
-          <p className="font-hand text-red text-base md:text-lg mb-2 tracking-wide">
-            a calling card from the
-          </p>
-          <h1 className="font-display font-normal text-4xl md:text-6xl lg:text-8xl text-white tracking-[0.02em] leading-[0.95] mb-4">
-            PHANTOM THIEF
-            <br />
-            <span className="text-outline">OF CODE</span>
-          </h1>
+        {/* Identity */}
+        <div className="order-2 mt-1 lg:absolute lg:bottom-40 lg:left-12 lg:mt-0">
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.3 }}
-            className="font-mono text-base md:text-lg text-white/60 tracking-wide"
+            className="mb-1 font-hand text-xs text-white/80 md:mb-2 md:text-base"
+            initial={{ opacity: 0, x: -20 }}
+            animate={ready ? { opacity: 1, x: 0 } : undefined}
+            transition={{ delay: 0.35 }}
           >
-            Full Stack Developer — building digital experiences worth stealing.
+            a calling card from —
           </motion.p>
-        </motion.div>
-      </div>
-
-      {/* Bottom Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.5 }}
-        className="relative z-20 flex justify-between items-end p-6 md:p-10"
-      >
-        <div className="text-left">
-          <p className="font-display text-sm md:text-base text-white/90 mb-1 tracking-wide">
-            Software Engineer
-          </p>
-          <p className="font-mono text-xs md:text-sm text-white/50">
-            Operating from <span className="text-red font-medium">COLOMBIA</span>
-          </p>
-        </div>
-
-        <div className="flex gap-4">
-          {[
-            { Icon: Github, href: 'https://github.com/JavierAnd0' },
-            { Icon: Linkedin, href: '#' }
-          ].map(({ Icon, href }, index) => (
-            <motion.a
-              key={index}
-              href={href}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.7 + index * 0.1 }}
-              whileHover={{ scale: 1.1, rotate: -4 }}
-              className="w-11 h-11 border-2 border-white/30 cut-corners flex items-center justify-center text-white/70 hover:text-black hover:bg-red hover:border-red transition-all duration-300"
+          <h1 className="flex -rotate-3 flex-col gap-1 text-[clamp(1.8rem,min(9vw,5vh),2.6rem)] leading-none md:text-[3.2rem] xl:text-[3.8rem]">
+            <RansomText text="JAVIER" seed={85} tone="red" animateIn play={ready} delay={0.3} />
+            <span className="pl-[0.8em]">
+              <RansomText text="ANDRADE" seed={85} tone="red" animateIn play={ready} delay={0.5} />
+            </span>
+          </h1>
+          <motion.div
+            className="mt-4 flex flex-wrap items-center gap-2.5 md:mt-5 md:gap-3"
+            initial={{ opacity: 0, y: 16 }}
+            animate={ready ? { opacity: 1, y: 0 } : undefined}
+            transition={{ delay: 0.85, duration: 0.3 }}
+          >
+            <span className="-rotate-2 bg-white px-3 py-1 font-heavy text-xs tracking-[0.06em] sm:text-sm text-black shadow-[4px_4px_0_#e60012] md:text-base">
+              FULL STACK DEVELOPER
+            </span>
+            <span className="rotate-1 bg-[#e60012] px-2 py-1 font-heavy text-xs tracking-[0.1em] text-white shadow-[3px_3px_0_#fff]">
+              ★ COLOMBIA
+            </span>
+            <a
+              href="https://github.com/JavierAnd0"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub de Javier Andrade (abre en otra pestaña)"
+              className="hidden h-9 w-9 rotate-3 place-items-center border-2 border-white bg-black text-white transition-transform sm:grid hover:-rotate-6 hover:scale-110 hover:bg-[#e60012]"
             >
-              <Icon size={18} />
-            </motion.a>
-          ))}
+              <Github size={17} />
+            </a>
+          </motion.div>
         </div>
-      </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 2 }}
-        className="absolute bottom-28 left-1/2 -translate-x-1/2 z-20"
-      >
-        <motion.button
-          onClick={() => scrollToSection('about')}
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="text-white/40 hover:text-red transition-colors duration-300"
-        >
-          <ChevronDown size={24} />
-        </motion.button>
-      </motion.div>
-
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 halftone opacity-20" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-red/5 rounded-full blur-[150px]" />
-        <div className="absolute -bottom-24 -right-24 w-72 h-72 slash-stripes opacity-[0.08] rotate-12" />
+        {/* Controls */}
+        <div className="hidden lg:absolute lg:bottom-40 lg:right-12 lg:block">
+          <ControlsHint ready={ready} />
+        </div>
       </div>
+
+      <MarqueeBand />
     </section>
   );
 };
