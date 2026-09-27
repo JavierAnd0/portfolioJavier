@@ -4,6 +4,8 @@ import RansomText from '@/components/persona/RansomText';
 import PauseMenu from '@/components/persona/PauseMenu';
 import CalendarHud from '@/components/persona/CalendarHud';
 import CitySkyline from '@/components/persona/CitySkyline';
+import InkBackdrop from '@/components/persona/InkBackdrop';
+import HeroFigure from '@/components/persona/HeroFigure';
 import LanguageSwitch from '@/components/persona/LanguageSwitch';
 import { useI18n } from '@/i18n/context';
 
@@ -22,7 +24,7 @@ const ControlsHint = ({ ready }: { ready: boolean }) => {
   return (
     <motion.div
       aria-hidden="true"
-      className="flex -rotate-3 items-center gap-2 font-heavy text-xs tracking-[0.12em] text-white"
+      className="flex -rotate-2 items-center gap-2 font-heavy text-xs tracking-[0.12em] text-white"
       initial={{ opacity: 0, y: 20 }}
       animate={ready ? { opacity: 1, y: 0 } : undefined}
       transition={{ delay: 0.9, duration: 0.3 }}
@@ -36,45 +38,49 @@ const ControlsHint = ({ ready }: { ready: boolean }) => {
   );
 };
 
-const MarqueeBand = () => {
+// Name tag in the spot the game uses for the money counter.
+const IdentityHud = ({ ready }: { ready: boolean }) => {
   const { t } = useI18n();
-  const phrases = [...t.hero.marquee, ...t.hero.marquee, ...t.hero.marquee];
   return (
-    <div
-      aria-hidden="true"
-      className="absolute -left-[5%] bottom-12 z-20 w-[110%] -rotate-2 overflow-hidden border-y-[3px] border-white bg-black py-1.5 md:bottom-14"
-    >
-      <div className="flex w-max animate-marquee whitespace-nowrap">
-        {[0, 1].map((i) => (
-          <span key={i} className="font-display text-sm tracking-[0.18em] text-white md:text-base">
-            {phrases.map((phrase, j) => (
-              <span key={j} className="px-3">
-                {phrase}
-                <span className="pl-6 text-[#e60012]">★</span>
-              </span>
-            ))}
-          </span>
-        ))}
-      </div>
+    <div className="flex flex-col items-end text-right">
+      <motion.p
+        className="mb-1 font-hand text-xs text-white/85 md:text-sm"
+        initial={{ opacity: 0, x: 20 }}
+        animate={ready ? { opacity: 1, x: 0 } : undefined}
+        transition={{ delay: 0.5 }}
+      >
+        {t.hero.callingCard}
+      </motion.p>
+      <h1 className="-rotate-3 text-[clamp(1.7rem,min(7.5vw,5vh),3.4rem)] leading-none">
+        <RansomText text="JAVIER" seed={85} tone="red" animateIn play={ready} delay={0.45} />
+        <span className="inline-block w-[0.3em]" />
+        <RansomText text="ANDRADE" seed={85} tone="red" animateIn play={ready} delay={0.65} />
+      </h1>
+      <motion.div
+        className="mt-3 flex flex-wrap items-center justify-end gap-2.5"
+        initial={{ opacity: 0, y: 14 }}
+        animate={ready ? { opacity: 1, y: 0 } : undefined}
+        transition={{ delay: 0.95, duration: 0.3 }}
+      >
+        <span className="-rotate-2 bg-white px-3 py-1 font-heavy text-xs tracking-[0.06em] text-black shadow-[4px_4px_0_#e60012] sm:text-sm">
+          {t.hero.role}
+        </span>
+        <span className="rotate-1 bg-[#e60012] px-2 py-1 font-heavy text-xs tracking-[0.1em] text-white shadow-[3px_3px_0_#fff]">
+          ★ {t.hero.country}
+        </span>
+        <a
+          href="https://github.com/JavierAnd0"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${t.hero.github} ${t.a11y.opensNewTab}`}
+          className="hidden h-9 w-9 rotate-3 place-items-center border-2 border-white bg-black text-white transition-transform hover:-rotate-6 hover:scale-110 hover:bg-[#e60012] sm:grid"
+        >
+          <Github size={17} />
+        </a>
+      </motion.div>
     </div>
   );
 };
-
-const Backdrop = ({ ready }: { ready: boolean }) => (
-  <div aria-hidden="true" className="absolute inset-0">
-    <div className="absolute inset-0 halftone opacity-[0.14]" />
-    <div className="hero-edge" />
-    <div className="hero-panel">
-      <div className="hero-rays" />
-      <div className="hero-halftone" />
-    </div>
-
-    <CitySkyline
-      ready={ready}
-      className="absolute inset-x-0 bottom-0 h-[62%] w-full lg:h-[80%]"
-    />
-  </div>
-);
 
 interface HeroProps {
   ready: boolean;
@@ -87,81 +93,53 @@ const Hero = ({ ready, isOnScreen }: HeroProps) => {
     <section
       id="home"
       aria-label={t.a11y.home}
-      className="relative min-h-[100svh] w-full overflow-hidden bg-black"
+      className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-[#161616]"
     >
-      <Backdrop ready={ready} />
+      <InkBackdrop ready={ready} />
 
-      <div className="relative z-10 flex min-h-[100svh] flex-col px-5 pb-32 pt-5 md:px-10 lg:block lg:p-0">
-        {/* Calendar */}
-        <div className="order-1 origin-top-left scale-[0.82] md:scale-100 lg:absolute lg:left-12 lg:top-9">
-          <CalendarHud ready={ready} />
-        </div>
+      {/* City far behind the figure, fading in from the right edge. */}
+      <CitySkyline
+        ready={ready}
+        className="absolute bottom-0 right-0 h-[70%] w-full [mask-image:linear-gradient(to_right,transparent_38%,#000_58%)] lg:h-[86%]"
+      />
 
-        {/* Language */}
-        <motion.div
-          className="absolute right-5 top-6 md:right-10 lg:right-12 lg:top-10"
-          initial={{ opacity: 0, y: -16 }}
-          animate={ready ? { opacity: 1, y: 0 } : undefined}
-          transition={{ delay: 0.6, duration: 0.3 }}
-        >
-          <LanguageSwitch />
-        </motion.div>
+      <HeroFigure
+        ready={ready}
+        className="absolute right-[-20vw] top-[7%] h-[50%] sm:right-[-6vw] sm:top-auto sm:bottom-0 sm:h-[74%] lg:right-[2vw] lg:h-[96%]"
+      />
 
-        {/* Menu */}
-        <div className="order-3 mt-8 flex flex-1 items-center justify-center text-[clamp(1.9rem,min(9.6vw,5.2vh),3.1rem)] lg:absolute lg:right-[5vw] lg:top-[46%] lg:mt-0 lg:block lg:-translate-y-1/2 lg:text-[clamp(2.9rem,min(4.3vw,7.4vh),4.6rem)]">
-          {/* Spanish labels run longer; a slightly smaller size keeps the same footprint. */}
-          <div className="-rotate-[9deg] pl-[1.3em]" style={{ fontSize: lang === 'es' ? '0.84em' : undefined }}>
-            <PauseMenu ready={ready} keyboardEnabled={isOnScreen} />
-          </div>
-        </div>
+      {/* Calendar */}
+      <div className="absolute left-5 top-5 origin-top-left scale-[0.8] md:left-10 md:top-8 md:scale-100 lg:left-12">
+        <CalendarHud ready={ready} />
+      </div>
 
-        {/* Identity */}
-        <div className="order-2 mt-1 lg:absolute lg:bottom-40 lg:left-12 lg:mt-0">
-          <motion.p
-            className="mb-1 font-hand text-xs text-white/80 md:mb-2 md:text-base"
-            initial={{ opacity: 0, x: -20 }}
-            animate={ready ? { opacity: 1, x: 0 } : undefined}
-            transition={{ delay: 0.35 }}
-          >
-            {t.hero.callingCard}
-          </motion.p>
-          <h1 className="flex -rotate-3 flex-col gap-1 text-[clamp(1.8rem,min(9vw,5vh),2.6rem)] leading-none md:text-[3.2rem] xl:text-[3.8rem]">
-            <RansomText text="JAVIER" seed={85} tone="red" animateIn play={ready} delay={0.3} />
-            <span className="pl-[0.8em]">
-              <RansomText text="ANDRADE" seed={85} tone="red" animateIn play={ready} delay={0.5} />
-            </span>
-          </h1>
-          <motion.div
-            className="mt-4 flex flex-wrap items-center gap-2.5 md:mt-5 md:gap-3"
-            initial={{ opacity: 0, y: 16 }}
-            animate={ready ? { opacity: 1, y: 0 } : undefined}
-            transition={{ delay: 0.85, duration: 0.3 }}
-          >
-            <span className="-rotate-2 bg-white px-3 py-1 font-heavy text-xs tracking-[0.06em] sm:text-sm text-black shadow-[4px_4px_0_#e60012] md:text-base">
-              {t.hero.role}
-            </span>
-            <span className="rotate-1 bg-[#e60012] px-2 py-1 font-heavy text-xs tracking-[0.1em] text-white shadow-[3px_3px_0_#fff]">
-              ★ {t.hero.country}
-            </span>
-            <a
-              href="https://github.com/JavierAnd0"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${t.hero.github} ${t.a11y.opensNewTab}`}
-              className="hidden h-9 w-9 rotate-3 place-items-center border-2 border-white bg-black text-white transition-transform sm:grid hover:-rotate-6 hover:scale-110 hover:bg-[#e60012]"
-            >
-              <Github size={17} />
-            </a>
-          </motion.div>
-        </div>
+      {/* Language */}
+      <motion.div
+        className="absolute right-5 top-6 z-20 md:right-10 lg:right-12 lg:top-10"
+        initial={{ opacity: 0, y: -16 }}
+        animate={ready ? { opacity: 1, y: 0 } : undefined}
+        transition={{ delay: 0.6, duration: 0.3 }}
+      >
+        <LanguageSwitch />
+      </motion.div>
 
-        {/* Controls */}
-        <div className="hidden lg:absolute lg:bottom-40 lg:right-12 lg:block">
-          <ControlsHint ready={ready} />
+      {/* Menu */}
+      <div className="absolute left-[4vw] top-[57%] z-10 -translate-y-1/2 text-[clamp(2rem,min(10vw,5.6vh),3.4rem)] sm:top-[54%] md:left-[6vw] lg:top-[51%] lg:text-[clamp(3rem,min(5.4vw,8.2vh),5.4rem)]">
+        {/* Spanish labels run longer; a slightly smaller size keeps the same footprint. */}
+        <div className="-rotate-[5deg] pl-[1.3em]" style={{ fontSize: lang === 'es' ? '0.8em' : undefined }}>
+          <PauseMenu ready={ready} keyboardEnabled={isOnScreen} />
         </div>
       </div>
 
-      <MarqueeBand />
+      {/* Identity */}
+      <div className="absolute bottom-12 right-5 z-10 md:right-10 lg:bottom-16 lg:right-12">
+        <IdentityHud ready={ready} />
+      </div>
+
+      {/* Controls */}
+      <div className="absolute bottom-16 left-12 z-10 hidden lg:block">
+        <ControlsHint ready={ready} />
+      </div>
     </section>
   );
 };

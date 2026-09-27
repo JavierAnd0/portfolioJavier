@@ -50,7 +50,6 @@ const en = {
     github: "Javier Andrade's GitHub",
     select: 'SELECT',
     confirm: 'CONFIRM',
-    marquee: ['TAKE YOUR TIME', 'JAVIER ANDRADE', 'FULL STACK DEVELOPER', 'PHANTOM THIEF OF CODE'],
   },
   about: {
     kicker: 'CONFIDANT FILE — 01',

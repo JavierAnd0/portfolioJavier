@@ -66,7 +66,8 @@ const STAR_PATH =
 // "O" drawn as a ring with a star inside, like the B☆ND entry in the P5 menu.
 const RingGlyph = () => (
   <svg viewBox="-8 -4 112 112" className="ransom-ring">
-    <circle cx="42" cy="58" r="47" className="ransom-ring-extrude" />
+    <circle cx="40" cy="60" r="50" className="ransom-ring-shadow" />
+    <circle cx="42" cy="58" r="46" className="ransom-ring-extrude" />
     <circle cx="50" cy="50" r="47" className="ransom-ring-stroke" />
     <circle cx="50" cy="50" r="38" className="ransom-ring-fill" />
     <path d={STAR_PATH} className="ransom-ring-star" />
@@ -143,6 +144,7 @@ const RansomText = ({
               <RingGlyph />
             ) : (
               <>
+                <span className="ransom-shadow">{l.char}</span>
                 <span className="ransom-extrude">{l.char}</span>
                 <span className="ransom-stroke">{l.char}</span>
                 <span className="ransom-fill">{l.char}</span>

@@ -52,7 +52,6 @@ const es: Dictionary = {
     github: 'GitHub de Javier Andrade',
     select: 'ELEGIR',
     confirm: 'CONFIRMAR',
-    marquee: ['TÓMATE TU TIEMPO', 'JAVIER ANDRADE', 'DESARROLLADOR FULL STACK', 'LADRÓN FANTASMA DEL CÓDIGO'],
   },
   about: {
     kicker: 'EXPEDIENTE DE CONFIDENTE — 01',
