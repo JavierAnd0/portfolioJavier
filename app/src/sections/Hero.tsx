@@ -3,7 +3,7 @@ import { Github } from 'lucide-react';
 import RansomText from '@/components/persona/RansomText';
 import PauseMenu from '@/components/persona/PauseMenu';
 import CalendarHud from '@/components/persona/CalendarHud';
-import PhantomMask from '@/components/persona/PhantomMask';
+import CitySkyline from '@/components/persona/CitySkyline';
 import LanguageSwitch from '@/components/persona/LanguageSwitch';
 import { useI18n } from '@/i18n/context';
 
@@ -69,20 +69,10 @@ const Backdrop = ({ ready }: { ready: boolean }) => (
       <div className="hero-halftone" />
     </div>
 
-    <div className="absolute right-[-12vw] top-[4.5%] w-[66vw] max-w-[420px] lg:left-[37%] lg:right-auto lg:top-[40%] lg:w-[min(44vw,80vh)] lg:max-w-[760px] lg:-translate-x-1/2 lg:-translate-y-1/2">
-      <motion.div
-        initial={{ scale: 1.5, opacity: 0, rotate: -30 }}
-        animate={ready ? { scale: 1, opacity: 1, rotate: -13 } : undefined}
-        transition={{ type: 'spring', stiffness: 160, damping: 18, delay: 0.1 }}
-      >
-        <motion.div
-          animate={{ y: [0, -10, 0], rotate: [0, 1.2, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <PhantomMask className="h-auto w-full drop-shadow-[0_18px_0_rgba(0,0,0,0.35)]" />
-        </motion.div>
-      </motion.div>
-    </div>
+    <CitySkyline
+      ready={ready}
+      className="absolute inset-x-0 bottom-0 h-[62%] w-full lg:h-[80%]"
+    />
   </div>
 );
 
