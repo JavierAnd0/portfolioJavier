@@ -8,61 +8,72 @@ const isTypingTarget = (el: EventTarget | null) =>
   el instanceof HTMLElement &&
   (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
 
-// White plate on a black shard, with a red wedge — kept inside the site palette.
+// Neighbours swing this far away from the selected spoke to give it room.
+const SPREAD = 4;
+// Fan box in em; the pivot sits on its right edge, vertically centered.
+const FAN_WIDTH = 12;
+const FAN_HEIGHT = 9;
+
+// Slab with depth: black extrusion down-left, white face, red block kicked up-right.
 const SelectionPlate = () => (
   <motion.span
     aria-hidden="true"
-    className="pointer-events-none absolute -inset-y-[0.12em] -left-[0.5em] -right-[0.32em] -z-10"
-    initial={{ scaleX: 0, opacity: 0 }}
-    animate={{ scaleX: 1, opacity: 1 }}
-    transition={{ duration: 0.16, ease: [0.2, 0.9, 0.3, 1] }}
+    className="pointer-events-none absolute -inset-y-[0.14em] -left-[0.45em] -right-[0.35em] -z-10"
+    initial={{ scaleX: 0, skewX: -25, opacity: 0 }}
+    animate={{ scaleX: [0, 1.12, 1], skewX: [-25, 4, 0], opacity: 1 }}
+    transition={{ duration: 0.28, times: [0, 0.65, 1], ease: 'easeOut' }}
     style={{ transformOrigin: '0% 50%' }}
   >
     <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible">
       <g className="plate-boil">
-        <polygon points="5,9 105,4 102,44 2,43" fill="#0a0a0a" />
+        <polygon points="14,-7 106,-11 103,24 10,28" fill="#e60012" />
       </g>
-      <polygon points="1,3 99,1 96,38 -1,39" fill="#0a0a0a" />
+      <polygon points="-4,9 96,6 93,46 -7,47" fill="#0a0a0a" />
+      <polygon points="1,2 100,0 97,38 -2,40" fill="#0a0a0a" />
       <g className="plate-boil plate-boil--alt">
-        <polygon points="3,5 97,3 94,36 1,37" fill="#ffffff" />
+        <polygon points="3,4.5 97.5,2.5 94.5,35.5 0.5,37.5" fill="#ffffff" />
       </g>
-    </svg>
-    {/* Red slashes live in their own tail so they never sit between letters. */}
-    <svg
-      viewBox="0 0 20 40"
-      preserveAspectRatio="none"
-      className="absolute -right-[0.34em] top-[0.1em] h-[calc(100%-0.2em)] w-[0.5em] overflow-visible"
-    >
-      <polygon points="0,1 20,0 17,40 -3,40" fill="#0a0a0a" />
-      <polygon points="3,4 8,4 5,37 0,37" fill="#e60012" />
-      <polygon points="11,3.5 16,3.4 13,36.6 8,36.8" fill="#e60012" />
     </svg>
   </motion.span>
 );
 
+// One-shot impact: speed lines shoot out of the word's left end.
+const ImpactBurst = () => (
+  <span aria-hidden="true" className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2">
+    <motion.svg
+      viewBox="0 0 120 60"
+      className="h-[1.3em] w-[2.4em] overflow-visible"
+      initial={{ opacity: 1, scaleX: 0.2, x: 0 }}
+      animate={{ opacity: [1, 1, 0], scaleX: [0.2, 1, 1.1], x: ['0em', '-0.2em', '-0.45em'] }}
+      transition={{ duration: 0.38, times: [0, 0.4, 1], ease: 'easeOut' }}
+      style={{ transformOrigin: '100% 50%' }}
+    >
+      <polygon points="120,26 0,6 120,30" fill="#ffffff" />
+      <polygon points="120,30 10,32 120,34" fill="#ffffff" />
+      <polygon points="120,34 0,56 120,38" fill="#ffffff" />
+      <polygon points="120,22 40,-6 120,26" fill="#e60012" />
+    </motion.svg>
+  </span>
+);
+
+// Arrow tag pointing at the selection, like the game's side counters.
 const Cursor = ({ index }: { index: number }) => (
   <motion.span
     aria-hidden="true"
-    className="pointer-events-none absolute right-full top-[18%] mr-[0.42em]"
-    initial={{ x: -30, opacity: 0 }}
-    animate={{ x: [0, -7, 0], opacity: 1 }}
+    className="pointer-events-none absolute right-full top-1/2 z-20 mr-[0.6em] -translate-y-1/2"
+    initial={{ x: '-0.8em', opacity: 0, rotate: -20 }}
+    animate={{ x: ['0em', '-0.12em', '0em'], opacity: 1, rotate: 0 }}
     transition={{
-      x: { duration: 0.9, repeat: Infinity, ease: 'easeInOut' },
-      opacity: { duration: 0.12 },
+      x: { duration: 0.9, repeat: Infinity, ease: 'easeInOut', delay: 0.25 },
+      opacity: { duration: 0.1 },
+      rotate: { type: 'spring', stiffness: 500, damping: 14 },
     }}
   >
-    <svg viewBox="0 0 120 64" className="h-[0.62em] w-[1.16em] -rotate-6 overflow-visible">
-      <polygon points="-4,14 78,6 118,34 76,62 -8,54" fill="#0a0a0a" />
-      <polygon points="2,17 76,11 108,34 74,56 0,50" fill="#ffffff" />
-      <text
-        x="44"
-        y="44"
-        textAnchor="middle"
-        fontFamily="Anton, sans-serif"
-        fontSize="30"
-        fill="#0a0a0a"
-        transform="rotate(-4 44 34)"
-      >
+    <svg viewBox="0 0 150 76" className="h-[0.78em] w-[1.54em] overflow-visible">
+      <polygon points="-6,6 96,0 150,38 96,76 -6,70" fill="#0a0a0a" />
+      <polygon points="2,12 92,7 136,38 92,69 2,64" fill="#ffffff" />
+      <polygon points="8,17 88,13 124,38 88,63 8,59" fill="#0a0a0a" />
+      <text x="62" y="51" textAnchor="middle" fontFamily="Anton, sans-serif" fontSize="36" fill="#ffffff">
         No.{String(index + 1).padStart(2, '0')}
       </text>
     </svg>
@@ -72,17 +83,17 @@ const Cursor = ({ index }: { index: number }) => (
 const HintTag = ({ text }: { text: string }) => (
   <motion.span
     aria-hidden="true"
-    className="pointer-events-none absolute -bottom-[0.28em] right-[-0.5em] z-10 whitespace-nowrap rounded-full border-2 border-white bg-black px-[0.55em] py-[0.12em] font-sans text-[0.2em] font-bold italic tracking-wide text-white shadow-[3px_3px_0_#e60012]"
+    className="pointer-events-none absolute -bottom-[0.34em] right-[-0.2em] z-10 whitespace-nowrap rounded-full border-2 border-white bg-black px-[0.55em] py-[0.12em] font-sans text-[0.2em] font-bold italic tracking-wide text-white shadow-[3px_3px_0_#e60012]"
     initial={{ scale: 0, rotate: -30 }}
     animate={{ scale: 1, rotate: -9 }}
-    transition={{ duration: 0.22, delay: 0.05, ease: [0.34, 1.56, 0.64, 1] }}
+    transition={{ duration: 0.22, delay: 0.12, ease: [0.34, 1.56, 0.64, 1] }}
   >
     {text}
   </motion.span>
 );
 
 interface PauseMenuProps {
-  /** Items slam in once the intro has finished. */
+  /** Items fan open once the intro has finished. */
   ready: boolean;
   /** Keyboard shortcuts only listen while the menu is on screen. */
   keyboardEnabled: boolean;
@@ -92,7 +103,15 @@ interface PauseMenuProps {
 const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
   const { t, lang } = useI18n();
   const [active, setActive] = useState(0);
+  const [opened, setOpened] = useState(false);
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  // After the opening flourish, selection changes animate without stagger delays.
+  useEffect(() => {
+    if (!ready) return;
+    const id = window.setTimeout(() => setOpened(true), 1200);
+    return () => window.clearTimeout(id);
+  }, [ready]);
 
   const move = useCallback((delta: number) => {
     setActive((current) => {
@@ -127,20 +146,44 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
     return () => window.removeEventListener('keydown', onKey);
   }, [keyboardEnabled, ready, active, move]);
 
+  const middle = (MENU_ITEMS.length - 1) / 2;
+
   return (
-    <nav aria-label={t.a11y.mainMenu} className="pause-menu">
-      <ul className="flex flex-col gap-[0.1em]">
+    <nav
+      aria-label={t.a11y.mainMenu}
+      className="pause-menu relative"
+      style={{ width: `${FAN_WIDTH}em`, height: `${FAN_HEIGHT}em` }}
+    >
+      {/* Dark mass behind the fan gives the lettering something to sit on. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-[1.5em] top-1/2 h-[9em] w-[10em] -translate-y-1/2 rounded-[50%] bg-black/60 blur-[1.4em]"
+      />
+
+      <ul>
         {MENU_ITEMS.map((item, i) => {
           const isActive = active === i;
           const { label, hint } = t.menu[item.key];
+          const push = i === active ? 0 : i < active ? SPREAD : -SPREAD;
+          const angle = item.angle + push;
           return (
             <motion.li
               key={item.key}
-              className="relative"
-              style={{ marginLeft: `${item.offset}em`, rotate: `${item.tilt}deg`, zIndex: isActive ? 10 : 1 }}
-              initial={{ x: '60vw', opacity: 0, skewX: -20 }}
-              animate={ready ? { x: 0, opacity: 1, skewX: 0 } : undefined}
-              transition={{ type: 'spring', stiffness: 520, damping: 34, delay: 0.08 + i * 0.07 }}
+              className="absolute top-1/2 -mt-[0.5em] leading-none"
+              style={{
+                right: `${item.reach}em`,
+                // Rotate every spoke around the shared pivot on the fan's right edge.
+                transformOrigin: `calc(100% + ${item.reach}em) 50%`,
+                zIndex: isActive ? 10 : 1,
+              }}
+              initial={{ rotate: 0, opacity: 0, scale: 0.7 }}
+              animate={ready ? { rotate: angle, opacity: 1, scale: 1 } : undefined}
+              transition={{
+                type: 'spring',
+                stiffness: opened ? 380 : 120,
+                damping: opened ? 22 : 13,
+                delay: opened ? 0 : 0.1 + Math.abs(i - middle) * 0.08,
+              }}
             >
               <a
                 ref={(el) => {
@@ -157,13 +200,28 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
                 className="group relative isolate inline-block px-[0.08em] outline-none"
               >
                 {isActive && <SelectionPlate key={`plate-${i}`} />}
-                {isActive && <Cursor index={i} />}
+                {isActive && <ImpactBurst key={`burst-${i}`} />}
+                {isActive && <Cursor key={`cursor-${i}`} index={i} />}
                 <motion.span
                   className="inline-block"
-                  animate={{ scale: isActive ? 1.1 : 1, x: isActive ? '0.12em' : 0 }}
-                  transition={{ type: 'spring', stiffness: 600, damping: 24 }}
+                  style={{ transformOrigin: '100% 60%' }}
+                  animate={
+                    isActive
+                      ? { scale: [1, 1.26, 1.16], rotate: [0, -4, 0], x: '-0.1em' }
+                      : { scale: 1, rotate: 0, x: 0 }
+                  }
+                  transition={
+                    isActive
+                      ? { duration: 0.32, times: [0, 0.55, 1], ease: 'easeOut' }
+                      : { type: 'spring', stiffness: 500, damping: 30 }
+                  }
                 >
-                  <RansomText text={label} seed={item.seeds[lang]} tone={isActive ? 'dark' : 'light'} />
+                  <RansomText
+                    text={label}
+                    seed={item.seeds[lang]}
+                    tone={isActive ? 'dark' : 'light'}
+                    pop={isActive && opened}
+                  />
                 </motion.span>
                 {isActive && <HintTag text={hint} />}
               </a>

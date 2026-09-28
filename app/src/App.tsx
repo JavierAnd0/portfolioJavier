@@ -101,8 +101,8 @@ const MobileNav = ({ visible }: { visible: boolean }) => {
             <LanguageSwitch className="absolute left-5 top-6" />
             <div aria-hidden="true" className="hero-halftone" />
             <div
-              className="relative -rotate-[9deg] pl-[1.3em] text-[clamp(2.1rem,9.6vw,3.1rem)]"
-              style={{ fontSize: lang === 'es' ? 'clamp(1.8rem,8vw,2.6rem)' : undefined }}
+              className="relative text-[clamp(1.8rem,8.4vw,2.8rem)]"
+              style={{ fontSize: lang === 'es' ? 'clamp(1.5rem,6.8vw,2.3rem)' : undefined }}
             >
               <PauseMenu ready keyboardEnabled onNavigate={close} />
             </div>

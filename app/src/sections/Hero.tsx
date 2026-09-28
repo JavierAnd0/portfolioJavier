@@ -123,9 +123,9 @@ const Hero = ({ ready, isOnScreen }: HeroProps) => {
         </motion.div>
 
         {/* Menu */}
-        <div className="order-3 mt-8 flex flex-1 items-center justify-center text-[clamp(1.9rem,min(9.6vw,5.2vh),3.1rem)] lg:absolute lg:right-[5vw] lg:top-[46%] lg:mt-0 lg:block lg:-translate-y-1/2 lg:text-[clamp(2.9rem,min(4.3vw,7.4vh),4.6rem)]">
+        <div className="order-3 mt-4 flex flex-1 items-center justify-end text-[clamp(1.7rem,min(8.4vw,4.6vh),2.8rem)] lg:absolute lg:right-[2vw] lg:top-[47%] lg:mt-0 lg:block lg:-translate-y-1/2 lg:text-[clamp(2.6rem,min(4vw,6.6vh),4.4rem)]">
           {/* Spanish labels run longer; a slightly smaller size keeps the same footprint. */}
-          <div className="-rotate-[9deg] pl-[1.3em]" style={{ fontSize: lang === 'es' ? '0.84em' : undefined }}>
+          <div style={{ fontSize: lang === 'es' ? '0.8em' : undefined }}>
             <PauseMenu ready={ready} keyboardEnabled={isOnScreen} />
           </div>
         </div>

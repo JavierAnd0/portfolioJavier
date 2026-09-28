@@ -8,23 +8,24 @@ export interface PauseMenuItem {
   href: string;
   /** Per-language seed picked by eye so each word reads cleanly. */
   seeds: Record<Language, number>;
-  /** Horizontal stagger in em, gives the cascading zig-zag. */
-  offset: number;
-  tilt: number;
+  /** Fan spoke angle in degrees; positive tips the word's left end upward. */
+  angle: number;
+  /** Gap between the word's right end and the fan pivot, in em. */
+  reach: number;
   external?: boolean;
 }
 
 export const MENU_ITEMS: PauseMenuItem[] = [
-  { key: 'about', href: '#about', seeds: { en: 85, es: 85 }, offset: 1.5, tilt: -3 },
-  { key: 'projects', href: '#projects', seeds: { en: 204, es: 85 }, offset: 0.2, tilt: 2.5 },
-  { key: 'skills', href: '#skills', seeds: { en: 85, es: 187 }, offset: 1.9, tilt: -2 },
-  { key: 'contact', href: '#contact', seeds: { en: 85, es: 119 }, offset: 0.7, tilt: 3 },
+  { key: 'about', href: '#about', seeds: { en: 85, es: 85 }, angle: 26, reach: 3.7 },
+  { key: 'projects', href: '#projects', seeds: { en: 204, es: 85 }, angle: 13, reach: 4.1 },
+  { key: 'skills', href: '#skills', seeds: { en: 85, es: 187 }, angle: 0, reach: 4.4 },
+  { key: 'contact', href: '#contact', seeds: { en: 85, es: 119 }, angle: -13, reach: 4.1 },
   {
     key: 'github',
     href: 'https://github.com/JavierAnd0',
     seeds: { en: 85, es: 85 },
-    offset: 2.3,
-    tilt: -4,
+    angle: -26,
+    reach: 3.8,
     external: true,
   },
 ];

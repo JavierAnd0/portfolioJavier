@@ -66,7 +66,8 @@ const STAR_PATH =
 // "O" drawn as a ring with a star inside, like the B☆ND entry in the P5 menu.
 const RingGlyph = () => (
   <svg viewBox="-8 -4 112 112" className="ransom-ring">
-    <circle cx="42" cy="58" r="47" className="ransom-ring-extrude" />
+    <circle cx="38" cy="63" r="51" className="ransom-ring-shadow" />
+    <circle cx="40" cy="61" r="47" className="ransom-ring-extrude" />
     <circle cx="50" cy="50" r="47" className="ransom-ring-stroke" />
     <circle cx="50" cy="50" r="38" className="ransom-ring-fill" />
     <path d={STAR_PATH} className="ransom-ring-star" />
@@ -101,6 +102,8 @@ interface RansomTextProps {
   /** With animateIn: hold the letters hidden until this turns true. */
   play?: boolean;
   delay?: number;
+  /** When it turns true the letters hop once, staggered left to right. */
+  pop?: boolean;
 }
 
 const RansomText = ({
@@ -112,6 +115,7 @@ const RansomText = ({
   animateIn = false,
   play = true,
   delay = 0,
+  pop = false,
 }: RansomTextProps) => {
   const letters = buildLetters(text, seed, uniformFont);
 
@@ -131,18 +135,28 @@ const RansomText = ({
             animate={
               animateIn && !play
                 ? hiddenPose(l)
-                : { opacity: 1, scale: l.scale, rotate: l.rotate, y: `${l.y}em` }
+                : pop
+                  ? {
+                      opacity: 1,
+                      scale: [l.scale, l.scale * 1.18, l.scale],
+                      rotate: [l.rotate, l.rotate - 10, l.rotate],
+                      y: [`${l.y}em`, `${l.y - 0.2}em`, `${l.y}em`],
+                    }
+                  : { opacity: 1, scale: l.scale, rotate: l.rotate, y: `${l.y}em` }
             }
             transition={
-              animateIn
+              animateIn && !pop
                 ? { duration: 0.32, delay: delay + i * 0.045, ease: [0.34, 1.56, 0.64, 1] }
-                : { duration: 0 }
+                : pop
+                  ? { duration: 0.34, delay: 0.06 + i * 0.03, ease: 'easeOut' }
+                  : { duration: 0 }
             }
           >
             {l.ring ? (
               <RingGlyph />
             ) : (
               <>
+                <span className="ransom-shadow">{l.char}</span>
                 <span className="ransom-extrude">{l.char}</span>
                 <span className="ransom-stroke">{l.char}</span>
                 <span className="ransom-fill">{l.char}</span>

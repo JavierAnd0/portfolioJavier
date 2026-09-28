@@ -156,7 +156,8 @@
     white-space: nowrap;
     --ransom-fill: #ffffff;
     --ransom-stroke: #0a0a0a;
-    --ransom-extrude: #0a0a0a;
+    --ransom-extrude: #4d4d4d;
+    --ransom-shadow: #0a0a0a;
     --ransom-star: #0a0a0a;
   }
 
@@ -164,6 +165,7 @@
     --ransom-fill: #0a0a0a;
     --ransom-stroke: #ffffff;
     --ransom-extrude: #0a0a0a;
+    --ransom-shadow: #0a0a0a;
     --ransom-star: #ffffff;
   }
 
@@ -171,6 +173,7 @@
   .ransom--red {
     --ransom-stroke: #e60012;
     --ransom-extrude: #e60012;
+    --ransom-shadow: #e60012;
   }
 
   .ransom-letter {
@@ -188,22 +191,31 @@
     position: relative;
   }
 
-  .ransom-extrude {
+  /* Grey 3D side, outlined in black, dropping down-left like the P5 menu. */
+  .ransom-shadow {
     z-index: 0;
-    left: -0.08em;
-    top: 0.09em;
+    left: -0.13em;
+    top: 0.15em;
+    color: var(--ransom-shadow);
+    -webkit-text-stroke: 0.22em var(--ransom-shadow);
+  }
+
+  .ransom-extrude {
+    z-index: 1;
+    left: -0.105em;
+    top: 0.12em;
     color: var(--ransom-extrude);
-    -webkit-text-stroke: 0.17em var(--ransom-extrude);
+    -webkit-text-stroke: 0.1em var(--ransom-extrude);
   }
 
   .ransom-stroke {
-    z-index: 1;
+    z-index: 2;
     color: var(--ransom-stroke);
     -webkit-text-stroke: 0.13em var(--ransom-stroke);
   }
 
   .ransom-fill {
-    z-index: 2;
+    z-index: 3;
     color: var(--ransom-fill);
   }
 
@@ -227,6 +239,7 @@
     animation-direction: reverse;
   }
 
+  .ransom-ring-shadow { fill: var(--ransom-shadow); }
   .ransom-ring-extrude { fill: var(--ransom-extrude); }
   .ransom-ring-stroke { fill: var(--ransom-stroke); }
   .ransom-ring-fill { fill: var(--ransom-fill); }
