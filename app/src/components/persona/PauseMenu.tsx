@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import RansomText from './RansomText';
-import { MENU_ITEMS } from './config';
+import DesignedWord from './DesignedWord';
+import { MENU_ITEMS, wordFor, wordWidthEm } from './config';
 import { useI18n } from '@/i18n/context';
 
 const isTypingTarget = (el: EventTarget | null) =>
@@ -10,6 +10,9 @@ const isTypingTarget = (el: EventTarget | null) =>
 
 // Neighbours swing this far away from the selected spoke to give it room.
 const SPREAD = 4;
+// The selected word grows toward the fan's centre; long words grow only up to this width.
+const MAX_SELECTED_EM = 5;
+
 // Fan box in em; the pivot sits on its right edge, vertically centered.
 const FAN_WIDTH = 12;
 const FAN_HEIGHT = 9;
@@ -164,6 +167,8 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
         {MENU_ITEMS.map((item, i) => {
           const isActive = active === i;
           const { label, hint } = t.menu[item.key];
+          const word = wordFor(item.words[lang], isActive);
+          const grow = Math.min(1.16, Math.max(1, MAX_SELECTED_EM / wordWidthEm(word)));
           const push = i === active ? 0 : i < active ? SPREAD : -SPREAD;
           const angle = item.angle + push;
           return (
@@ -199,15 +204,15 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
                 aria-label={`${label} — ${hint}${item.external ? ` ${t.a11y.opensNewTab}` : ''}`}
                 className="group relative isolate inline-block px-[0.08em] outline-none"
               >
-                {isActive && <SelectionPlate key={`plate-${i}`} />}
                 {isActive && <ImpactBurst key={`burst-${i}`} />}
                 {isActive && <Cursor key={`cursor-${i}`} index={i} />}
+                {/* The plate rides inside the scaled word so it always covers every letter. */}
                 <motion.span
-                  className="inline-block"
+                  className="relative isolate inline-block"
                   style={{ transformOrigin: '100% 60%' }}
                   animate={
                     isActive
-                      ? { scale: [1, 1.26, 1.16], rotate: [0, -4, 0], x: '-0.1em' }
+                      ? { scale: [1, grow + 0.1, grow], rotate: [0, -4, 0], x: '-0.1em' }
                       : { scale: 1, rotate: 0, x: 0 }
                   }
                   transition={
@@ -216,10 +221,11 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
                       : { type: 'spring', stiffness: 500, damping: 30 }
                   }
                 >
-                  <RansomText
-                    text={label}
-                    seed={item.seeds[lang]}
-                    tone={isActive ? 'dark' : 'light'}
+                  {isActive && <SelectionPlate key={`plate-${i}`} />}
+                  <DesignedWord
+                    key={isActive ? 'selected' : 'normal'}
+                    name={word}
+                    label={label}
                     pop={isActive && opened}
                   />
                 </motion.span>

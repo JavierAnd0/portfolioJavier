@@ -66,10 +66,13 @@ const es: Dictionary = {
     },
     body:
       'Un enfoque que combina código limpio, arquitectura sólida y diseño intuitivo para entregar productos que no solo funcionan perfectamente, sino que también dejan huella. Cada proyecto es un objetivo; cada bug, una sombra por vencer.',
-    stats: {
-      years: 'Años en el campo',
-      heists: 'Golpes completados',
-      commitment: 'Compromiso',
+    chat: {
+      header: 'Mensajes',
+      contact: 'Javier',
+      visitor: 'Tú',
+      question: 'Oye… ¿quién eres realmente?',
+      replies: { projects: 'Muéstrame tus objetivos', contact: 'Quiero enviarte una solicitud' },
+      portraitAlt: 'Retrato de Javier Andrade',
     },
   },
   projects: {
@@ -128,9 +131,9 @@ const es: Dictionary = {
     body:
       'Ya sea que tengas una idea que quieras materializar o necesites ayuda con un proyecto existente, estaré encantado de escucharte. Sin tarjeta de aviso, sin Metaverso — solo un correo.',
     emailLabel: 'Correo',
-    emailValue: 'tu@email.com',
+    emailValue: 'logijavier@gmail.com',
     locationLabel: 'Ubicación',
-    locationValue: 'Tu Ciudad, País',
+    locationValue: 'Neiva, Huila, Colombia',
     follow: 'SIGUE A LOS LADRONES',
     formHint: 'llena tu solicitud de cooperación',
     name: 'Tu nombre',

@@ -64,10 +64,13 @@ const en = {
     },
     body:
       "My approach blends clean code, solid architecture and intuitive design to ship products that don't just work flawlessly — they leave a lasting impression. Every project is a target; every bug, a shadow to defeat.",
-    stats: {
-      years: 'Years in the field',
-      heists: 'Heists completed',
-      commitment: 'Commitment',
+    chat: {
+      header: 'Messages',
+      contact: 'Javier',
+      visitor: 'You',
+      question: 'Hey… who are you, really?',
+      replies: { projects: 'Show me your targets', contact: "I'd like to send a request" },
+      portraitAlt: 'Portrait of Javier Andrade',
     },
   },
   projects: {
@@ -125,9 +128,9 @@ const en = {
     body:
       "Whether you have an idea you want to bring to life or need a hand with an existing project, I'd love to hear from you. No calling card, no Metaverse — just an email.",
     emailLabel: 'Email',
-    emailValue: 'your@email.com',
+    emailValue: 'logijavier@gmail.com',
     locationLabel: 'Location',
-    locationValue: 'Your City, Country',
+    locationValue: 'Neiva, Huila, Colombia',
     follow: 'FOLLOW THE THIEVES',
     formHint: 'fill in your request for cooperation',
     name: 'Your Name',

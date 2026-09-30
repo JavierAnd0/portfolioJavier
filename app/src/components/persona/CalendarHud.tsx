@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import RansomText from './RansomText';
+import DesignedWord from './DesignedWord';
+import type { WordName } from './words.generated';
 import { useI18n } from '@/i18n/context';
 
 const TIMEZONE = 'America/Bogota';
@@ -40,6 +41,20 @@ const readClock = (locale: string, timestamp: number) => {
   };
 };
 
+// Digits lettered in Figma, set side by side and overlapping a little like cut-outs.
+const Digits = ({ value }: { value: string }) => (
+  <span className="flex items-end">
+    {[...value].map((digit, i) => (
+      <DesignedWord
+        key={i}
+        name={`numero/${digit}` as WordName}
+        label={digit}
+        className={i > 0 ? '-ml-[0.14em]' : undefined}
+      />
+    ))}
+  </span>
+);
+
 /** P5-style calendar widget showing the date and time of day in Colombia. */
 const CalendarHud = ({ ready }: { ready: boolean }) => {
   const { t, lang } = useI18n();
@@ -66,12 +81,9 @@ const CalendarHud = ({ ready }: { ready: boolean }) => {
       role="img"
     >
       <div className="flex items-end gap-[0.12em] text-[3.1rem] md:text-[4.4rem]">
-        <RansomText text={first} uniformFont="Anton" />
-        <span
-          aria-hidden="true"
-          className="mb-[0.1em] h-[0.8em] w-[0.12em] rotate-[24deg] bg-white shadow-[-3px_3px_0_#0a0a0a]"
-        />
-        <RansomText text={second} uniformFont="Anton" />
+        <Digits value={first} />
+        <DesignedWord name="numero/barra" label="/" className="-mx-[0.1em]" />
+        <Digits value={second} />
         <span
           aria-hidden="true"
           className={`mb-[0.18em] ml-[0.08em] -rotate-3 px-[0.22em] py-[0.02em] font-heavy text-[0.3em] leading-tight text-white shadow-[3px_3px_0_#0a0a0a] ${

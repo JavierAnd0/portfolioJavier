@@ -1,13 +1,25 @@
 import type { Dictionary } from '@/i18n/en';
 import type { Language } from '@/i18n/language';
+import { WORDS, type WordName } from './words.generated';
 
 export type MenuKey = keyof Dictionary['menu'];
+
+type StemOf<T> = T extends `${infer Stem}/normal` ? Stem : never;
+type WordStem = StemOf<WordName>;
+
+// 215 Figma px make one em, so every word scales with its container's font size.
+export const EM_PER_UNIT = 1 / 215;
+
+export const wordWidthEm = (name: WordName) => WORDS[name].viewBox[2] * EM_PER_UNIT;
+
+export const wordFor = (stem: WordStem, selected: boolean) =>
+  `${stem}/${selected ? 'seleccionada' : 'normal'}` as WordName;
 
 export interface PauseMenuItem {
   key: MenuKey;
   href: string;
-  /** Per-language seed picked by eye so each word reads cleanly. */
-  seeds: Record<Language, number>;
+  /** Figma-lettered artwork per language; the selected state swaps the last segment. */
+  words: Record<Language, WordStem>;
   /** Fan spoke angle in degrees; positive tips the word's left end upward. */
   angle: number;
   /** Gap between the word's right end and the fan pivot, in em. */
@@ -16,14 +28,39 @@ export interface PauseMenuItem {
 }
 
 export const MENU_ITEMS: PauseMenuItem[] = [
-  { key: 'about', href: '#about', seeds: { en: 85, es: 85 }, angle: 26, reach: 3.7 },
-  { key: 'projects', href: '#projects', seeds: { en: 204, es: 85 }, angle: 13, reach: 4.1 },
-  { key: 'skills', href: '#skills', seeds: { en: 85, es: 187 }, angle: 0, reach: 4.4 },
-  { key: 'contact', href: '#contact', seeds: { en: 85, es: 119 }, angle: -13, reach: 4.1 },
+  {
+    key: 'about',
+    href: '#about',
+    words: { en: 'menu/en/profile', es: 'menu/es/perfil' },
+    angle: 26,
+    reach: 3.7,
+  },
+  {
+    key: 'projects',
+    href: '#projects',
+    words: { en: 'menu/en/targets', es: 'menu/es/objetivos' },
+    angle: 13,
+    reach: 4.1,
+  },
+  {
+    key: 'skills',
+    href: '#skills',
+    words: { en: 'menu/en/skills', es: 'menu/es/habilidades' },
+    angle: 0,
+    reach: 4.4,
+  },
+  {
+    key: 'contact',
+    href: '#contact',
+    words: { en: 'menu/en/request', es: 'menu/es/solicitud' },
+    angle: -13,
+    reach: 4.1,
+  },
   {
     key: 'github',
     href: 'https://github.com/JavierAnd0',
-    seeds: { en: 85, es: 85 },
+    // Same spelling in both languages, so one lettering serves both.
+    words: { en: 'menu/es/github', es: 'menu/es/github' },
     angle: -26,
     reach: 3.8,
     external: true,

@@ -147,86 +147,8 @@
   }
 }
 
-/* ─── Ransom-note lettering (Persona menu style) ─────────────────────────── */
+/* ─── Selection plate ─────────────────────────────────────────────────────── */
 @layer components {
-  .ransom {
-    display: inline-flex;
-    align-items: flex-end;
-    line-height: 1;
-    white-space: nowrap;
-    --ransom-fill: #ffffff;
-    --ransom-stroke: #0a0a0a;
-    --ransom-extrude: #4d4d4d;
-    --ransom-shadow: #0a0a0a;
-    --ransom-star: #0a0a0a;
-  }
-
-  .ransom--dark {
-    --ransom-fill: #0a0a0a;
-    --ransom-stroke: #ffffff;
-    --ransom-extrude: #0a0a0a;
-    --ransom-shadow: #0a0a0a;
-    --ransom-star: #ffffff;
-  }
-
-  /* For lettering sitting on black: the extrusion carries the color. */
-  .ransom--red {
-    --ransom-stroke: #e60012;
-    --ransom-extrude: #e60012;
-    --ransom-shadow: #e60012;
-  }
-
-  .ransom-letter {
-    display: inline-grid;
-    position: relative;
-    margin: 0 0.012em;
-    line-height: 1;
-    transform-origin: 50% 65%;
-    will-change: transform;
-  }
-
-  /* Layers are stacked in one grid cell; z-index keeps paint order explicit. */
-  .ransom-letter > * {
-    grid-area: 1 / 1;
-    position: relative;
-  }
-
-  /* Grey 3D side, outlined in black, dropping down-left like the P5 menu. */
-  .ransom-shadow {
-    z-index: 0;
-    left: -0.13em;
-    top: 0.15em;
-    color: var(--ransom-shadow);
-    -webkit-text-stroke: 0.22em var(--ransom-shadow);
-  }
-
-  .ransom-extrude {
-    z-index: 1;
-    left: -0.105em;
-    top: 0.12em;
-    color: var(--ransom-extrude);
-    -webkit-text-stroke: 0.1em var(--ransom-extrude);
-  }
-
-  .ransom-stroke {
-    z-index: 2;
-    color: var(--ransom-stroke);
-    -webkit-text-stroke: 0.13em var(--ransom-stroke);
-  }
-
-  .ransom-fill {
-    z-index: 3;
-    color: var(--ransom-fill);
-  }
-
-  .ransom-ring {
-    width: 0.8em;
-    height: 0.8em;
-    align-self: center;
-    top: 0.04em;
-    overflow: visible;
-  }
-
   /* Hand-drawn "boil": the plate snaps between poses like limited animation. */
   .plate-boil {
     transform-box: fill-box;
@@ -238,12 +160,6 @@
     animation-duration: 0.48s;
     animation-direction: reverse;
   }
-
-  .ransom-ring-shadow { fill: var(--ransom-shadow); }
-  .ransom-ring-extrude { fill: var(--ransom-extrude); }
-  .ransom-ring-stroke { fill: var(--ransom-stroke); }
-  .ransom-ring-fill { fill: var(--ransom-fill); }
-  .ransom-ring-star { fill: var(--ransom-star); }
 }
 
 /* ─── Hero backdrop ───────────────────────────────────────────────────────── */

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import RansomText from './RansomText';
+import DesignedWord from './DesignedWord';
 import { useI18n } from '@/i18n/context';
 import { markIntroSeen } from './config';
 
@@ -107,9 +107,9 @@ const IntroScreen = ({ onReveal, onDone }: IntroScreenProps) => {
           <div className="pointer-events-none absolute inset-0 hero-halftone opacity-40" />
           <p className="relative mb-2 font-hand text-sm text-white md:text-lg">{t.intro.callingCard}</p>
           <div className="relative text-[2.3rem] sm:text-[3rem] md:text-[4.4rem]">
-            <RansomText text="JAVIER" seed={85} animateIn delay={0.45} />
+            <DesignedWord name="nombre/javier/normal" label="JAVIER" animateIn delay={0.45} />
             <span className="inline-block w-[0.3em]" />
-            <RansomText text="ANDRADE" seed={85} animateIn delay={0.72} />
+            <DesignedWord name="nombre/andrade/normal" label="ANDRADE" animateIn delay={0.72} />
           </div>
           <div className="relative mt-4 flex items-center justify-between gap-4">
             <span className="whitespace-nowrap bg-black px-3 py-1 font-heavy text-[0.65rem] tracking-[0.12em] text-white sm:text-xs md:text-sm">

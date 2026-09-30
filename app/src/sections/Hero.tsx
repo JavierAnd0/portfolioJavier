@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Github } from 'lucide-react';
-import RansomText from '@/components/persona/RansomText';
+import DesignedWord from '@/components/persona/DesignedWord';
 import PauseMenu from '@/components/persona/PauseMenu';
 import CalendarHud from '@/components/persona/CalendarHud';
 import LanguageSwitch from '@/components/persona/LanguageSwitch';
@@ -102,7 +102,7 @@ const Hero = ({ ready, isOnScreen }: HeroProps) => {
     <section
       id="home"
       aria-label={t.a11y.home}
-      className="relative min-h-[100svh] w-full overflow-hidden bg-black"
+      className="relative min-h-[100svh] w-full overflow-clip bg-black"
     >
       <Backdrop ready={ready} />
 
@@ -141,9 +141,9 @@ const Hero = ({ ready, isOnScreen }: HeroProps) => {
             {t.hero.callingCard}
           </motion.p>
           <h1 className="flex -rotate-3 flex-col gap-1 text-[clamp(1.8rem,min(9vw,5vh),2.6rem)] leading-none md:text-[3.2rem] xl:text-[3.8rem]">
-            <RansomText text="JAVIER" seed={85} tone="red" animateIn play={ready} delay={0.3} />
+            <DesignedWord name="nombre/javier/normal" label="JAVIER" animateIn play={ready} delay={0.3} />
             <span className="pl-[0.8em]">
-              <RansomText text="ANDRADE" seed={85} tone="red" animateIn play={ready} delay={0.5} />
+              <DesignedWord name="nombre/andrade/normal" label="ANDRADE" animateIn play={ready} delay={0.5} />
             </span>
           </h1>
           <motion.div
