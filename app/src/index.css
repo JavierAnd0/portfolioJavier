@@ -1,39 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 100%;
-    --card: 0 0% 7%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 100%;
     --popover: 0 0% 5%;
     --popover-foreground: 0 0% 100%;
-    --primary: 0 100% 50%;
+    --primary: 353 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 340 100% 55%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 100%;
+    --secondary-foreground: 0 0% 4%;
     --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 340 100% 55%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 353 100% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 20%;
     --input: 0 0% 15%;
-    --ring: 0 100% 50%;
-    --radius: 0.625rem;
-    
-    --black: #000000;
-    --white: #ffffff;
-    --red: #ff0000;
-    --pink: #ff6b9d;
-    --magenta: #ff0066;
-    --grey: #4d4d4d;
-    --dark-grey: #1a1a1a;
+    --ring: 353 100% 50%;
+    --radius: 0.25rem;
   }
 }
 
@@ -41,7 +31,7 @@
   * {
     @apply border-border;
   }
-  
+
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
@@ -49,60 +39,189 @@
 
   body {
     @apply bg-black text-white antialiased;
-    font-family: 'Geist Mono', monospace;
+    font-family: 'Space Grotesk', sans-serif;
     overflow-x: hidden;
+    background-image:
+      repeating-linear-gradient(135deg, rgba(255, 0, 34, 0.035) 0px, rgba(255, 0, 34, 0.035) 2px, transparent 2px, transparent 40px);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Geist Mono', monospace;
+    font-family: 'Anton', 'Space Grotesk', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 
   code, pre {
-    font-family: 'Geist Mono', monospace;
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
 @layer utilities {
+  .font-hand {
+    font-family: 'Permanent Marker', cursive;
+  }
+
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #ff0000 0%, #ff6b9d 50%, #ff0066 100%);
+    background-image: linear-gradient(100deg, #ff0022 0%, #ffffff 55%, #ff0022 100%);
   }
-  
+
   .glow-red {
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5),
-                0 0 40px rgba(255, 0, 0, 0.3),
-                0 0 60px rgba(255, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgba(255, 0, 34, 0.5),
+                0 0 40px rgba(255, 0, 34, 0.3);
   }
-  
-  .glow-pink {
-    box-shadow: 0 0 20px rgba(255, 107, 157, 0.5),
-                0 0 40px rgba(255, 107, 157, 0.3),
-                0 0 60px rgba(255, 107, 157, 0.2);
-  }
-  
+
   .text-glow-red {
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
-                 0 0 20px rgba(255, 0, 0, 0.5),
-                 0 0 30px rgba(255, 0, 0, 0.3);
+    text-shadow: 0 0 10px rgba(255, 0, 34, 0.8),
+                 0 0 20px rgba(255, 0, 34, 0.5);
   }
-  
-  .text-glow-pink {
-    text-shadow: 0 0 10px rgba(255, 107, 157, 0.8),
-                 0 0 20px rgba(255, 107, 157, 0.5),
-                 0 0 30px rgba(255, 107, 157, 0.3);
+
+  .text-outline {
+    -webkit-text-stroke: 1.5px #ff0022;
+    color: transparent;
   }
-  
-  .border-glow {
-    border: 1px solid rgba(255, 0, 0, 0.3);
-    box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.1),
-                0 0 20px rgba(255, 0, 0, 0.2);
+
+  .text-outline-white {
+    -webkit-text-stroke: 1.5px #ffffff;
+    color: transparent;
   }
-  
+
   .glass {
-    background: rgba(26, 26, 26, 0.8);
+    background: rgba(17, 17, 17, 0.82);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
+
+  /* Diagonal red/black stripe band, Phantom Thieves calling-card style */
+  .slash-stripes {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      #ff0022 0px,
+      #ff0022 14px,
+      #0a0a0a 14px,
+      #0a0a0a 28px
+    );
+  }
+
+  .slash-stripes-thin {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 0, 34, 0.9) 0px,
+      rgba(255, 0, 34, 0.9) 3px,
+      transparent 3px,
+      transparent 9px
+    );
+  }
+
+  /* Halftone comic-panel dot texture */
+  .halftone {
+    background-image: radial-gradient(rgba(255, 0, 34, 0.55) 1px, transparent 1.4px);
+    background-size: 7px 7px;
+  }
+
+  .halftone-white {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.7) 1px, transparent 1.4px);
+    background-size: 6px 6px;
+  }
+
+  /* Angular cut corners like Persona menu panels */
+  .cut-corners {
+    clip-path: polygon(
+      16px 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%, 0% 16px
+    );
+  }
+
+  .cut-corners-lg {
+    clip-path: polygon(
+      36px 0%, 100% 0%, 100% calc(100% - 36px), calc(100% - 36px) 100%, 0% 100%, 0% 36px
+    );
+  }
+
+  .cut-corner-tag {
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 92% 100%, 0 100%);
+  }
+
+  .card-hard {
+    border: 2px solid #ff0022;
+    box-shadow: 8px 8px 0 0 rgba(255, 0, 34, 1);
+  }
+}
+
+/* ─── Selection plate ─────────────────────────────────────────────────────── */
+@layer components {
+  /* Hand-drawn "boil": the plate snaps between poses like limited animation. */
+  .plate-boil {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: plate-boil 0.36s steps(1) infinite;
+  }
+
+  .plate-boil--alt {
+    animation-duration: 0.48s;
+    animation-direction: reverse;
+  }
+}
+
+/* ─── Hero backdrop ───────────────────────────────────────────────────────── */
+.hero-edge,
+.hero-panel {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 47%, 100% 33%, 100% 100%, 0 100%);
+}
+
+.hero-edge {
+  background: #ffffff;
+  transform: translateY(-10px);
+}
+
+.hero-panel {
+  background: #e60012;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .hero-edge,
+  .hero-panel {
+    clip-path: polygon(47% 0, 100% 0, 100% 100%, 27% 100%);
+  }
+
+  .hero-edge {
+    transform: translateX(-12px);
+  }
+}
+
+.hero-rays {
+  position: absolute;
+  left: 62%;
+  top: 55%;
+  width: 240vmax;
+  height: 240vmax;
+  translate: -50% -50%;
+  background: repeating-conic-gradient(rgba(10, 10, 10, 0.16) 0deg 4deg, transparent 4deg 11deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 5%, #000 38%);
+  mask-image: radial-gradient(circle, transparent 5%, #000 38%);
+  animation: spin-slow 140s linear infinite;
+}
+
+.hero-halftone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#0a0a0a 1.4px, transparent 1.9px);
+  background-size: 10px 10px;
+  -webkit-mask-image: linear-gradient(to top left, #000 0%, transparent 42%);
+  mask-image: linear-gradient(to top left, #000 0%, transparent 42%);
+  opacity: 0.55;
+}
+
+@keyframes plate-boil {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  33% { transform: translate(0.6%, -1.5%) rotate(-0.6deg) scale(1.012); }
+  66% { transform: translate(-0.5%, 1.2%) rotate(0.5deg) scale(0.995); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
 }
 
 /* Custom scrollbar */
@@ -111,21 +230,21 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #ff0000, #ff6b9d);
-  border-radius: 4px;
+  background: #ff0022;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #ff3333, #ff8ab0);
+  background: #ff3350;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(255, 0, 0, 0.3);
+  background: #ff0022;
   color: #fff;
 }
 

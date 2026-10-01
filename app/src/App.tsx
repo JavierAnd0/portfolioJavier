@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Hero from './sections/Hero';
 import About from './sections/About';
@@ -7,157 +7,105 @@ import Skills from './sections/Skills';
 import Contact from './sections/Contact';
 import Footer from './sections/Footer';
 import { StatusBar } from './components/StatusBar';
+import IntroScreen from './components/persona/IntroScreen';
+import { shouldPlayIntro } from './components/persona/config';
+import PauseMenu from './components/persona/PauseMenu';
+import SideNav from './components/persona/SideNav';
+import LanguageSwitch from './components/persona/LanguageSwitch';
+import { useI18n } from './i18n/context';
+import type { Dictionary } from './i18n/en';
 import './App.css';
 
-// Loading Screen Component
-const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
+// Swap the tab title while the visitor is on another tab.
+const useAwayTitle = ({ title, awayTitle }: Dictionary['meta']) => {
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
-    const timer = setTimeout(() => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-      onComplete();
-    }, 2500);
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-      clearTimeout(timer);
+    const onChange = () => {
+      document.title = document.hidden ? awayTitle : title;
     };
-  }, [onComplete]);
-
-  return (
-    <motion.div
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
-      className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center gap-10"
-    >
-      {/* Logo + Ring container */}
-      <div className="relative w-20 h-20">
-        {/* Animated Logo */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-20 h-20 rounded-full border-2 border-red flex items-center justify-center glow-red"
-        >
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-            className="font-heading font-bold text-2xl text-white"
-          >
-            D
-          </motion.span>
-        </motion.div>
-
-        {/* Loading Ring */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-          className="absolute inset-0 w-20 h-20"
-        >
-          <svg viewBox="0 0 80 80" className="w-full h-full">
-            <circle
-              cx="40"
-              cy="40"
-              r="38"
-              fill="none"
-              stroke="url(#loadingGradient)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeDasharray="60 180"
-            />
-            <defs>
-              <linearGradient id="loadingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#ff0000" />
-                <stop offset="100%" stopColor="#ff6b9d" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </motion.div>
-      </div>
-
-      {/* Loading Text */}
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="text-white/50 text-sm font-heading tracking-wider"
-      >
-        Loading...
-      </motion.p>
-    </motion.div>
-  );
+    document.addEventListener('visibilitychange', onChange);
+    return () => document.removeEventListener('visibilitychange', onChange);
+  }, [title, awayTitle]);
 };
 
-// Mobile Navigation
-const MobileNav = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const navItems = [
-    { label: 'About', id: 'about' },
-    { label: 'Projects', id: 'projects' },
-    { label: 'Skills', id: 'skills' },
-    { label: 'Contact', id: 'contact' },
-  ];
+const useHeroOnScreen = () => {
+  const [onScreen, setOnScreen] = useState(true);
+  useEffect(() => {
+    const hero = document.getElementById('home');
+    if (!hero) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setOnScreen(entry.intersectionRatio >= 0.35),
+      { threshold: [0, 0.35, 1] },
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+  return onScreen;
+};
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsOpen(false);
-    }
-  };
+// On small screens the hamburger opens the same pause menu over a red backdrop.
+const MobileNav = ({ visible }: { visible: boolean }) => {
+  const { t, lang } = useI18n();
+  const [isOpen, setIsOpen] = useState(false);
+  const close = useCallback(() => setIsOpen(false), []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, close]);
 
   return (
     <>
-      {/* Hamburger Button */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-6 right-6 z-50 w-10 h-10 flex flex-col items-center justify-center gap-1.5"
-      >
-        <motion.span
-          animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-          className="w-6 h-0.5 bg-white block"
-        />
-        <motion.span
-          animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-          className="w-6 h-0.5 bg-white block"
-        />
-        <motion.span
-          animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-          className="w-6 h-0.5 bg-white block"
-        />
-      </motion.button>
+      <AnimatePresence>
+        {(visible || isOpen) && (
+          <motion.button
+            type="button"
+            initial={{ opacity: 0, scale: 0.6, rotate: -20 }}
+            animate={{ opacity: 1, scale: 1, rotate: isOpen ? 0 : -6 }}
+            exit={{ opacity: 0, scale: 0.6 }}
+            onClick={() => setIsOpen((open) => !open)}
+            aria-expanded={isOpen}
+            aria-label={isOpen ? t.a11y.closeMenu : t.a11y.openMenu}
+            className="fixed right-5 top-5 z-[60] flex h-12 w-12 flex-col items-center justify-center gap-1.5 border-[3px] border-black bg-white shadow-[4px_4px_0_#e60012] lg:hidden"
+          >
+            <motion.span
+              animate={isOpen ? { rotate: 45, y: 7.5 } : { rotate: 0, y: 0 }}
+              className="block h-[3px] w-6 bg-black"
+            />
+            <motion.span
+              animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
+              className="block h-[3px] w-5 bg-black"
+            />
+            <motion.span
+              animate={isOpen ? { rotate: -45, y: -7.5 } : { rotate: 0, y: 0 }}
+              className="block h-[3px] w-6 bg-black"
+            />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="lg:hidden fixed inset-0 z-40 bg-black/95 backdrop-blur-lg"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t.a11y.menu}
+            initial={{ clipPath: 'polygon(100% 0, 100% 0, 100% 0, 100% 0)' }}
+            animate={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
+            exit={{ clipPath: 'polygon(100% 0, 100% 0, 100% 0, 100% 0)' }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#e60012] lg:hidden"
           >
-            <nav className="flex flex-col items-center justify-center h-full gap-8">
-              {navItems.map((item, index) => (
-                <motion.button
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  onClick={() => scrollToSection(item.id)}
-                  className="font-heading text-2xl text-white hover:text-red transition-colors"
-                >
-                  {item.label}
-                </motion.button>
-              ))}
-            </nav>
+            <div aria-hidden="true" className="hero-rays" />
+            <LanguageSwitch className="absolute left-5 top-6" />
+            <div aria-hidden="true" className="hero-halftone" />
+            <div
+              className="relative text-[clamp(1.8rem,8.4vw,2.8rem)]"
+              style={{ fontSize: lang === 'es' ? 'clamp(1.5rem,6.8vw,2.3rem)' : undefined }}
+            >
+              <PauseMenu ready keyboardEnabled onNavigate={close} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -165,126 +113,64 @@ const MobileNav = () => {
   );
 };
 
-// Scroll Progress Indicator
 const ScrollProgress = () => {
-  const [progress, setProgress] = useState(0);
-  const scrollEventsRef = useRef(0);
-  const rafPendingRef = useRef(false);
-  const lastProgressRef = useRef(0);
-  const latestScrollTopRef = useRef(0);
-  const committedUpdatesRef = useRef(0);
-  const skippedUpdatesRef = useRef(0);
-  const resizeEventsRef = useRef(0);
-  const resizeRafPendingRef = useRef(false);
+  const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      latestScrollTopRef.current = scrollTop;
-      scrollEventsRef.current += 1;
-      if (rafPendingRef.current) {
-        return;
-      }
-
-      rafPendingRef.current = true;
-      requestAnimationFrame(() => {
-        rafPendingRef.current = false;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const nextProgress = docHeight > 0 ? (latestScrollTopRef.current / docHeight) * 100 : 0;
-        const roundedProgress = Math.max(0, Math.min(100, Number(nextProgress.toFixed(2))));
-        if (Math.abs(roundedProgress - lastProgressRef.current) < 0.5) {
-          skippedUpdatesRef.current += 1;
-        } else {
-          lastProgressRef.current = roundedProgress;
-          committedUpdatesRef.current += 1;
-          setProgress(roundedProgress);
-        }
-
-      });
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? window.scrollY / max : 0;
+      if (barRef.current) barRef.current.style.transform = `scaleX(${progress})`;
     };
-
-    const handleResize = () => {
-      resizeEventsRef.current += 1;
-      if (resizeRafPendingRef.current) {
-        return;
-      }
-
-      resizeRafPendingRef.current = true;
-      requestAnimationFrame(() => {
-        resizeRafPendingRef.current = false;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const nextProgress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
-        const roundedProgress = Math.max(0, Math.min(100, Number(nextProgress.toFixed(2))));
-        if (Math.abs(roundedProgress - lastProgressRef.current) >= 0.5) {
-          lastProgressRef.current = roundedProgress;
-          setProgress(roundedProgress);
-        }
-      });
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
     };
-
-    handleResize();
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleResize);
+    update();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
-      if (rafPendingRef.current) {
-        rafPendingRef.current = false;
-      }
-      if (resizeRafPendingRef.current) {
-        resizeRafPendingRef.current = false;
-      }
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
     };
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 2 }}
-      className="fixed top-0 left-0 right-0 z-50 h-[2px] bg-white/10"
-    >
-      <motion.div
-        className="h-full bg-gradient-to-r from-red via-pink to-magenta"
-        style={{ width: `${progress}%` }}
-      />
-    </motion.div>
+    <div aria-hidden="true" className="fixed left-0 right-0 top-0 z-50 h-[3px] bg-white/10">
+      <div ref={barRef} className="h-full origin-left scale-x-0 bg-[#e60012]" />
+    </div>
   );
 };
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [showIntro, setShowIntro] = useState(shouldPlayIntro);
+  const [ready, setReady] = useState(!showIntro);
+  const heroOnScreen = useHeroOnScreen();
+  const { t } = useI18n();
+  useAwayTitle(t.meta);
+
+  const reveal = useCallback(() => setReady(true), []);
+  const finishIntro = useCallback(() => setShowIntro(false), []);
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        {isLoading && (
-          <LoadingScreen onComplete={() => setIsLoading(false)} />
-        )}
-      </AnimatePresence>
+      {showIntro && <IntroScreen onReveal={reveal} onDone={finishIntro} />}
 
-      {!isLoading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative"
-        >
-          <ScrollProgress />
-          <MobileNav />
-          
-          <main className="relative pb-8">
-            <Hero />
-            <About />
-            <Projects />
-            <Skills />
-            <Contact />
-            <Footer />
-          </main>
-          <StatusBar />
-        </motion.div>
-      )}
+      <ScrollProgress />
+      <SideNav visible={!heroOnScreen} />
+      <MobileNav visible={!heroOnScreen} />
+
+      <main className="relative pb-8">
+        <Hero ready={ready} isOnScreen={heroOnScreen && !showIntro} />
+        <About />
+        <Projects />
+        <Skills />
+        <Contact />
+        <Footer />
+      </main>
+      <StatusBar />
     </>
   );
 }

@@ -1,244 +1,269 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { Code2, Terminal, Braces } from 'lucide-react';
-import gsap from 'gsap';
+import type { ReactNode } from 'react';
+import { motion } from 'framer-motion';
+import { useI18n } from '@/i18n/context';
 
-interface CounterProps {
-  end: number;
-  suffix?: string;
-  duration?: number;
-}
+// Slanted panel outlines shared by the chat pieces, like the game's IM screen. Fixed
+// offsets keep the slant the same on tall bubbles, so it never eats into the text.
+const BUBBLE = 'polygon(10px 0, 100% 6px, calc(100% - 8px) 100%, 0 calc(100% - 10px))';
+const REPLY = 'polygon(0 6px, 100% 0, calc(100% - 12px) 100%, 12px calc(100% - 6px))';
 
-const Counter = ({ end, suffix = '', duration = 2 }: CounterProps) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
+const OUTER_SHAPE =
+  'M294 332L155 700L189 820L102 958L0 995L411 1059L433 1325L1325 820L1400 516L1276 28L751 111L294 1L102 185Z';
+const INNER_SHAPE =
+  'M371 358L250 695L280 804L204 931L116 964L473 1023V1238L1265 804L1331 526L1223 80L768 156L371 55L204 223Z';
 
-  useEffect(() => {
-    if (isInView) {
-      gsap.to({ value: 0 }, {
-        value: end,
-        duration,
-        ease: 'power2.out',
-        onUpdate: function () {
-          setCount(Math.floor(this.targets()[0].value));
-        },
-      });
-    }
-  }, [isInView, end, duration]);
+const pop = (delay: number) => ({
+  initial: { opacity: 0, scale: 0.7, x: -24, rotate: -4 },
+  whileInView: { opacity: 1, scale: 1, x: 0, rotate: 0 },
+  viewport: { once: true, margin: '-15% 0px' },
+  transition: { type: 'spring' as const, stiffness: 420, damping: 22, delay },
+});
 
-  return (
-    <span ref={ref}>
-      {count}{suffix}
-    </span>
-  );
+// Javier talks in black bubbles on the left; the visitor answers in white on the right,
+// the way the game sets the player's lines apart.
+type Speaker = 'javier' | 'visitor';
+
+const INK: Record<Speaker, { rim: string; fill: string; text: string }> = {
+  javier: { rim: 'bg-white', fill: 'bg-black', text: 'text-white' },
+  visitor: { rim: 'bg-black', fill: 'bg-white', text: 'text-black' },
 };
 
-const CodeDisplay = () => {
-  const codeLines = [
-    { text: 'const developer = {', color: 'text-pink' },
-    { text: '  name: "Javier Andrade",', color: 'text-white/80' },
-    { text: '  role: "Full Stack Developer",', color: 'text-white/80' },
-    { text: '  skills: ["React", "Next", "TypeScript", "Python", "MongoDB"],', color: 'text-red' },
-    { text: '  passion: "Building apps",', color: 'text-white/80' },
-    { text: '  available: true', color: 'text-green-400' },
-    { text: '};', color: 'text-pink' },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 50 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8, delay: 0.3 }}
-      className="relative"
+// A tilted tile framing who is talking.
+const Avatar = ({ children, tilt, from }: { children: ReactNode; tilt: number; from: Speaker }) => (
+  <div
+    aria-hidden="true"
+    className={`relative h-14 w-14 shrink-0 p-[3px] shadow-[4px_4px_0_#0a0a0a] md:h-16 md:w-16 ${INK[from].rim}`}
+    style={{ rotate: `${tilt}deg`, clipPath: 'polygon(6% 0, 100% 4%, 94% 100%, 0 96%)' }}
+  >
+    <div
+      className={`flex h-full w-full items-center justify-center overflow-hidden ${INK[from].fill}`}
+      style={{ clipPath: 'polygon(6% 0, 100% 4%, 94% 100%, 0 96%)' }}
     >
-      <div className="glass rounded-2xl p-6 border border-white/10">
-        {/* Window Controls */}
-        <div className="flex gap-2 mb-4">
-          <div className="w-3 h-3 rounded-full bg-red/80" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-          <div className="w-3 h-3 rounded-full bg-green-500/80" />
-        </div>
+      {children}
+    </div>
+  </div>
+);
 
-        {/* Code Content */}
-        <div className="font-mono text-sm md:text-base">
-          {codeLines.map((line, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
-              className="flex"
-            >
-              <span className="text-white/30 w-6 text-right mr-4 select-none">
-                {index + 1}
-              </span>
-              <span className={line.color}>{line.text}</span>
-            </motion.div>
-          ))}
+// Rimmed bubble with a jagged tail pointing at the speaker.
+const Bubble = ({ children, from }: { children: ReactNode; from: Speaker }) => {
+  const [rim, fill] = from === 'javier' ? ['#ffffff', '#0a0a0a'] : ['#0a0a0a', '#ffffff'];
+  return (
+    <div className="relative min-w-0 flex-1 drop-shadow-[5px_5px_0_rgba(10,10,10,0.9)]">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 30 30"
+        className={`absolute top-4 h-7 w-7 overflow-visible ${
+          from === 'javier' ? '-left-[18px]' : '-right-[18px] -scale-x-100'
+        }`}
+      >
+        <polygon points="30,2 0,14 30,26" fill={rim} />
+        <polygon points="30,7 9,14 30,21" fill={fill} />
+      </svg>
+      <div className={`p-[3px] ${INK[from].rim}`} style={{ clipPath: BUBBLE }}>
+        <div
+          className={`px-5 py-3.5 text-sm font-bold leading-relaxed md:text-base ${INK[from].fill} ${INK[from].text}`}
+          style={{ clipPath: BUBBLE }}
+        >
+          {children}
         </div>
-
-        {/* Blinking Cursor */}
-        <motion.span
-          animate={{ opacity: [1, 0] }}
-          transition={{ duration: 0.8, repeat: Infinity }}
-          className="inline-block w-2 h-5 bg-red ml-10 mt-1"
-        />
       </div>
-
-      {/* Decorative Elements */}
-      <div className="absolute -top-4 -right-4 w-20 h-20 border border-red/30 rounded-lg -z-10" />
-      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-red/10 rounded-lg -z-10" />
-    </motion.div>
+    </div>
   );
 };
+
+const Message = ({
+  from,
+  avatar,
+  tilt,
+  delay,
+  children,
+}: {
+  from: Speaker;
+  avatar: ReactNode;
+  tilt: number;
+  delay: number;
+  children: ReactNode;
+}) => {
+  const visitor = from === 'visitor';
+  const motionProps = pop(delay);
+  return (
+    <motion.li
+      className={`flex items-start gap-5 ${visitor ? 'flex-row-reverse' : ''}`}
+      style={{ transformOrigin: visitor ? '100% 50%' : '0% 50%' }}
+      {...motionProps}
+      initial={{ ...motionProps.initial, x: visitor ? 24 : -24, rotate: visitor ? 4 : -4 }}
+    >
+      <Avatar tilt={tilt} from={from}>
+        {avatar}
+      </Avatar>
+      <Bubble from={from}>{children}</Bubble>
+    </motion.li>
+  );
+};
+
+const Portrait = ({ alt }: { alt: string }) => (
+  <motion.div
+    className="relative mx-auto w-full max-w-[420px] lg:max-w-none"
+    initial={{ opacity: 0, x: -80, rotate: -12, scale: 0.9 }}
+    whileInView={{ opacity: 1, x: 0, rotate: -3, scale: 1 }}
+    viewport={{ once: true, margin: '-10% 0px' }}
+    transition={{ type: 'spring', stiffness: 170, damping: 18 }}
+  >
+    {/* Shapes and photo crop come from the "perfil/retrato" frame in Figma. */}
+    <svg
+      role="img"
+      aria-label={alt}
+      viewBox="0 0 1401 1326"
+      className="relative z-10 h-auto w-full overflow-visible drop-shadow-[10px_10px_0_#0a0a0a]"
+    >
+      <defs>
+        <clipPath id="portrait-shape">
+          <path d={INNER_SHAPE} />
+        </clipPath>
+        <clipPath id="portrait-crop">
+          <rect x={420} y={162} width={559} height={791} />
+        </clipPath>
+      </defs>
+      <path d={OUTER_SHAPE} fill="#e60012" stroke="#0a0a0a" strokeWidth={4} />
+      <path d={INNER_SHAPE} fill="#0a0a0a" />
+      <g clipPath="url(#portrait-shape)">
+        <image
+          href="/profile/foto.webp"
+          x={314.5}
+          y={138}
+          width={806.8}
+          height={806.8}
+          clipPath="url(#portrait-crop)"
+        />
+      </g>
+    </svg>
+    <motion.div
+      className="absolute bottom-[12%] right-[2%] z-20 -rotate-6 bg-white px-4 py-1.5 shadow-[5px_5px_0_#e60012]"
+      initial={{ scale: 0, rotate: -30 }}
+      whileInView={{ scale: 1, rotate: -6 }}
+      viewport={{ once: true }}
+      transition={{ type: 'spring', stiffness: 500, damping: 16, delay: 0.35 }}
+    >
+      <span className="font-heavy text-lg tracking-[0.04em] text-black md:text-xl">JAVIER ANDRADE</span>
+    </motion.div>
+  </motion.div>
+);
 
 const About = () => {
-  const stats = [
-    { value: 1, suffix: '+', label: 'Years Experience' },
-    { value: 5, suffix: '+', label: 'Projects Completed' },
-    { value: 100, suffix: '%', label: 'Commitment' },
-  ];
-
-  const techIcons = [
-    { Icon: Code2, label: 'Frontend' },
-    { Icon: Terminal, label: 'Backend' },
-    { Icon: Braces, label: 'APIs' },
-  ];
+  const { t } = useI18n();
+  const { chat } = t.about;
+  const me = <img src="/profile/avatar.webp" alt="" className="h-full w-full object-cover" />;
 
   return (
-    <section id="about" className="relative min-h-screen w-full bg-black py-24 md:py-32 overflow-hidden">
+    <section id="about" className="relative min-h-screen w-full overflow-hidden bg-black py-24 md:py-32">
       {/* Section Title */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="max-w-7xl mx-auto px-6 md:px-10 mb-16"
+        className="mx-auto mb-16 max-w-7xl px-6 md:px-10"
       >
-        <h2 className="font-heading text-5xl md:text-7xl font-bold text-white/10 uppercase tracking-[0.1em]">
-          About
+        <span className="mb-2 inline-block font-mono text-xs tracking-[0.3em] text-red">
+          {t.about.kicker}
+        </span>
+        <h2 className="font-display text-5xl font-normal uppercase tracking-[0.06em] text-white/10 md:text-7xl">
+          {t.about.backdrop}
         </h2>
         <motion.h3
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="font-heading text-3xl md:text-4xl font-semibold text-white -mt-8 md:-mt-12 ml-2"
+          className="-mt-8 ml-2 font-display text-3xl font-normal text-white md:-mt-12 md:text-4xl"
         >
-          About <span className="text-red">Me</span>
+          {t.about.title.before}
+          <span className="text-red">{t.about.title.accent}</span>
+          {t.about.title.after}
         </motion.h3>
       </motion.div>
 
-      {/* Main Content Grid */}
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left Column - Text Content */}
-          <div className="space-y-8">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-6">
-                Soy un <span className="text-red font-medium">desarrollador de software</span> apasionado por crear soluciones digitales innovadoras. Con experiencia en desarrollo full-stack, tengo experiencia en construir aplicaciones web modernas, escalables y centradas en el usuario.
-              </p>
-              <p className="text-base md:text-lg text-white/60 leading-relaxed">
-                Un enfoque que combina código limpio, arquitectura sólida y diseño intuitivo para entregar productos que no solo funcionan perfectamente, sino que también ofrecen experiencias memorables.
-              </p>
-            </motion.div>
+      <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 md:px-10 lg:grid-cols-[5fr_6fr] lg:gap-10">
+        <Portrait alt={chat.portraitAlt} />
 
-            {/* Tech Icons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex gap-6"
-            >
-              {techIcons.map(({ Icon, label }, index) => (
-                <motion.div
-                  key={label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
-                  whileHover={{ scale: 1.1, y: -5 }}
-                  className="flex flex-col items-center gap-2 group"
-                >
-                  <div className="w-14 h-14 rounded-xl border border-white/20 flex items-center justify-center group-hover:border-red group-hover:glow-red transition-all duration-300">
-                    <Icon className="w-6 h-6 text-white/60 group-hover:text-red transition-colors" />
-                  </div>
-                  <span className="text-xs text-white/40 group-hover:text-white/60 transition-colors">
-                    {label}
-                  </span>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* CTA Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              {/* 
-              <motion.a
-                href="/cv.pdf"
-                download="CV_Javier_Andrade.pdf"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="group flex items-center gap-3 px-8 py-4 bg-transparent border-2 border-red text-white font-heading font-medium rounded-full hover:bg-red hover:glow-red transition-all duration-300"
-              >
-                
-                <Download className="w-5 h-5" />
-                Download CV
-              </motion.a>
-              */}
-
-            </motion.div>
-          </div>
-
-          {/* Right Column - Code Display */}
-          <CodeDisplay />
-        </div>
-
-        {/* Stats Section */}
+        {/* IM screen: a red phone panel held at an angle; the margin clears the side nav. */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-20 flex flex-wrap justify-center gap-6 md:gap-8"
+          className="relative lg:mr-12"
+          initial={{ opacity: 0, y: 60, rotate: 6 }}
+          whileInView={{ opacity: 1, y: 0, rotate: 2 }}
+          viewport={{ once: true, margin: '-10% 0px' }}
+          transition={{ type: 'spring', stiffness: 150, damping: 18 }}
         >
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="text-center p-6 rounded-2xl border border-white/10 hover:border-red/50 hover:glow-red transition-all duration-300 w-48"
-            >
-              <div className="font-heading text-4xl md:text-5xl font-bold text-gradient mb-2">
-                <Counter end={stat.value} suffix={stat.suffix} />
+          <div className="border-[6px] border-white bg-black p-2 shadow-[14px_14px_0_#e60012]">
+            <div className="relative overflow-hidden bg-[#e60012] px-4 pb-6 pt-4 md:px-7">
+              <div aria-hidden="true" className="hero-halftone opacity-30" />
+
+              <div className="relative mb-6 flex items-center gap-3">
+                <span className="-rotate-3 bg-black px-3 py-0.5 font-heavy text-2xl text-white shadow-[3px_3px_0_#ffffff]">
+                  IM
+                </span>
+                <span className="font-heavy text-sm tracking-[0.12em] text-black">{chat.header}</span>
+                <span className="ml-auto -rotate-2 border-2 border-black bg-white px-2 py-0.5 font-heavy text-xs text-black">
+                  {chat.contact}
+                </span>
               </div>
-              <div className="text-sm text-white/50 uppercase tracking-wider">
-                {stat.label}
-              </div>
-            </motion.div>
-          ))}
+
+              <ul className="relative space-y-5">
+                <Message
+                  from="visitor"
+                  tilt={4}
+                  delay={0.2}
+                  avatar={<span className="font-heavy text-2xl text-black">?</span>}
+                >
+                  <span className="sr-only">{chat.visitor}: </span>
+                  {chat.question}
+                </Message>
+                <Message from="javier" tilt={-4} delay={0.7} avatar={me}>
+                  <span className="sr-only">{chat.contact}: </span>
+                  {t.about.intro.before}
+                  <span className="text-[#ff4d5e]">{t.about.intro.accent}</span>
+                  {t.about.intro.after}
+                </Message>
+                <Message from="javier" tilt={3} delay={1.2} avatar={me}>
+                  <span className="sr-only">{chat.contact}: </span>
+                  {t.about.body}
+                </Message>
+              </ul>
+
+              {/* Answer choices, like picking a reply in the game. */}
+              <motion.div
+                className="relative ml-auto mt-7 w-[92%] drop-shadow-[6px_6px_0_rgba(10,10,10,0.9)] md:w-[80%]"
+                {...pop(1.7)}
+              >
+                <div className="bg-black p-[3px]" style={{ clipPath: REPLY }}>
+                  <div className="flex flex-col gap-1 bg-white px-4 py-3" style={{ clipPath: REPLY }}>
+                    {[
+                      { href: '#projects', label: chat.replies.projects },
+                      { href: '#contact', label: chat.replies.contact },
+                    ].map(({ href, label }) => (
+                      <a
+                        key={href}
+                        href={href}
+                        className="group relative isolate px-3 py-1.5 text-sm font-bold text-black outline-none md:text-base"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0 -z-10 origin-left -skew-x-12 scale-x-0 bg-[#e60012] transition-transform duration-150 group-hover:scale-x-100 group-focus-visible:scale-x-100"
+                        />
+                        <span className="transition-colors group-hover:text-white group-focus-visible:text-white">
+                          {label}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
         </motion.div>
       </div>
 
-      {/* Background Decoration */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-red/5 rounded-full blur-[150px] -z-10" />
-      <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-pink/5 rounded-full blur-[100px] -z-10" />
+      <div className="absolute right-0 top-1/4 -z-10 h-96 w-96 rounded-full bg-red/5 blur-[150px]" />
     </section>
   );
 };

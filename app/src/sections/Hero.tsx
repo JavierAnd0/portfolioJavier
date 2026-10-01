@@ -1,278 +1,182 @@
-import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, ChevronDown } from 'lucide-react';
-import gsap from 'gsap';
+import { Github } from 'lucide-react';
+import DesignedWord from '@/components/persona/DesignedWord';
+import PauseMenu from '@/components/persona/PauseMenu';
+import CalendarHud from '@/components/persona/CalendarHud';
+import LanguageSwitch from '@/components/persona/LanguageSwitch';
+import { useI18n } from '@/i18n/context';
 
-const NeonRing = () => {
-  const ringRef = useRef<SVGSVGElement>(null);
-  const glowRef = useRef<SVGCircleElement>(null);
+const Key = ({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) => (
+  <kbd
+    className={`inline-flex h-7 items-center justify-center bg-white font-heavy text-[0.7rem] text-black shadow-[3px_3px_0_#e60012] ${
+      wide ? 'px-2' : 'w-7'
+    }`}
+  >
+    {children}
+  </kbd>
+);
 
-  useEffect(() => {
-    if (ringRef.current && glowRef.current) {
-      // Rotación continua del anillo
-      gsap.to(ringRef.current, {
-        rotation: 360,
-        duration: 20,
-        repeat: -1,
-        ease: 'none',
-      });
-
-      // Efecto de pulso en el brillo
-      gsap.to(glowRef.current, {
-        opacity: 0.6,
-        duration: 1.5,
-        repeat: -1,
-        yoyo: true,
-        ease: 'power1.inOut',
-      });
-    }
-  }, []);
-
+const ControlsHint = ({ ready }: { ready: boolean }) => {
+  const { t } = useI18n();
   return (
-    <svg
-      ref={ringRef}
-      viewBox="0 0 400 400"
-      className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px]"
-      style={{ transformOrigin: 'center' }}
+    <motion.div
+      aria-hidden="true"
+      className="flex -rotate-3 items-center gap-2 font-heavy text-xs tracking-[0.12em] text-white"
+      initial={{ opacity: 0, y: 20 }}
+      animate={ready ? { opacity: 1, y: 0 } : undefined}
+      transition={{ delay: 0.9, duration: 0.3 }}
     >
-      <defs>
-        {/* Gradiente para el anillo */}
-        <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ff0000" />
-          <stop offset="50%" stopColor="#ff6b9d" />
-          <stop offset="100%" stopColor="#ff0066" />
-        </linearGradient>
-
-        {/* Filtro de brillo */}
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="8" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-
-        {/* Filtro de brillo intenso */}
-        <filter id="glow-intense" x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur stdDeviation="15" result="coloredBlur" />
-          <feGaussianBlur stdDeviation="25" result="coloredBlur2" />
-          <feMerge>
-            <feMergeNode in="coloredBlur2" />
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-
-      {/* Círculo de brillo exterior */}
-      <circle
-        ref={glowRef}
-        cx="200"
-        cy="200"
-        r="160"
-        fill="none"
-        stroke="url(#ringGradient)"
-        strokeWidth="2"
-        opacity="0.8"
-        filter="url(#glow-intense)"
-      />
-
-      {/* Anillo principal */}
-      <circle
-        cx="200"
-        cy="200"
-        r="150"
-        fill="none"
-        stroke="url(#ringGradient)"
-        strokeWidth="8"
-        strokeLinecap="round"
-        filter="url(#glow)"
-      />
-    </svg>
+      <Key>↑</Key>
+      <Key>↓</Key>
+      <span className="mr-3 bg-black px-2 py-1">{t.hero.select}</span>
+      <Key wide>ENTER</Key>
+      <span className="bg-black px-2 py-1">{t.hero.confirm}</span>
+    </motion.div>
   );
 };
 
-const Hero = () => {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const navItems = [
-    { label: 'ABOUT', id: 'about' },
-    { label: 'PROJECTS', id: 'projects' },
-    { label: 'SKILLS', id: 'skills' },
-    { label: 'CONTACT', id: 'contact' },
-  ];
-
+const MarqueeBand = () => {
+  const { t } = useI18n();
+  const phrases = [...t.hero.marquee, ...t.hero.marquee, ...t.hero.marquee];
   return (
-    <section className="relative min-h-screen w-full bg-black overflow-hidden flex flex-col">
-      {/* Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-6 pr-20 md:pr-10 md:p-10"
-      >
-        {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex items-center gap-3"
-        >
-          <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-red flex items-center justify-center glow-red">
-            <span className="font-heading font-bold text-lg md:text-xl text-white">JA</span>
-          </div>
-        </motion.div>
-
-        {/* Name */}
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-right"
-        >
-          <h2 className="font-heading font-bold text-lg md:text-2xl tracking-[0.1em] text-pink text-glow-pink">
-            Javier Andrade
-          </h2>
-        </motion.div>
-      </motion.header>
-
-      {/* Navigation - Vertical Right */}
-      <motion.nav
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 1 }}
-        className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 z-30 flex-col gap-8"
-      >
-        {navItems.map((item, index) => (
-          <motion.button
-            key={item.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 1.2 + index * 0.1 }}
-            onClick={() => scrollToSection(item.id)}
-            className="group relative font-heading text-xs tracking-[0.2em] text-white/70 hover:text-red transition-all duration-300"
-            style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
-          >
-            <span className="group-hover:tracking-[0.3em] transition-all duration-300">
-              {item.label}
-            </span>
-            <span className="absolute -right-3 top-0 w-[2px] h-0 bg-red group-hover:h-full transition-all duration-300" />
-          </motion.button>
+    <div
+      aria-hidden="true"
+      className="absolute -left-[5%] bottom-12 z-20 w-[110%] -rotate-2 overflow-hidden border-y-[3px] border-white bg-black py-1.5 md:bottom-14"
+    >
+      <div className="flex w-max animate-marquee whitespace-nowrap">
+        {[0, 1].map((i) => (
+          <span key={i} className="font-display text-sm tracking-[0.18em] text-white md:text-base">
+            {phrases.map((phrase, j) => (
+              <span key={j} className="px-3">
+                {phrase}
+                <span className="pl-6 text-[#e60012]">★</span>
+              </span>
+            ))}
+          </span>
         ))}
-      </motion.nav>
+      </div>
+    </div>
+  );
+};
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center relative z-10 px-4">
-        {/* Neon Ring Container */}
+const CITY_SRC = `${import.meta.env.BASE_URL}bg/city-night.webp`;
+
+// Both copies share the same box so the skyline lines up across the diagonal.
+const CityImage = ({ ready, className }: { ready: boolean; className: string }) => (
+  <motion.img
+    src={CITY_SRC}
+    alt=""
+    draggable={false}
+    className={`absolute inset-0 h-full w-full select-none object-cover object-[50%_80%] ${className}`}
+    initial={{ scale: 1.12 }}
+    animate={ready ? { scale: 1 } : undefined}
+    transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+  />
+);
+
+const Backdrop = ({ ready }: { ready: boolean }) => (
+  <div aria-hidden="true" className="absolute inset-0">
+    {/* Black side: the city sunk into the dark. */}
+    <CityImage ready={ready} className="grayscale brightness-[0.55] contrast-[1.15]" />
+    <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/60" />
+    <div className="absolute inset-0 halftone opacity-[0.14]" />
+
+    <div className="hero-edge" />
+    {/* Red side: same city multiplied into the red, like the P5 menus. */}
+    <div className="hero-panel">
+      <CityImage ready={ready} className="grayscale contrast-[1.25] brightness-[1.15] mix-blend-multiply" />
+      <div className="hero-rays opacity-60" />
+      <div className="hero-halftone" />
+    </div>
+  </div>
+);
+
+interface HeroProps {
+  ready: boolean;
+  isOnScreen: boolean;
+}
+
+const Hero = ({ ready, isOnScreen }: HeroProps) => {
+  const { t, lang } = useI18n();
+  return (
+    <section
+      id="home"
+      aria-label={t.a11y.home}
+      className="relative min-h-[100svh] w-full overflow-clip bg-black"
+    >
+      <Backdrop ready={ready} />
+
+      <div className="relative z-10 flex min-h-[100svh] flex-col px-5 pb-32 pt-5 md:px-10 lg:block lg:p-0">
+        {/* Calendar */}
+        <div className="order-1 origin-top-left scale-[0.82] md:scale-100 lg:absolute lg:left-12 lg:top-9">
+          <CalendarHud ready={ready} />
+        </div>
+
+        {/* Language */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-          className="relative mb-8"
+          className="absolute right-5 top-6 md:right-10 lg:right-12 lg:top-10"
+          initial={{ opacity: 0, y: -16 }}
+          animate={ready ? { opacity: 1, y: 0 } : undefined}
+          transition={{ delay: 0.6, duration: 0.3 }}
         >
-          <NeonRing />
-
-          {/* Silueta central (opcional - código representado) */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.2 }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            <div className="text-center">
-              <code className="font-mono text-xs md:text-sm text-white/50">
-                &lt;/&gt;
-              </code>
-            </div>
-          </motion.div>
+          <LanguageSwitch />
         </motion.div>
 
-        {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="text-center"
-        >
-          <h1 className="font-heading font-bold text-4xl md:text-6xl lg:text-7xl text-white tracking-[0.05em] mb-4">
-            Full Stack
-            <span className="text-gradient"> Developer</span>
-          </h1>
+        {/* Menu */}
+        <div className="order-3 mt-4 flex flex-1 items-center justify-end text-[clamp(1.7rem,min(8.4vw,4.6vh),2.8rem)] lg:absolute lg:right-[2vw] lg:top-[47%] lg:mt-0 lg:block lg:-translate-y-1/2 lg:text-[clamp(2.6rem,min(4vw,6.6vh),4.4rem)]">
+          {/* Spanish labels run longer; a slightly smaller size keeps the same footprint. */}
+          <div style={{ fontSize: lang === 'es' ? '0.8em' : undefined }}>
+            <PauseMenu ready={ready} keyboardEnabled={isOnScreen} />
+          </div>
+        </div>
+
+        {/* Identity */}
+        <div className="order-2 mt-1 lg:absolute lg:bottom-40 lg:left-12 lg:mt-0">
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.3 }}
-            className="font-light text-lg md:text-xl text-white/60"
+            className="mb-1 font-hand text-xs text-white/80 md:mb-2 md:text-base"
+            initial={{ opacity: 0, x: -20 }}
+            animate={ready ? { opacity: 1, x: 0 } : undefined}
+            transition={{ delay: 0.35 }}
           >
-            Building digital experiences with code
+            {t.hero.callingCard}
           </motion.p>
-        </motion.div>
-      </div>
-
-      {/* Bottom Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.5 }}
-        className="absolute bottom-0 left-0 right-0 z-20 flex justify-between items-end p-6 md:p-10"
-      >
-        {/* Role & Location */}
-        <div className="text-left">
-          <p className="font-heading text-sm md:text-base text-white/80 mb-1">
-            Software Engineer
-          </p>
-          <p className="font-light text-xs md:text-sm text-white/50">
-            From <span className="text-red font-medium">CO</span>
-          </p>
-        </div>
-
-        {/* Social Icons */}
-        <div className="flex gap-4">
-          {[
-            { Icon: Github, href: 'https://github.com/JavierAnd0' },
-            { Icon: Linkedin, href: '#' }
-          ].map(({ Icon, href }, index) => (
-            <motion.a
-              key={index}
-              href={href}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.7 + index * 0.1 }}
-              whileHover={{ scale: 1.2 }}
-              className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-red hover:border-red hover:glow-red transition-all duration-300"
+          <h1 className="flex -rotate-3 flex-col gap-1 text-[clamp(1.8rem,min(9vw,5vh),2.6rem)] leading-none md:text-[3.2rem] xl:text-[3.8rem]">
+            <DesignedWord name="nombre/javier/normal" label="JAVIER" animateIn play={ready} delay={0.3} />
+            <span className="pl-[0.8em]">
+              <DesignedWord name="nombre/andrade/normal" label="ANDRADE" animateIn play={ready} delay={0.5} />
+            </span>
+          </h1>
+          <motion.div
+            className="mt-4 flex flex-wrap items-center gap-2.5 md:mt-5 md:gap-3"
+            initial={{ opacity: 0, y: 16 }}
+            animate={ready ? { opacity: 1, y: 0 } : undefined}
+            transition={{ delay: 0.85, duration: 0.3 }}
+          >
+            <span className="-rotate-2 bg-white px-3 py-1 font-heavy text-xs tracking-[0.06em] sm:text-sm text-black shadow-[4px_4px_0_#e60012] md:text-base">
+              {t.hero.role}
+            </span>
+            <span className="rotate-1 bg-[#e60012] px-2 py-1 font-heavy text-xs tracking-[0.1em] text-white shadow-[3px_3px_0_#fff]">
+              ★ {t.hero.country}
+            </span>
+            <a
+              href="https://github.com/JavierAnd0"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${t.hero.github} ${t.a11y.opensNewTab}`}
+              className="hidden h-9 w-9 rotate-3 place-items-center border-2 border-white bg-black text-white transition-transform sm:grid hover:-rotate-6 hover:scale-110 hover:bg-[#e60012]"
             >
-              <Icon size={18} />
-            </motion.a>
-          ))}
+              <Github size={17} />
+            </a>
+          </motion.div>
         </div>
-      </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 2 }}
-        className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20"
-      >
-        <motion.button
-          onClick={() => scrollToSection('about')}
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="text-white/40 hover:text-red transition-colors duration-300"
-        >
-          <ChevronDown size={24} />
-        </motion.button>
-      </motion.div>
-
-      {/* Background Gradient */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red/5 rounded-full blur-[150px]" />
+        {/* Controls */}
+        <div className="hidden lg:absolute lg:bottom-40 lg:right-12 lg:block">
+          <ControlsHint ready={ready} />
+        </div>
       </div>
+
+      <MarqueeBand />
     </section>
   );
 };
