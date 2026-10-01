@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { EM_PER_UNIT } from './config';
-import { WORDS, type WordName } from './words.generated';
+import { WORDS, type DesignedWordData, type WordName } from './words.generated';
 
 const hidden = { opacity: 0, scale: 2.4, rotate: -25 };
 const shown = { opacity: 1, scale: 1, rotate: 0, y: 0 };
 
-interface DesignedWordProps {
-  name: WordName;
+// Either a word bundled with the site, or artwork loaded on demand (weekdays).
+type Artwork = { name: WordName; data?: undefined } | { data: DesignedWordData; name?: undefined };
+
+type DesignedWordProps = Artwork & {
   /** Read by screen readers in place of the artwork. */
   label: string;
   className?: string;
@@ -18,19 +20,12 @@ interface DesignedWordProps {
   delay?: number;
   /** On mount, the letters hop once, staggered left to right. */
   pop?: boolean;
-}
+};
 
 /** A word lettered by hand in Figma, rendered as SVG with one animatable layer per letter. */
-const DesignedWord = ({
-  name,
-  label,
-  className,
-  animateIn = false,
-  play = true,
-  delay = 0,
-  pop = false,
-}: DesignedWordProps) => {
-  const { viewBox, letters } = WORDS[name];
+const DesignedWord = (props: DesignedWordProps) => {
+  const { label, className, animateIn = false, play = true, delay = 0, pop = false } = props;
+  const { viewBox, letters } = props.data ? props.data : WORDS[props.name];
   const [, , width, height] = viewBox;
 
   return (

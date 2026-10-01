@@ -1,10 +1,37 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import DesignedWord from './DesignedWord';
-import type { WordName } from './words.generated';
+import type { DesignedWordData, WordName } from './words.generated';
+import type { Language } from '@/i18n/language';
 import { useI18n } from '@/i18n/context';
 
 const TIMEZONE = 'America/Bogota';
+
+// Weekday artwork file per language, keyed by the short English weekday Intl returns.
+const WEEKDAY_FILES: Record<string, Record<Language, string>> = {
+  Mon: { es: 'es-lunes', en: 'en-monday' },
+  Tue: { es: 'es-martes', en: 'en-tuesday' },
+  Wed: { es: 'es-miercoles', en: 'en-wednesday' },
+  Thu: { es: 'es-jueves', en: 'en-thursday' },
+  Fri: { es: 'es-viernes', en: 'en-friday' },
+  Sat: { es: 'es-sabado', en: 'en-saturday' },
+  Sun: { es: 'es-domingo', en: 'en-sunday' },
+};
+
+// Each weekday is its own chunk, so the page only downloads today's lettering.
+const weekdayArt = import.meta.glob<DesignedWordData>('./days/*.json', { import: 'default' });
+
+const useWeekdayArt = (file: string) => {
+  const [art, setArt] = useState<{ file: string; data: DesignedWordData } | null>(null);
+  useEffect(() => {
+    let live = true;
+    weekdayArt[`./days/${file}.json`]?.().then((data) => live && setArt({ file, data }));
+    return () => {
+      live = false;
+    };
+  }, [file]);
+  return art?.file === file ? art.data : null;
+};
 
 type PeriodKey = 'lateNight' | 'morning' | 'afternoon' | 'evening';
 
@@ -36,8 +63,8 @@ const readClock = (locale: string, timestamp: number) => {
     month: get('month'),
     day: get('day'),
     weekday,
+    weekdayKey: get('weekday'),
     period: [...PERIODS].reverse().find((p) => hour >= p.from)?.key ?? 'morning',
-    isWeekend: ['Sat', 'Sun'].includes(get('weekday')),
   };
 };
 
@@ -70,6 +97,7 @@ const CalendarHud = ({ ready }: { ready: boolean }) => {
   // Colombia writes day/month; the game's M/D stays for English.
   const [first, second] = lang === 'es' ? [clock.day, clock.month] : [clock.month, clock.day];
   const period = t.calendar.periods[clock.period];
+  const dayArt = useWeekdayArt(WEEKDAY_FILES[clock.weekdayKey]?.[lang] ?? '');
 
   return (
     <motion.div
@@ -84,25 +112,11 @@ const CalendarHud = ({ ready }: { ready: boolean }) => {
         <Digits value={first} />
         <DesignedWord name="numero/barra" label="/" className="-mx-[0.1em]" />
         <Digits value={second} />
-        <span
-          aria-hidden="true"
-          className={`mb-[0.18em] ml-[0.08em] -rotate-3 px-[0.22em] py-[0.02em] font-heavy text-[0.3em] leading-tight text-white shadow-[3px_3px_0_#0a0a0a] ${
-            clock.isWeekend ? 'bg-[#e60012]' : 'bg-black outline outline-2 outline-white'
-          }`}
-        >
-          {clock.weekday}
-        </span>
       </div>
 
-      <div
-        aria-hidden="true"
-        className="-mt-1 ml-3 flex items-center gap-2 bg-white px-3 py-[3px] shadow-[4px_4px_0_#0a0a0a] [clip-path:polygon(0_0,100%_0,94%_100%,4%_100%)]"
-      >
-        <span className="text-[0.7rem] text-[#e60012]">★</span>
-        <span className="font-heavy text-[0.8rem] tracking-[0.08em] text-black md:text-sm">
-          {period}
-        </span>
-        <span className="font-mono text-[0.6rem] font-bold text-black/50">COL</span>
+      {/* Full weekday under the numbers, like "TUESDAY" in the game; space is held while it loads. */}
+      <div className="-mt-[0.45em] ml-[0.5em] min-h-[1.25em] -rotate-3 text-[1.45rem] md:text-[2rem]">
+        {dayArt && <DesignedWord data={dayArt} label={clock.weekday} animateIn delay={0.15} />}
       </div>
     </motion.div>
   );

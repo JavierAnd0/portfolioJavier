@@ -2,9 +2,7 @@ import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useI18n } from '@/i18n/context';
 
-// Slanted panel outlines shared by the chat pieces, like the game's IM screen. Fixed
-// offsets keep the slant the same on tall bubbles, so it never eats into the text.
-const BUBBLE = 'polygon(10px 0, 100% 6px, calc(100% - 8px) 100%, 0 calc(100% - 10px))';
+// Slanted outline of the reply box; fixed offsets keep the slant the same at any height.
 const REPLY = 'polygon(0 6px, 100% 0, calc(100% - 12px) 100%, 12px calc(100% - 6px))';
 
 const OUTER_SHAPE =
@@ -44,28 +42,54 @@ const Avatar = ({ children, tilt, from }: { children: ReactNode; tilt: number; f
   </div>
 );
 
-// Rimmed bubble with a jagged tail pointing at the speaker.
+// Speech banner from the game's text boxes: a slanted strip, a stepped "lightning" tail
+// pointing at the speaker and a paper flag poking out of the far corner. The strip is
+// drawn as a stretched SVG behind the text, so long messages keep the shape uncropped.
 const Bubble = ({ children, from }: { children: ReactNode; from: Speaker }) => {
   const [rim, fill] = from === 'javier' ? ['#ffffff', '#0a0a0a'] : ['#0a0a0a', '#ffffff'];
+  const mirror = from === 'visitor' ? '-scale-x-100' : '';
   return (
     <div className="relative min-w-0 flex-1 drop-shadow-[5px_5px_0_rgba(10,10,10,0.9)]">
       <svg
         aria-hidden="true"
-        viewBox="0 0 30 30"
-        className={`absolute top-4 h-7 w-7 overflow-visible ${
-          from === 'javier' ? '-left-[18px]' : '-right-[18px] -scale-x-100'
-        }`}
+        viewBox="0 0 36 28"
+        className={`absolute top-3 h-7 w-9 overflow-visible ${
+          from === 'javier' ? '-left-[26px]' : '-right-[26px]'
+        } ${mirror}`}
       >
-        <polygon points="30,2 0,14 30,26" fill={rim} />
-        <polygon points="30,7 9,14 30,21" fill={fill} />
+        <polygon
+          points="36,3 14,0 18,9 0,13 21,17 17,26 36,22"
+          fill={fill}
+          stroke={rim}
+          strokeWidth={3}
+          strokeLinejoin="miter"
+        />
       </svg>
-      <div className={`p-[3px] ${INK[from].rim}`} style={{ clipPath: BUBBLE }}>
-        <div
-          className={`px-5 py-3.5 text-sm font-bold leading-relaxed md:text-base ${INK[from].fill} ${INK[from].text}`}
-          style={{ clipPath: BUBBLE }}
-        >
-          {children}
-        </div>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className={`absolute inset-0 h-full w-full overflow-visible ${mirror}`}
+      >
+        <polygon
+          points="2,6 100,0 96,100 0,90"
+          fill={fill}
+          stroke={rim}
+          strokeWidth={3}
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 40 30"
+        className={`absolute -top-3 h-7 w-9 overflow-visible ${
+          from === 'javier' ? '-right-4' : '-left-4'
+        } ${mirror}`}
+      >
+        <polygon points="0,18 30,0 40,12 9,30" fill={rim} stroke={fill} strokeWidth={3} />
+      </svg>
+      <div className={`relative px-6 py-4 text-sm font-bold leading-relaxed md:text-base ${INK[from].text}`}>
+        {children}
       </div>
     </div>
   );
