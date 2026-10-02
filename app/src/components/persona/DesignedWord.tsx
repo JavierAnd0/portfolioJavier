@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { EM_PER_UNIT } from './config';
@@ -13,6 +14,7 @@ type DesignedWordProps = Artwork & {
   /** Read by screen readers in place of the artwork. */
   label: string;
   className?: string;
+  style?: CSSProperties;
   /** Slap the letters on one by one. */
   animateIn?: boolean;
   /** With animateIn: hold the letters hidden until this turns true. */
@@ -24,12 +26,12 @@ type DesignedWordProps = Artwork & {
 
 /** A word lettered by hand in Figma, rendered as SVG with one animatable layer per letter. */
 const DesignedWord = (props: DesignedWordProps) => {
-  const { label, className, animateIn = false, play = true, delay = 0, pop = false } = props;
+  const { label, className, style, animateIn = false, play = true, delay = 0, pop = false } = props;
   const { viewBox, letters } = props.data ? props.data : WORDS[props.name];
   const [, , width, height] = viewBox;
 
   return (
-    <span className={cn('inline-block align-middle leading-none', className)}>
+    <span className={cn('inline-block align-middle leading-none', className)} style={style}>
       <span className="sr-only">{label}</span>
       <svg
         aria-hidden="true"
