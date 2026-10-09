@@ -30,7 +30,6 @@ const es: Dictionary = {
     github: { label: 'GITHUB', hint: 'Repositorios' },
   },
   intro: {
-    callingCard: 'una tarjeta de aviso de —',
     role: 'DESARROLLADOR FULL STACK',
     tagline: 'tómate tu tiempo ★',
     pressKey: 'PULSA CUALQUIER TECLA',
@@ -46,9 +45,7 @@ const es: Dictionary = {
     today: (date: string, period: string) => `Hoy en Colombia: ${date}, ${period}`,
   },
   hero: {
-    callingCard: 'una tarjeta de aviso de —',
     role: 'DESARROLLADOR FULL STACK',
-    country: 'COLOMBIA',
     github: 'GitHub de Javier Andrade',
     select: 'ELEGIR',
     confirm: 'CONFIRMAR',
@@ -129,7 +126,7 @@ const es: Dictionary = {
     intro: '¿Tienes un proyecto en mente? ¡Hablemos! Estoy siempre abierto a nuevas oportunidades y colaboraciones.',
     pitch: { before: 'Robemos algo ', accent: 'increíble', after: ' juntos' },
     body:
-      'Ya sea que tengas una idea que quieras materializar o necesites ayuda con un proyecto existente, estaré encantado de escucharte. Sin tarjeta de aviso, sin Metaverso — solo un correo.',
+      'Ya sea que tengas una idea que quieras materializar o necesites ayuda con un proyecto existente, estaré encantado de escucharte.',
     emailLabel: 'Correo',
     emailValue: 'logijavier@gmail.com',
     locationLabel: 'Ubicación',
@@ -139,8 +136,8 @@ const es: Dictionary = {
     name: 'Tu nombre',
     email: 'Tu correo',
     message: 'Tu mensaje',
-    send: 'ENVIAR LA TARJETA DE AVISO',
-    sent: '¡TARJETA ENVIADA!',
+    send: 'ENVIAR SOLICITUD',
+    sent: '¡SOLICITUD ENVIADA!',
   },
   footer: {
     rights: 'Todos los derechos reservados.',

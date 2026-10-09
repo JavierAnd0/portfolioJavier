@@ -28,7 +28,6 @@ const en = {
     github: { label: 'GITHUB', hint: 'Repositories' },
   },
   intro: {
-    callingCard: 'a calling card from —',
     role: 'FULL STACK DEVELOPER',
     tagline: 'take your time ★',
     pressKey: 'PRESS ANY KEY',
@@ -44,9 +43,7 @@ const en = {
     today: (date: string, period: string) => `Today in Colombia: ${date}, ${period}`,
   },
   hero: {
-    callingCard: 'a calling card from —',
     role: 'FULL STACK DEVELOPER',
-    country: 'COLOMBIA',
     github: "Javier Andrade's GitHub",
     select: 'SELECT',
     confirm: 'CONFIRM',
@@ -126,7 +123,7 @@ const en = {
     intro: "Got a project in mind? Let's talk! I'm always open to new opportunities and collaborations.",
     pitch: { before: "Let's steal something ", accent: 'amazing', after: ' together' },
     body:
-      "Whether you have an idea you want to bring to life or need a hand with an existing project, I'd love to hear from you. No calling card, no Metaverse — just an email.",
+      "Whether you have an idea you want to bring to life or need a hand with an existing project, I'd love to hear from you.",
     emailLabel: 'Email',
     emailValue: 'logijavier@gmail.com',
     locationLabel: 'Location',
@@ -136,8 +133,8 @@ const en = {
     name: 'Your Name',
     email: 'Your Email',
     message: 'Your Message',
-    send: 'SEND THE CALLING CARD',
-    sent: 'CALLING CARD SENT!',
+    send: 'SEND REQUEST',
+    sent: 'REQUEST SENT!',
   },
   footer: {
     rights: 'All rights reserved.',

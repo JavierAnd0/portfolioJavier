@@ -304,9 +304,6 @@ const About = () => {
                   IM
                 </span>
                 <span className="font-heavy text-sm tracking-[0.12em] text-black">{chat.header}</span>
-                <span className="ml-auto -rotate-2 border-2 border-black bg-white px-2 py-0.5 font-heavy text-xs text-black">
-                  {chat.contact}
-                </span>
               </div>
 
               <ul className="relative space-y-5 [--banner-scale:0.36] sm:[--banner-scale:0.5]">

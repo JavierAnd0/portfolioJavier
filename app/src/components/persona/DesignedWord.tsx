@@ -33,8 +33,10 @@ const DesignedWord = (props: DesignedWordProps) => {
   return (
     <span className={cn('inline-block align-middle leading-none', className)} style={style}>
       <span className="sr-only">{label}</span>
+      {/* fill="none" like Figma's own export: stroke-only layers must not default to black. */}
       <svg
         aria-hidden="true"
+        fill="none"
         viewBox={viewBox.join(' ')}
         className="block overflow-visible"
         style={{ width: `${width * EM_PER_UNIT}em`, height: `${height * EM_PER_UNIT}em` }}

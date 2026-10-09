@@ -132,14 +132,6 @@ const Hero = ({ ready, isOnScreen }: HeroProps) => {
 
         {/* Identity */}
         <div className="order-2 mt-1 lg:absolute lg:bottom-40 lg:left-12 lg:mt-0">
-          <motion.p
-            className="mb-1 font-hand text-xs text-white/80 md:mb-2 md:text-base"
-            initial={{ opacity: 0, x: -20 }}
-            animate={ready ? { opacity: 1, x: 0 } : undefined}
-            transition={{ delay: 0.35 }}
-          >
-            {t.hero.callingCard}
-          </motion.p>
           <h1 className="flex -rotate-3 flex-col gap-1 text-[clamp(1.8rem,min(9vw,5vh),2.6rem)] leading-none md:text-[3.2rem] xl:text-[3.8rem]">
             <DesignedWord name="nombre/javier/normal" label="JAVIER" animateIn play={ready} delay={0.3} />
             <span className="pl-[0.8em]">
@@ -154,9 +146,6 @@ const Hero = ({ ready, isOnScreen }: HeroProps) => {
           >
             <span className="-rotate-2 bg-white px-3 py-1 font-heavy text-xs tracking-[0.06em] sm:text-sm text-black shadow-[4px_4px_0_#e60012] md:text-base">
               {t.hero.role}
-            </span>
-            <span className="rotate-1 bg-[#e60012] px-2 py-1 font-heavy text-xs tracking-[0.1em] text-white shadow-[3px_3px_0_#fff]">
-              ★ {t.hero.country}
             </span>
             <a
               href="https://github.com/JavierAnd0"

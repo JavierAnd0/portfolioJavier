@@ -75,7 +75,8 @@ const digitName = (digit: string) => `cifra/${digit}` as WordName;
 const monthDigitName = (digit: string) =>
   (`mes/${digit}` in WORDS ? `mes/${digit}` : `cifra/${digit}`) as WordName;
 
-const WHITE_INK = '[&_path]:fill-white [&_path]:stroke-white';
+// Recolour only what each layer actually paints, so stroke-only lines stay unfilled.
+const WHITE_INK = '[&_[fill]:not([fill=none])]:fill-white [&_[stroke]]:stroke-white';
 
 // Thin white rim around the big day's black extrusion and the weekday, so their black parts
 // don't sink into the dark hero (the Figma composition was drawn on a light canvas).
@@ -96,9 +97,6 @@ const LAYOUT = {
   /** Weekday: centre relative to the big digits' centre, width per letter and tilt.
       WEDNESDAY spans about 665 Figma px for its 9 letters. */
   weekday: { dx: 139, y: 321, perLetter: 74, rotate: -16 },
-  /** Spanish (day/month) has no Figma composition yet: month and slash move to the right
-      of the big day, and the weekday drops lower so it doesn't cover them. */
-  dayFirst: { slashDx: -10, slashY: 120, monthDx: 70, weekdayY: 400 },
 };
 
 // build-words.mjs pads every viewBox by this much around the artwork.
@@ -124,7 +122,6 @@ const contentSize = (viewBox: number[]) => [viewBox[2] - 2 * PAD, viewBox[3] - 2
 const composeDate = (
   month: string,
   day: string,
-  dayFirst: boolean,
   weekday: { art: DesignedWordData; letters: number; label: string } | null,
 ) => {
   const pieces: Piece[] = [];
@@ -138,16 +135,16 @@ const composeDate = (
   const bigLeft = Math.min(...bigBoxes.map((b) => b.x));
   const bigRight = Math.max(...bigBoxes.map((b) => b.x + b.w));
 
-  // In Spanish the big day reads first, so the month moves to its right.
+  // Small month, laid right to left from its right edge so it always meets the day.
   const smallBoxes: { digit: string; x: number; y: number; scale: number; w: number }[] = [];
-  let edge = dayFirst ? bigRight + LAYOUT.dayFirst.monthDx : LAYOUT.small.right;
-  const monthDigits = dayFirst ? [...month] : [...month].reverse();
+  let edge = LAYOUT.small.right;
+  const monthDigits = [...month].reverse();
   for (const digit of monthDigits) {
     const [w, h] = contentSize(WORDS[monthDigitName(digit)].viewBox);
     const scale = LAYOUT.small.height / h;
-    const x = dayFirst ? edge : edge - w * scale;
+    const x = edge - w * scale;
     smallBoxes.push({ digit, x, y: LAYOUT.small.top, scale, w: w * scale });
-    edge = dayFirst ? x + w * scale - LAYOUT.small.overlap : x + LAYOUT.small.overlap;
+    edge = x + LAYOUT.small.overlap;
   }
 
   for (const b of bigBoxes) {
@@ -173,9 +170,7 @@ const composeDate = (
     pieces.push({ key: `mx${b.x}`, name, label: '', x: b.x + LAYOUT.extrude * b.scale, y: b.y, scale: b.scale });
     pieces.push({ key: `m${b.x}`, name, label: b.digit, x: b.x, y: b.y, scale: b.scale, className: WHITE_INK });
   }
-  const slash = dayFirst
-    ? { x: bigRight + LAYOUT.dayFirst.slashDx, y: LAYOUT.dayFirst.slashY }
-    : { x: LAYOUT.small.right + LAYOUT.slash.dx, y: LAYOUT.slash.y };
+  const slash = { x: LAYOUT.small.right + LAYOUT.slash.dx, y: LAYOUT.slash.y };
   pieces.push({ key: 'slashx', name: 'cifra/barra', label: '', x: slash.x + LAYOUT.extrude, y: slash.y, scale: 1 });
   pieces.push({ key: 'slash', name: 'cifra/barra', label: '/', ...slash, scale: 1, className: WHITE_INK });
 
@@ -189,7 +184,7 @@ const composeDate = (
       data: weekday.art,
       label: weekday.label,
       x: cx - (w * scale) / 2,
-      y: (dayFirst ? LAYOUT.dayFirst.weekdayY : LAYOUT.weekday.y) - (h * scale) / 2,
+      y: LAYOUT.weekday.y - (h * scale) / 2,
       scale,
       rotate: LAYOUT.weekday.rotate,
       className: WHITE_RIM,
@@ -224,8 +219,8 @@ const CalendarHud = ({ ready }: { ready: boolean }) => {
   const dayArt = useWeekdayArt(dayFile);
   // "en-wednesday" → 9 letters.
   const weekday = dayArt && { art: dayArt, letters: dayFile.length - 3, label: clock.weekday };
-  // Colombia writes day/month, so in Spanish the big day leads; English keeps the game's M/D.
-  const { pieces, width, height } = composeDate(clock.month, clock.day, lang === 'es', weekday);
+  // Same composition in both languages, as in the Figma date: small month, big day.
+  const { pieces, width, height } = composeDate(clock.month, clock.day, weekday);
 
   return (
     <motion.div

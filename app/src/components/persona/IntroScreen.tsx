@@ -105,7 +105,6 @@ const IntroScreen = ({ onReveal, onDone }: IntroScreenProps) => {
           className="relative border-[5px] border-black bg-[#e60012] px-6 pb-6 pt-5 shadow-[12px_12px_0_#ffffff] md:px-10 md:pb-8"
         >
           <div className="pointer-events-none absolute inset-0 hero-halftone opacity-40" />
-          <p className="relative mb-2 font-hand text-sm text-white md:text-lg">{t.intro.callingCard}</p>
           <div className="relative text-[2.3rem] sm:text-[3rem] md:text-[4.4rem]">
             <DesignedWord name="nombre/javier/normal" label="JAVIER" animateIn delay={0.45} />
             <span className="inline-block w-[0.3em]" />
