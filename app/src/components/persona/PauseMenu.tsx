@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import DesignedWord from './DesignedWord';
 import { MENU_ITEMS, wordFor, wordWidthEm } from './config';
+import type { WordName } from './words.generated';
 import { useI18n } from '@/i18n/context';
 
 const isTypingTarget = (el: EventTarget | null) =>
@@ -40,26 +41,7 @@ const SelectionPlate = () => (
   </motion.span>
 );
 
-// One-shot impact: speed lines shoot out of the word's left end.
-const ImpactBurst = () => (
-  <span aria-hidden="true" className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2">
-    <motion.svg
-      viewBox="0 0 120 60"
-      className="h-[1.3em] w-[2.4em] overflow-visible"
-      initial={{ opacity: 1, scaleX: 0.2, x: 0 }}
-      animate={{ opacity: [1, 1, 0], scaleX: [0.2, 1, 1.1], x: ['0em', '-0.2em', '-0.45em'] }}
-      transition={{ duration: 0.38, times: [0, 0.4, 1], ease: 'easeOut' }}
-      style={{ transformOrigin: '100% 50%' }}
-    >
-      <polygon points="120,26 0,6 120,30" fill="#ffffff" />
-      <polygon points="120,30 10,32 120,34" fill="#ffffff" />
-      <polygon points="120,34 0,56 120,38" fill="#ffffff" />
-      <polygon points="120,22 40,-6 120,26" fill="#e60012" />
-    </motion.svg>
-  </span>
-);
-
-// Arrow tag pointing at the selection, like the game's side counters.
+// Numbered arrow pointing at the selection, like the game's side counters.
 const Cursor = ({ index }: { index: number }) => (
   <motion.span
     aria-hidden="true"
@@ -72,14 +54,8 @@ const Cursor = ({ index }: { index: number }) => (
       rotate: { type: 'spring', stiffness: 500, damping: 14 },
     }}
   >
-    <svg viewBox="0 0 150 76" className="h-[0.78em] w-[1.54em] overflow-visible">
-      <polygon points="-6,6 96,0 150,38 96,76 -6,70" fill="#0a0a0a" />
-      <polygon points="2,12 92,7 136,38 92,69 2,64" fill="#ffffff" />
-      <polygon points="8,17 88,13 124,38 88,63 8,59" fill="#0a0a0a" />
-      <text x="62" y="51" textAnchor="middle" fontFamily="Anton, sans-serif" fontSize="36" fill="#ffffff">
-        No.{String(index + 1).padStart(2, '0')}
-      </text>
-    </svg>
+    {/* Numbered arrow drawn in Figma ("seleccion/1" … "seleccion/5"). */}
+    <DesignedWord name={`seleccion/${index + 1}` as WordName} label="" className="text-[2.2em]" />
   </motion.span>
 );
 
@@ -204,7 +180,6 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
                 aria-label={`${label} — ${hint}${item.external ? ` ${t.a11y.opensNewTab}` : ''}`}
                 className="group relative isolate inline-block px-[0.08em] outline-none"
               >
-                {isActive && <ImpactBurst key={`burst-${i}`} />}
                 {isActive && <Cursor key={`cursor-${i}`} index={i} />}
                 {/* The plate rides inside the scaled word so it always covers every letter. */}
                 <motion.span

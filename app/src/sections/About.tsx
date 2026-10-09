@@ -2,9 +2,7 @@ import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useI18n } from '@/i18n/context';
 
-// Slanted panel outlines shared by the chat pieces, like the game's IM screen. Fixed
-// offsets keep the slant the same on tall bubbles, so it never eats into the text.
-const BUBBLE = 'polygon(10px 0, 100% 6px, calc(100% - 8px) 100%, 0 calc(100% - 10px))';
+// Slanted outline of the reply box; fixed offsets keep the slant the same at any height.
 const REPLY = 'polygon(0 6px, 100% 0, calc(100% - 12px) 100%, 12px calc(100% - 6px))';
 
 const OUTER_SHAPE =
@@ -32,7 +30,7 @@ const INK: Record<Speaker, { rim: string; fill: string; text: string }> = {
 const Avatar = ({ children, tilt, from }: { children: ReactNode; tilt: number; from: Speaker }) => (
   <div
     aria-hidden="true"
-    className={`relative h-14 w-14 shrink-0 p-[3px] shadow-[4px_4px_0_#0a0a0a] md:h-16 md:w-16 ${INK[from].rim}`}
+    className={`relative hidden h-14 w-14 shrink-0 p-[3px] shadow-[4px_4px_0_#0a0a0a] sm:block md:h-16 md:w-16 ${INK[from].rim}`}
     style={{ rotate: `${tilt}deg`, clipPath: 'polygon(6% 0, 100% 4%, 94% 100%, 0 96%)' }}
   >
     <div
@@ -44,28 +42,119 @@ const Avatar = ({ children, tilt, from }: { children: ReactNode; tilt: number; f
   </div>
 );
 
-// Rimmed bubble with a jagged tail pointing at the speaker.
-const Bubble = ({ children, from }: { children: ReactNode; from: Speaker }) => {
-  const [rim, fill] = from === 'javier' ? ['#ffffff', '#0a0a0a'] : ['#0a0a0a', '#ffffff'];
+// Speech banners drawn in Figma ("Vector 2", "Vector 4" and "Group 23", next to the IM
+// reference). Each one is cut in three: the tail and the paper flag keep their drawn size,
+// while the body between them stretches with the text, so long messages never squash the
+// tail. Coordinates below are Figma px, scaled by --banner-scale (smaller on phones).
+type BannerShape = 'flag' | 'plain' | 'visitor';
+
+const px = (figmaPx: number) => `calc(${figmaPx}px * var(--banner-scale))`;
+
+interface Piece {
+  viewBox: [number, number, number, number];
+  paths: { d: string; fill: string; stroke?: string }[];
+  /** Offset of the piece's top-left from the body's top-left corner, in Figma px. */
+  at: [number, number];
+  /** Measure `at` from the body's top-right corner instead. */
+  right?: boolean;
+}
+
+const BANNERS: Record<BannerShape, { body: string; pieces: Piece[]; ink: string; text: string }> = {
+  // Black strip whose far end is cut into a notch with a white paper flag.
+  flag: {
+    body: 'polygon(0 15px, 100% 0, 100% 100%, 0 100%)',
+    ink: '#0a0a0a',
+    text: 'text-white',
+    pieces: [
+      {
+        viewBox: [0, 0, 160, 199],
+        at: [-141, -41.6],
+        paths: [
+          {
+            d: 'M69.6 12.4L3.6 79.9H15.1L25.1 72.9H64.6V103.4L92.1 116.4L120.1 130.4L141.1 143.4V197.4L160 197.2V71.7L106.1 72.9V60.9H69.6Z',
+            fill: '#0a0a0a',
+          },
+        ],
+      },
+      {
+        viewBox: [745, 0, 152, 199],
+        at: [-7, -41.6],
+        right: true,
+        paths: [
+          { d: 'M745 41.9L798.6 39.4L792.4 58.5L750.1 107.9L754.1 154.9L752.6 190.4H745Z', fill: '#0a0a0a' },
+          {
+            d: 'M792.4 58.5L840.6 2.4L894.1 72.4L754.1 154.9L750.1 107.9Z',
+            fill: '#ffffff',
+            stroke: '#0a0a0a',
+          },
+        ],
+      },
+    ],
+  },
+  // Plain black strip with a slanted far end.
+  plain: {
+    body: 'polygon(0 10px, 100% 0, calc(100% - 29px) 100%, 0 100%)',
+    ink: '#0a0a0a',
+    text: 'text-white',
+    pieces: [
+      {
+        viewBox: [0, 0, 160, 129],
+        at: [-143, -1],
+        paths: [
+          { d: 'M1.5 55L75 1V44.5H143V22L160 21.6V128.5H157V109L62.5 79.5V55H1.5Z', fill: '#0a0a0a' },
+        ],
+      },
+    ],
+  },
+  // White strip for the visitor; mirrored so the tail points right, at the visitor.
+  visitor: {
+    body: 'polygon(0 0, 100% 7px, 100% 100%, 35px calc(100% - 16px), 0 calc(100% - 16px))',
+    ink: '#ffffff',
+    text: 'text-black',
+    pieces: [
+      {
+        viewBox: [0, 0, 215, 133],
+        at: [-138, -1.5],
+        paths: [{ d: 'M0.5 68L199.5 131L208 99L215 99.9V2.1L138 1.5V52L0.5 68Z', fill: '#ffffff' }],
+      },
+    ],
+  },
+};
+
+// A thin dark outline traced around the whole silhouette, so pieces join without seams.
+const OUTLINE =
+  'drop-shadow(1.5px 0 0 #0a0a0a) drop-shadow(-1.5px 0 0 #0a0a0a) drop-shadow(0 1.5px 0 #0a0a0a) drop-shadow(0 -1.5px 0 #0a0a0a)';
+
+const Bubble = ({ children, shape }: { children: ReactNode; shape: BannerShape }) => {
+  const banner = BANNERS[shape];
   return (
     <div className="relative min-w-0 flex-1 drop-shadow-[5px_5px_0_rgba(10,10,10,0.9)]">
-      <svg
+      <div
         aria-hidden="true"
-        viewBox="0 0 30 30"
-        className={`absolute top-4 h-7 w-7 overflow-visible ${
-          from === 'javier' ? '-left-[18px]' : '-right-[18px] -scale-x-100'
-        }`}
+        className={`absolute inset-0 ${shape === 'visitor' ? '-scale-x-100' : ''}`}
+        style={{ filter: shape === 'visitor' ? OUTLINE : undefined }}
       >
-        <polygon points="30,2 0,14 30,26" fill={rim} />
-        <polygon points="30,7 9,14 30,21" fill={fill} />
-      </svg>
-      <div className={`p-[3px] ${INK[from].rim}`} style={{ clipPath: BUBBLE }}>
-        <div
-          className={`px-5 py-3.5 text-sm font-bold leading-relaxed md:text-base ${INK[from].fill} ${INK[from].text}`}
-          style={{ clipPath: BUBBLE }}
-        >
-          {children}
-        </div>
+        <div className="absolute inset-0" style={{ background: banner.ink, clipPath: banner.body }} />
+        {banner.pieces.map(({ viewBox, paths, at, right }, i) => (
+          <svg
+            key={i}
+            viewBox={viewBox.join(' ')}
+            className="absolute"
+            style={{
+              width: px(viewBox[2]),
+              height: px(viewBox[3]),
+              top: px(at[1]),
+              left: right ? `calc(100% + ${px(at[0])})` : px(at[0]),
+            }}
+          >
+            {paths.map(({ d, fill, stroke }) => (
+              <path key={d} d={d} fill={fill} stroke={stroke} strokeWidth={stroke ? 3 : undefined} />
+            ))}
+          </svg>
+        ))}
+      </div>
+      <div className={`relative px-4 py-4 text-sm font-bold leading-relaxed sm:px-6 md:text-base ${banner.text}`}>
+        {children}
       </div>
     </div>
   );
@@ -73,12 +162,14 @@ const Bubble = ({ children, from }: { children: ReactNode; from: Speaker }) => {
 
 const Message = ({
   from,
+  shape,
   avatar,
   tilt,
   delay,
   children,
 }: {
   from: Speaker;
+  shape: BannerShape;
   avatar: ReactNode;
   tilt: number;
   delay: number;
@@ -88,7 +179,7 @@ const Message = ({
   const motionProps = pop(delay);
   return (
     <motion.li
-      className={`flex items-start gap-5 ${visitor ? 'flex-row-reverse' : ''}`}
+      className={`flex items-start gap-1 ${visitor ? 'flex-row-reverse' : ''}`}
       style={{ transformOrigin: visitor ? '100% 50%' : '0% 50%' }}
       {...motionProps}
       initial={{ ...motionProps.initial, x: visitor ? 24 : -24, rotate: visitor ? 4 : -4 }}
@@ -96,7 +187,17 @@ const Message = ({
       <Avatar tilt={tilt} from={from}>
         {avatar}
       </Avatar>
-      <Bubble from={from}>{children}</Bubble>
+      {/* Margins make room for what hangs off the banner: the tail toward the avatar and,
+          on the far side, the paper flag. */}
+      <div
+        className="flex min-w-0 flex-1"
+        style={{
+          [visitor ? 'marginRight' : 'marginLeft']: px(150),
+          [visitor ? 'marginLeft' : 'marginRight']: shape === 'flag' ? px(80) : 0,
+        }}
+      >
+        <Bubble shape={shape}>{children}</Bubble>
+      </div>
     </motion.li>
   );
 };
@@ -203,14 +304,12 @@ const About = () => {
                   IM
                 </span>
                 <span className="font-heavy text-sm tracking-[0.12em] text-black">{chat.header}</span>
-                <span className="ml-auto -rotate-2 border-2 border-black bg-white px-2 py-0.5 font-heavy text-xs text-black">
-                  {chat.contact}
-                </span>
               </div>
 
-              <ul className="relative space-y-5">
+              <ul className="relative space-y-5 [--banner-scale:0.36] sm:[--banner-scale:0.5]">
                 <Message
                   from="visitor"
+                  shape="visitor"
                   tilt={4}
                   delay={0.2}
                   avatar={<span className="font-heavy text-2xl text-black">?</span>}
@@ -218,13 +317,13 @@ const About = () => {
                   <span className="sr-only">{chat.visitor}: </span>
                   {chat.question}
                 </Message>
-                <Message from="javier" tilt={-4} delay={0.7} avatar={me}>
+                <Message from="javier" shape="flag" tilt={-4} delay={0.7} avatar={me}>
                   <span className="sr-only">{chat.contact}: </span>
                   {t.about.intro.before}
                   <span className="text-[#ff4d5e]">{t.about.intro.accent}</span>
                   {t.about.intro.after}
                 </Message>
-                <Message from="javier" tilt={3} delay={1.2} avatar={me}>
+                <Message from="javier" shape="plain" tilt={3} delay={1.2} avatar={me}>
                   <span className="sr-only">{chat.contact}: </span>
                   {t.about.body}
                 </Message>
