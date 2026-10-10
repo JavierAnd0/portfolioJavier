@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import DesignedWord from './DesignedWord';
-import { MENU_ITEMS, wordFor, wordWidthEm } from './config';
+import { MENU_ITEMS, wordFor } from './config';
 import type { WordName } from './words.generated';
 import { useI18n } from '@/i18n/context';
 
@@ -10,10 +10,7 @@ const isTypingTarget = (el: EventTarget | null) =>
   (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
 
 // Neighbours swing this far away from the selected spoke to give it room.
-const SPREAD = 4;
-// The selected word grows toward the fan's centre; long words grow only up to this width.
-const MAX_SELECTED_EM = 5;
-
+const SPREAD = 8;
 // Fan box in em; the pivot sits on its right edge, vertically centered.
 const FAN_WIDTH = 12;
 const FAN_HEIGHT = 9;
@@ -22,7 +19,7 @@ const FAN_HEIGHT = 9;
 const SelectionPlate = () => (
   <motion.span
     aria-hidden="true"
-    className="pointer-events-none absolute -inset-y-[0.14em] -left-[0.45em] -right-[0.35em] -z-10"
+    className="pointer-events-none absolute -inset-y-[0.12em] -left-[0.42em] -right-[0.32em] -z-10"
     initial={{ scaleX: 0, skewX: -25, opacity: 0 }}
     animate={{ scaleX: [0, 1.12, 1], skewX: [-25, 4, 0], opacity: 1 }}
     transition={{ duration: 0.28, times: [0, 0.65, 1], ease: 'easeOut' }}
@@ -30,7 +27,7 @@ const SelectionPlate = () => (
   >
     <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible">
       <g className="plate-boil">
-        <polygon points="14,-7 106,-11 103,24 10,28" fill="#e60012" />
+        <polygon points="14,-3 106,-6 103,24 10,28" fill="#e60012" />
       </g>
       <polygon points="-4,9 96,6 93,46 -7,47" fill="#0a0a0a" />
       <polygon points="1,2 100,0 97,38 -2,40" fill="#0a0a0a" />
@@ -144,7 +141,6 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
           const isActive = active === i;
           const { label, hint } = t.menu[item.key];
           const word = wordFor(item.words[lang], isActive);
-          const grow = Math.min(1.16, Math.max(1, MAX_SELECTED_EM / wordWidthEm(word)));
           const push = i === active ? 0 : i < active ? SPREAD : -SPREAD;
           const angle = item.angle + push;
           return (
@@ -187,13 +183,13 @@ const PauseMenu = ({ ready, keyboardEnabled, onNavigate }: PauseMenuProps) => {
                   style={{ transformOrigin: '100% 60%' }}
                   animate={
                     isActive
-                      ? { scale: [1, grow + 0.1, grow], rotate: [0, -4, 0], x: '-0.1em' }
-                      : { scale: 1, rotate: 0, x: 0 }
+                      ? { scale: [1, 1.24, 1.14], rotate: [0, -4, 0], x: '-0.45em', opacity: 1 }
+                      : { scale: 0.94, rotate: 0, x: 0, opacity: 0.88 }
                   }
                   transition={
                     isActive
                       ? { duration: 0.32, times: [0, 0.55, 1], ease: 'easeOut' }
-                      : { type: 'spring', stiffness: 500, damping: 30 }
+                      : { type: 'spring', stiffness: 450, damping: 28 }
                   }
                 >
                   {isActive && <SelectionPlate key={`plate-${i}`} />}

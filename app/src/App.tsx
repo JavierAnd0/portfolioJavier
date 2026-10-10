@@ -44,7 +44,7 @@ const useHeroOnScreen = () => {
 
 // On small screens the hamburger opens the same pause menu over a red backdrop.
 const MobileNav = ({ visible }: { visible: boolean }) => {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const close = useCallback(() => setIsOpen(false), []);
 
@@ -100,10 +100,7 @@ const MobileNav = ({ visible }: { visible: boolean }) => {
             <div aria-hidden="true" className="hero-rays" />
             <LanguageSwitch className="absolute left-5 top-6" />
             <div aria-hidden="true" className="hero-halftone" />
-            <div
-              className="relative text-[clamp(1.8rem,8.4vw,2.8rem)]"
-              style={{ fontSize: lang === 'es' ? 'clamp(1.5rem,6.8vw,2.3rem)' : undefined }}
-            >
+            <div className="relative text-[clamp(1.8rem,8.4vw,2.8rem)]">
               <PauseMenu ready keyboardEnabled onNavigate={close} />
             </div>
           </motion.div>

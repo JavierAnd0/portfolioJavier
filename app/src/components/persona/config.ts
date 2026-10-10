@@ -1,6 +1,6 @@
 import type { Dictionary } from '@/i18n/en';
 import type { Language } from '@/i18n/language';
-import { WORDS, type WordName } from './words.generated';
+import type { WordName } from './words.generated';
 
 export type MenuKey = keyof Dictionary['menu'];
 
@@ -9,8 +9,6 @@ type WordStem = StemOf<WordName>;
 
 // 215 Figma px make one em, so every word scales with its container's font size.
 export const EM_PER_UNIT = 1 / 215;
-
-export const wordWidthEm = (name: WordName) => WORDS[name].viewBox[2] * EM_PER_UNIT;
 
 export const wordFor = (stem: WordStem, selected: boolean) =>
   `${stem}/${selected ? 'seleccionada' : 'normal'}` as WordName;
