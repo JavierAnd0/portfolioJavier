@@ -97,7 +97,7 @@ interface HeroProps {
 }
 
 const Hero = ({ ready, isOnScreen }: HeroProps) => {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   return (
     <section
       id="home"
@@ -124,10 +124,7 @@ const Hero = ({ ready, isOnScreen }: HeroProps) => {
 
         {/* Menu */}
         <div className="order-3 mt-4 flex flex-1 items-center justify-end text-[clamp(1.7rem,min(8.4vw,4.6vh),2.8rem)] lg:absolute lg:right-[2vw] lg:top-[47%] lg:mt-0 lg:block lg:-translate-y-1/2 lg:text-[clamp(2.6rem,min(4vw,6.6vh),4.4rem)]">
-          {/* Spanish labels run longer; a slightly smaller size keeps the same footprint. */}
-          <div style={{ fontSize: lang === 'es' ? '0.8em' : undefined }}>
-            <PauseMenu ready={ready} keyboardEnabled={isOnScreen} />
-          </div>
+          <PauseMenu ready={ready} keyboardEnabled={isOnScreen} />
         </div>
 
         {/* Identity */}
