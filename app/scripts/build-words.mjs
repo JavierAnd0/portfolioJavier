@@ -71,7 +71,18 @@ for (const file of readdirSync(rawDir).filter((f) => f.endsWith('.svg')).sort())
   const countPaths = (s) => (s.match(/<path/g) ?? []).length;
   const loose = countPaths(svg) - layers.reduce((n, l) => n + countPaths(l), 0) - 2;
   if (loose > 0) console.warn(`⚠ ${frameName}: ${loose} layer(s) overlap the frame but sit outside it`);
-  const letters = layers.map((layer) => round(layer.replace(/\s+id="[^"]*"/g, '').replace(/\n/g, '')));
+  let letters = layers.map((layer) => round(layer.replace(/\s+id="[^"]*"/g, '').replace(/\n/g, '')));
+  // Weekdays animate as one word: all the black outlines in one layer and all the white
+  // letters in another, whatever the number of layers drawn in Figma.
+  if (frameName.startsWith('dia/') && letters.length > 2) {
+    const mixed = letters.filter((l) => l.includes('fill="white"') && /fill="#0A0A0A"/.test(l));
+    if (mixed.length) console.warn(`⚠ ${frameName}: ${mixed.length} layer(s) mix dark and white paint`);
+    const isLight = (l) => l.includes('fill="white"');
+    letters = [
+      `<g>${letters.filter((l) => !isLight(l)).join('')}</g>`,
+      `<g>${letters.filter(isLight).join('')}</g>`,
+    ];
+  }
   const box = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
   const lefts = letters.map((l) => {
     const own = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };

@@ -91,7 +91,7 @@ const LAYOUT = {
   /** Black copy behind the big digits, pushed right for the extruded look. */
   extrude: 24,
   /** Small month: right edge, top and glyph height of the "9". */
-  small: { right: 144, top: 129, height: 211, overlap: 12 },
+  small: { right: 144, top: 129, height: 211, overlap: -34 },
   /** The slash hangs off the month's right edge, between month and day. */
   slash: { dx: -144, y: 217 },
   /** Weekday: centre relative to the big digits' centre, width per letter and tilt.
@@ -126,56 +126,77 @@ const composeDate = (
 ) => {
   const pieces: Piece[] = [];
 
-  // Big day digits with their two black copies underneath (extrusion, then outline).
-  const slots = day.length === 1 ? LAYOUT.big.one : LAYOUT.big.two;
-  const bigBoxes = [...day].map((digit, i) => {
-    const [w, h] = contentSize(WORDS[digitName(digit)].viewBox);
-    return { digit, x: slots[i].x, y: slots[i].y, w, h };
-  });
+  // Month digits: laid out left-to-right with proper slight overlap
+  const monthDigits = [...month];
+  const smallBoxes: { digit: string; x: number; y: number; scale: number; w: number }[] = [];
+  let mX = 0;
+  const mOverlap = 14;
+  const mTop = 110;
+  for (const digit of monthDigits) {
+    const [w, h] = contentSize(WORDS[monthDigitName(digit)].viewBox);
+    smallBoxes.push({
+      digit,
+      x: mX,
+      y: mTop + (211 - h) / 2,
+      scale: 1,
+      w,
+    });
+    mX += w - mOverlap;
+  }
+  const monthRight = smallBoxes[smallBoxes.length - 1].x + smallBoxes[smallBoxes.length - 1].w;
+
+  // Slash sits between the month and the day:
+  // its bottom anchors near the month's bottom-right, slanting up to the day
+  const isOneDigitMonth = month.length === 1;
+  const slashX = isOneDigitMonth ? monthRight - 130 : monthRight - 85;
+  const slashY = isOneDigitMonth ? 215 : 195;
+
+  // Big day digits: start cleanly after the slash
+  const dayDigits = [...day];
+  const dayStartX = slashX + (isOneDigitMonth ? 135 : 105);
+  const bigBoxes: { digit: string; x: number; y: number; w: number; h: number }[] = [];
+  if (dayDigits.length === 1) {
+    const [w, h] = contentSize(WORDS[digitName(dayDigits[0])].viewBox);
+    bigBoxes.push({ digit: dayDigits[0], x: dayStartX, y: 25, w, h });
+  } else {
+    const [w1, h1] = contentSize(WORDS[digitName(dayDigits[0])].viewBox);
+    const [w2, h2] = contentSize(WORDS[digitName(dayDigits[1])].viewBox);
+    bigBoxes.push({ digit: dayDigits[0], x: dayStartX, y: 62, w: w1, h: h1 });
+    bigBoxes.push({ digit: dayDigits[1], x: dayStartX + w1 - 15, y: 0, w: w2, h: h2 });
+  }
+
   const bigLeft = Math.min(...bigBoxes.map((b) => b.x));
   const bigRight = Math.max(...bigBoxes.map((b) => b.x + b.w));
 
-  // Small month, laid right to left from its right edge so it always meets the day.
-  const smallBoxes: { digit: string; x: number; y: number; scale: number; w: number }[] = [];
-  let edge = LAYOUT.small.right;
-  const monthDigits = [...month].reverse();
-  for (const digit of monthDigits) {
-    const [w, h] = contentSize(WORDS[monthDigitName(digit)].viewBox);
-    const scale = LAYOUT.small.height / h;
-    const x = edge - w * scale;
-    smallBoxes.push({ digit, x, y: LAYOUT.small.top, scale, w: w * scale });
-    edge = x + LAYOUT.small.overlap;
-  }
-
+  // 1. Black extrusions / rims behind everything
   for (const b of bigBoxes) {
     pieces.push({ key: `x${b.x}`, name: digitName(b.digit), label: '', x: b.x + LAYOUT.extrude, y: b.y, scale: 1, className: WHITE_RIM });
   }
+  pieces.push({ key: 'slashx', name: 'cifra/barra', label: '', x: slashX + LAYOUT.extrude, y: slashY, scale: 1 });
+  for (const b of smallBoxes) {
+    pieces.push({ key: `mx${b.x}`, name: monthDigitName(b.digit), label: '', x: b.x + LAYOUT.extrude, y: b.y, scale: 1 });
+  }
+
+  // 2. Black outlines
   for (const b of bigBoxes) {
     pieces.push({ key: `o${b.x}`, name: digitName(b.digit), label: '', x: b.x, y: b.y, scale: 1 });
   }
-  for (const b of bigBoxes) {
-    pieces.push({
-      key: `w${b.x}`,
-      name: digitName(b.digit),
-      label: b.digit,
-      x: b.x,
-      y: b.y,
-      scale: 1,
-      className: WHITE_INK,
-    });
-  }
+  pieces.push({ key: 'slash_o', name: 'cifra/barra', label: '', x: slashX, y: slashY, scale: 1 });
   for (const b of smallBoxes) {
-    // White over a black copy pushed right, like the big day, so it reads on the dark hero.
-    const name = monthDigitName(b.digit);
-    pieces.push({ key: `mx${b.x}`, name, label: '', x: b.x + LAYOUT.extrude * b.scale, y: b.y, scale: b.scale });
-    pieces.push({ key: `m${b.x}`, name, label: b.digit, x: b.x, y: b.y, scale: b.scale, className: WHITE_INK });
+    pieces.push({ key: `mo${b.x}`, name: monthDigitName(b.digit), label: '', x: b.x, y: b.y, scale: 1 });
   }
-  const slash = { x: LAYOUT.small.right + LAYOUT.slash.dx, y: LAYOUT.slash.y };
-  pieces.push({ key: 'slashx', name: 'cifra/barra', label: '', x: slash.x + LAYOUT.extrude, y: slash.y, scale: 1 });
-  pieces.push({ key: 'slash', name: 'cifra/barra', label: '/', ...slash, scale: 1, className: WHITE_INK });
 
+  // 3. White fills: Slash first, then Month, then Day on top!
+  pieces.push({ key: 'slash', name: 'cifra/barra', label: '/', x: slashX, y: slashY, scale: 1, className: WHITE_INK });
+  for (const b of smallBoxes) {
+    pieces.push({ key: `m${b.x}`, name: monthDigitName(b.digit), label: b.digit, x: b.x, y: b.y, scale: 1, className: WHITE_INK });
+  }
+  for (const b of bigBoxes) {
+    pieces.push({ key: `w${b.x}`, name: digitName(b.digit), label: b.digit, x: b.x, y: b.y, scale: 1, className: WHITE_INK });
+  }
+
+  // 4. Weekday
   if (weekday) {
-    // Sized by letter count: the drawings carry their own tilt, so their boxes vary too much.
     const [w, h] = contentSize(weekday.art.viewBox);
     const scale = (LAYOUT.weekday.perLetter * weekday.letters) / w;
     const cx = (bigLeft + bigRight) / 2 + LAYOUT.weekday.dx;
@@ -187,7 +208,6 @@ const composeDate = (
       y: LAYOUT.weekday.y - (h * scale) / 2,
       scale,
       rotate: LAYOUT.weekday.rotate,
-      className: WHITE_RIM,
       animate: true,
     });
   }
