@@ -6,35 +6,6 @@ import CalendarHud from '@/components/persona/CalendarHud';
 import LanguageSwitch from '@/components/persona/LanguageSwitch';
 import { useI18n } from '@/i18n/context';
 
-const Key = ({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) => (
-  <kbd
-    className={`inline-flex h-7 items-center justify-center bg-white font-heavy text-[0.7rem] text-black shadow-[3px_3px_0_#e60012] ${
-      wide ? 'px-2' : 'w-7'
-    }`}
-  >
-    {children}
-  </kbd>
-);
-
-const ControlsHint = ({ ready }: { ready: boolean }) => {
-  const { t } = useI18n();
-  return (
-    <motion.div
-      aria-hidden="true"
-      className="flex -rotate-3 items-center gap-2 font-heavy text-xs tracking-[0.12em] text-white"
-      initial={{ opacity: 0, y: 20 }}
-      animate={ready ? { opacity: 1, y: 0 } : undefined}
-      transition={{ delay: 0.9, duration: 0.3 }}
-    >
-      <Key>↑</Key>
-      <Key>↓</Key>
-      <span className="mr-3 bg-black px-2 py-1">{t.hero.select}</span>
-      <Key wide>ENTER</Key>
-      <span className="bg-black px-2 py-1">{t.hero.confirm}</span>
-    </motion.div>
-  );
-};
-
 const MarqueeBand = () => {
   const { t } = useI18n();
   const phrases = [...t.hero.marquee, ...t.hero.marquee, ...t.hero.marquee];
@@ -156,10 +127,7 @@ const Hero = ({ ready, isOnScreen }: HeroProps) => {
           </motion.div>
         </div>
 
-        {/* Controls */}
-        <div className="hidden lg:absolute lg:bottom-40 lg:right-12 lg:block">
-          <ControlsHint ready={ready} />
-        </div>
+
       </div>
 
       <MarqueeBand />
