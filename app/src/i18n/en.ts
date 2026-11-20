@@ -81,6 +81,11 @@ const en = {
     treasure: 'TREASURE',
     viewAll: 'VIEW FULL RAP SHEET ON GITHUB',
     items: {
+      origen: {
+        title: 'ORÍGEN — Specialty Coffee',
+        description:
+          'Online store for Colombian specialty coffee with an animated intro experience, catalog, monthly subscriptions, a recommendation quiz and a shopping cart.',
+      },
       avelino: {
         title: 'Andres Avelino Longas Driving School website',
         description:
@@ -95,6 +100,11 @@ const en = {
         title: 'Movie as you feel',
         description:
           'An app that recommends movies based on your mood, with smart search and an interactive catalog.',
+      },
+      ofertas: {
+        title: 'Real Amazon Deals',
+        description:
+          'A catalog of Amazon deals with confirmed shipping to Colombia: discounts checked against Keepa price history, prices in USD and COP, and filters by category and platform.',
       },
       socialApi: {
         title: 'Social Media API',
@@ -117,7 +127,7 @@ const en = {
     },
   },
   contact: {
-    kicker: 'REQUEST FOR COOPERATION',
+    kicker: 'REQUEST FOR COOPERATION // PROTOCOL 140.85',
     backdrop: 'Contact',
     title: { before: 'Join The ', accent: 'Team', after: '' },
     intro: "Got a project in mind? Let's talk! I'm always open to new opportunities and collaborations.",
@@ -128,13 +138,49 @@ const en = {
     emailValue: 'logijavier@gmail.com',
     locationLabel: 'Location',
     locationValue: 'Neiva, Huila, Colombia',
+    localTimeLabel: 'COLOMBIA TIME',
     follow: 'FOLLOW THE THIEVES',
     formHint: 'fill in your request for cooperation',
+    cardHeader: 'COOPERATION NOTICE // CALLING CARD',
+    badge: 'MISSION REQUEST',
+    categoryLabel: 'CONTRACT TYPE',
+    categories: {
+      project: 'New Project',
+      work: 'Job Offer',
+      collab: 'Collaboration',
+      inquiry: 'Quick Inquiry',
+    },
+    senderTag: 'SENDER / CODENAME',
+    emailTag: 'FREQUENCY / EMAIL',
+    subjectTag: 'TARGET / SUBJECT',
+    subjectPlaceholder: 'E.g. Full-Stack Web App Development',
+    messageTag: 'MISSION BRIEFING / MESSAGE',
     name: 'Your Name',
+    namePlaceholder: 'Your name or codename',
     email: 'Your Email',
+    emailPlaceholder: 'your-email@example.com',
     message: 'Your Message',
+    messagePlaceholder: 'Describe mission briefing, scope, goals and expected timeframe...',
+    chars: 'chars',
     send: 'SEND REQUEST',
+    sending: 'TRANSMITTING TO METAVERSE...',
     sent: 'REQUEST SENT!',
+    successTitle: 'TARGET IDENTIFIED!',
+    successStamp: 'REQUEST ACCEPTED',
+    successMsg: 'Your request has been successfully transmitted to the Phantom Thieves. Javier will reply to your frequency in less than 24 hours.',
+    sendAnother: 'SEND ANOTHER REQUEST',
+    errorTitle: 'TRANSMISSION ERROR',
+    retry: 'RETRY TRANSMISSION',
+    copyEmail: 'Copy email',
+    copiedEmail: 'COPIED!',
+    statusLabel: 'CONFIDANT STATUS',
+    statusActive: 'AVAILABLE FOR CONTRACT',
+    responseTimeLabel: 'RESPONSE TIME',
+    responseTime: '< 24 HOURS',
+    confidantRank: 'COOP RANK',
+    confidantMax: 'RANK 10 — MAX',
+    directContact: 'DIRECT CHANNEL',
+    simulationNotice: 'Simulation mode: to send real emails, add RESEND_API_KEY to your .env file.',
   },
   footer: {
     rights: 'All rights reserved.',

@@ -83,6 +83,11 @@ const es: Dictionary = {
     treasure: 'BOTÍN',
     viewAll: 'VER EXPEDIENTE COMPLETO EN GITHUB',
     items: {
+      origen: {
+        title: 'ORÍGEN — Café de especialidad',
+        description:
+          'Tienda en línea de café de especialidad colombiano con experiencia animada de inicio, catálogo, suscripciones mensuales, quiz de recomendación y carrito de compras.',
+      },
       avelino: {
         title: 'Sitio web para la escuela de manejo Andres Avelino Longas',
         description:
@@ -97,6 +102,11 @@ const es: Dictionary = {
         title: 'Movie as you feel',
         description:
           'Aplicación que recomienda películas según tu estado de ánimo, con búsqueda inteligente y catálogo interactivo.',
+      },
+      ofertas: {
+        title: 'Ofertas reales de Amazon',
+        description:
+          'Catálogo de ofertas de Amazon con envío confirmado a Colombia: descuentos validados con el historial de precios de Keepa, precios en dólares y pesos, filtros por categoría y plataforma.',
       },
       socialApi: {
         title: 'API de red social',
@@ -120,7 +130,7 @@ const es: Dictionary = {
     },
   },
   contact: {
-    kicker: 'SOLICITUD DE COOPERACIÓN',
+    kicker: 'SOLICITUD DE COOPERACIÓN // PROTOCOLO 140.85',
     backdrop: 'Contacto',
     title: { before: 'Únete al ', accent: 'equipo', after: '' },
     intro: '¿Tienes un proyecto en mente? ¡Hablemos! Estoy siempre abierto a nuevas oportunidades y colaboraciones.',
@@ -131,13 +141,49 @@ const es: Dictionary = {
     emailValue: 'logijavier@gmail.com',
     locationLabel: 'Ubicación',
     locationValue: 'Neiva, Huila, Colombia',
+    localTimeLabel: 'HORA COLOMBIA',
     follow: 'SIGUE A LOS LADRONES',
     formHint: 'llena tu solicitud de cooperación',
+    cardHeader: 'AVISO DE COOPERACIÓN // CALLING CARD',
+    badge: 'SOLICITUD DE MISIÓN',
+    categoryLabel: 'TIPO DE CONTRATO',
+    categories: {
+      project: 'Nuevo Proyecto',
+      work: 'Propuesta Laboral',
+      collab: 'Colaboración',
+      inquiry: 'Consulta Rápida',
+    },
+    senderTag: 'REMITENTE / CODENAME',
+    emailTag: 'FRECUENCIA / EMAIL',
+    subjectTag: 'OBJETIVO / ASUNTO',
+    subjectPlaceholder: 'Ej. Desarrollo de aplicación web full-stack',
+    messageTag: 'BRIEFING DE LA MISIÓN / MENSAJE',
     name: 'Tu nombre',
+    namePlaceholder: 'Tu nombre o codename',
     email: 'Tu correo',
+    emailPlaceholder: 'tu-correo@ejemplo.com',
     message: 'Tu mensaje',
+    messagePlaceholder: 'Describe los detalles de la misión, alcance, metas y plazos esperados...',
+    chars: 'caracteres',
     send: 'ENVIAR SOLICITUD',
+    sending: 'TRANSMITIENDO AL METAVERSO...',
     sent: '¡SOLICITUD ENVIADA!',
+    successTitle: '¡OBJETIVO IDENTIFICADO!',
+    successStamp: 'SOLICITUD ACEPTADA',
+    successMsg: 'Tu solicitud ha sido transmitida con éxito a los Ladrones de Corazones. Javier responderá a tu frecuencia en menos de 24 horas.',
+    sendAnother: 'ENVIAR OTRA SOLICITUD',
+    errorTitle: 'ERROR EN LA TRANSMISIÓN',
+    retry: 'REINTENTAR ENVÍO',
+    copyEmail: 'Copiar correo',
+    copiedEmail: '¡COPIADO!',
+    statusLabel: 'ESTADO DEL CONFIDENTE',
+    statusActive: 'DISPONIBLE PARA MISIONES',
+    responseTimeLabel: 'RESPUESTA',
+    responseTime: '< 24 HORAS',
+    confidantRank: 'RANGO COOP',
+    confidantMax: 'RANGO 10 — MÁX',
+    directContact: 'CANAL DIRECTO',
+    simulationNotice: 'Modo simulación: para envíos reales por correo, añade RESEND_API_KEY a tu archivo .env.',
   },
   footer: {
     rights: 'Todos los derechos reservados.',
