@@ -16,11 +16,17 @@ interface Project {
 
 const projects: Project[] = [
   {
+    key: 'origen',
+    tech: ['Next.js', 'TypeScript', 'E-commerce'],
+    image: '/projects/origen-cafe.jpg',
+    demo: 'https://origen.bestkofi.com/',
+    featured: true,
+  },
+  {
     key: 'avelino',
     tech: ['Next.js', 'Node.js', 'MongoDB'],
     image: '/projects/screencapture-andresavelinolongas-app-2026-04-02-20_38_48.png',
     demo: 'https://andresavelinolongas.app/',
-    featured: true,
   },
   {
     key: 'fuego',
@@ -33,6 +39,12 @@ const projects: Project[] = [
     tech: ['Next.js', 'TypeScript', 'TMDB API'],
     image: '/projects/movie-as-u-feel.png',
     demo: 'https://movie-as-u-feel.vercel.app/',
+  },
+  {
+    key: 'ofertas',
+    tech: ['JavaScript', 'Keepa API', 'Vercel'],
+    image: '/projects/ofertas-amazon-co.jpg',
+    demo: 'https://ofertas-amazon-co.vercel.app/#juegos',
   },
   {
     key: 'socialApi',
