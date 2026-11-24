@@ -55,7 +55,6 @@ module.exports = {
         display: ['Anton', 'Impact', 'sans-serif'],
         heavy: ['"Bowlby One SC"', 'Anton', 'sans-serif'],
         block: ['"Dela Gothic One"', 'Anton', 'sans-serif'],
-        hand: ['"Permanent Marker"', 'cursive'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       borderRadius: {

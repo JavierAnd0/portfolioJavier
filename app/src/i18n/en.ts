@@ -1,10 +1,10 @@
 const en = {
   locale: 'en-US',
   meta: {
-    title: 'Javier Andrade — Phantom Thief of Code',
+    title: 'Javier Andrade — Full Stack Developer in Colombia',
     description:
-      'Portfolio of Javier Andrade, Full Stack Developer based in Colombia. Web projects built with React, Next.js, Node.js and more.',
-    awayTitle: '★ Come back, Phantom Thief!',
+      'Portfolio of Javier Andrade, Full Stack Developer based in Neiva, Colombia. Websites, online stores and apps built with React, Next.js and Node.js.',
+    awayTitle: '★ Come back soon!',
   },
   language: {
     label: 'Language',
@@ -47,7 +47,7 @@ const en = {
     github: "Javier Andrade's GitHub",
     select: 'SELECT',
     confirm: 'CONFIRM',
-    marquee: ['TAKE YOUR TIME', 'JAVIER ANDRADE', 'FULL STACK DEVELOPER', 'PHANTOM THIEF OF CODE'],
+    marquee: ['TAKE YOUR TIME', 'JAVIER ANDRADE', 'FULL STACK DEVELOPER', 'NEIVA, COLOMBIA'],
   },
   about: {
     kicker: 'CONFIDANT FILE — 01',
@@ -87,14 +87,14 @@ const en = {
           'Online store for Colombian specialty coffee with an animated intro experience, catalog, monthly subscriptions, a recommendation quiz and a shopping cart.',
       },
       avelino: {
-        title: 'Andres Avelino Longas Driving School website',
+        title: 'Andres Avelino Longas School website',
         description:
-          'Website for the Andres Avelino Longas driving school, with an intuitive admin panel (CMS).',
+          'Website for the Andres Avelino Longas school, with an intuitive admin panel (CMS).',
       },
-      fuego: {
-        title: 'Restaurante Fuego',
+      elSolar: {
+        title: 'El Solar — Restaurant in Neiva',
         description:
-          'Restaurant website with an interactive menu, venue information and an appealing design focused on the guest experience.',
+          'Bilingual website for a signature cuisine restaurant in Neiva, featuring an interactive menu, live events info, and online table reservations.',
       },
       movie: {
         title: 'Movie as you feel',
@@ -105,11 +105,6 @@ const en = {
         title: 'Real Amazon Deals',
         description:
           'A catalog of Amazon deals with confirmed shipping to Colombia: discounts checked against Keepa price history, prices in USD and COP, and filters by category and platform.',
-      },
-      socialApi: {
-        title: 'Social Media API',
-        description:
-          'Scalable RESTful API for a social network with JWT authentication, websockets and distributed caching.',
       },
     },
   },
@@ -131,7 +126,7 @@ const en = {
     backdrop: 'Contact',
     title: { before: 'Join The ', accent: 'Team', after: '' },
     intro: "Got a project in mind? Let's talk! I'm always open to new opportunities and collaborations.",
-    pitch: { before: "Let's steal something ", accent: 'amazing', after: ' together' },
+    pitch: { before: "Let's build something ", accent: 'amazing', after: ' together' },
     body:
       "Whether you have an idea you want to bring to life or need a hand with an existing project, I'd love to hear from you.",
     emailLabel: 'Email',
@@ -139,7 +134,7 @@ const en = {
     locationLabel: 'Location',
     locationValue: 'Neiva, Huila, Colombia',
     localTimeLabel: 'COLOMBIA TIME',
-    follow: 'FOLLOW THE THIEVES',
+    follow: 'CONNECT',
     formHint: 'fill in your request for cooperation',
     cardHeader: 'COOPERATION NOTICE // CALLING CARD',
     badge: 'MISSION REQUEST',
@@ -167,9 +162,10 @@ const en = {
     sent: 'REQUEST SENT!',
     successTitle: 'TARGET IDENTIFIED!',
     successStamp: 'REQUEST ACCEPTED',
-    successMsg: 'Your request has been successfully transmitted to the Phantom Thieves. Javier will reply to your frequency in less than 24 hours.',
+    successMsg: 'Your request has been successfully transmitted. Javier will reply to your frequency in less than 24 hours.',
     sendAnother: 'SEND ANOTHER REQUEST',
     errorTitle: 'TRANSMISSION ERROR',
+    errorFallback: 'Your message was not sent. Email me directly at',
     retry: 'RETRY TRANSMISSION',
     copyEmail: 'Copy email',
     copiedEmail: 'COPIED!',
@@ -184,7 +180,6 @@ const en = {
   },
   footer: {
     rights: 'All rights reserved.',
-    signature: '— the Phantom Thief of Code',
   },
   status: {
     onDuty: 'ON DUTY',

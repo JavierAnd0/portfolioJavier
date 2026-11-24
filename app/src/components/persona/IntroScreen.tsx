@@ -114,7 +114,7 @@ const IntroScreen = ({ onReveal, onDone }: IntroScreenProps) => {
             <span className="whitespace-nowrap bg-black px-3 py-1 font-heavy text-[0.65rem] tracking-[0.12em] text-white sm:text-xs md:text-sm">
               {t.intro.role}
             </span>
-            <span className="hidden whitespace-nowrap font-hand text-sm text-black sm:inline md:text-base">
+            <span className="hidden whitespace-nowrap font-mono text-xs font-bold uppercase tracking-widest text-black sm:inline md:text-sm">
               {t.intro.tagline}
             </span>
           </div>
