@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
+import SectionHeading from '@/components/persona/SectionHeading';
 import { useI18n } from '@/i18n/context';
 
 // Slanted outline of the reply box; fixed offsets keep the slant the same at any height.
@@ -258,31 +259,9 @@ const About = () => {
   return (
     <section id="about" className="relative min-h-screen w-full overflow-hidden bg-black py-24 md:py-32">
       {/* Section Title */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="mx-auto mb-16 max-w-7xl px-6 md:px-10"
-      >
-        <span className="mb-2 inline-block font-mono text-xs tracking-[0.3em] text-red">
-          {t.about.kicker}
-        </span>
-        <h2 className="font-display text-5xl font-normal uppercase tracking-[0.06em] text-white/10 md:text-7xl">
-          {t.about.backdrop}
-        </h2>
-        <motion.h3
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="-mt-8 ml-2 font-display text-3xl font-normal text-white md:-mt-12 md:text-4xl"
-        >
-          {t.about.title.before}
-          <span className="text-red">{t.about.title.accent}</span>
-          {t.about.title.after}
-        </motion.h3>
-      </motion.div>
+      <div className="mx-auto mb-16 max-w-7xl px-6 md:px-10">
+        <SectionHeading section="about" />
+      </div>
 
       <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 md:px-10 lg:grid-cols-[5fr_6fr] lg:gap-10">
         <Portrait alt={chat.portraitAlt} />

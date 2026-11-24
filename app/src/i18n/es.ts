@@ -3,10 +3,10 @@ import type { Dictionary } from './en';
 const es: Dictionary = {
   locale: 'es-CO',
   meta: {
-    title: 'Javier Andrade — Ladrón fantasma del código',
+    title: 'Javier Andrade — Desarrollador Full Stack en Colombia',
     description:
-      'Portafolio de Javier Andrade, desarrollador Full Stack en Colombia. Proyectos web con React, Next.js, Node.js y más.',
-    awayTitle: '★ ¡Vuelve, ladrón fantasma!',
+      'Portafolio de Javier Andrade, desarrollador Full Stack en Neiva, Colombia. Sitios web, tiendas en línea y aplicaciones con React, Next.js y Node.js.',
+    awayTitle: '★ ¡Vuelve pronto!',
   },
   language: {
     label: 'Idioma',
@@ -49,7 +49,7 @@ const es: Dictionary = {
     github: 'GitHub de Javier Andrade',
     select: 'ELEGIR',
     confirm: 'CONFIRMAR',
-    marquee: ['TÓMATE TU TIEMPO', 'JAVIER ANDRADE', 'DESARROLLADOR FULL STACK', 'LADRÓN FANTASMA DEL CÓDIGO'],
+    marquee: ['TÓMATE TU TIEMPO', 'JAVIER ANDRADE', 'DESARROLLADOR FULL STACK', 'NEIVA, COLOMBIA'],
   },
   about: {
     kicker: 'EXPEDIENTE DE CONFIDENTE — 01',
@@ -89,14 +89,14 @@ const es: Dictionary = {
           'Tienda en línea de café de especialidad colombiano con experiencia animada de inicio, catálogo, suscripciones mensuales, quiz de recomendación y carrito de compras.',
       },
       avelino: {
-        title: 'Sitio web para la escuela de manejo Andres Avelino Longas',
+        title: 'Sitio web para la escuela Andres Avelino Longas',
         description:
           'Sitio web para la escuela Andres Avelino Longas con panel de administración intuitivo (CMS).',
       },
-      fuego: {
-        title: 'Restaurante Fuego',
+      elSolar: {
+        title: 'El Solar — Restaurante en Neiva',
         description:
-          'Sitio web para restaurante con menú interactivo, información del local y diseño atractivo orientado a la experiencia del cliente.',
+          'Sitio web bilingüe para restaurante de cocina de autor en Neiva, con carta interactiva, información de eventos y reserva de mesas en línea.',
       },
       movie: {
         title: 'Movie as you feel',
@@ -107,11 +107,6 @@ const es: Dictionary = {
         title: 'Ofertas reales de Amazon',
         description:
           'Catálogo de ofertas de Amazon con envío confirmado a Colombia: descuentos validados con el historial de precios de Keepa, precios en dólares y pesos, filtros por categoría y plataforma.',
-      },
-      socialApi: {
-        title: 'API de red social',
-        description:
-          'API RESTful escalable para red social con autenticación JWT, websockets y caché distribuido.',
       },
     },
   },
@@ -134,7 +129,7 @@ const es: Dictionary = {
     backdrop: 'Contacto',
     title: { before: 'Únete al ', accent: 'equipo', after: '' },
     intro: '¿Tienes un proyecto en mente? ¡Hablemos! Estoy siempre abierto a nuevas oportunidades y colaboraciones.',
-    pitch: { before: 'Robemos algo ', accent: 'increíble', after: ' juntos' },
+    pitch: { before: 'Hagamos algo ', accent: 'increíble', after: ' juntos' },
     body:
       'Ya sea que tengas una idea que quieras materializar o necesites ayuda con un proyecto existente, estaré encantado de escucharte.',
     emailLabel: 'Correo',
@@ -142,7 +137,7 @@ const es: Dictionary = {
     locationLabel: 'Ubicación',
     locationValue: 'Neiva, Huila, Colombia',
     localTimeLabel: 'HORA COLOMBIA',
-    follow: 'SIGUE A LOS LADRONES',
+    follow: 'CONECTEMOS',
     formHint: 'llena tu solicitud de cooperación',
     cardHeader: 'AVISO DE COOPERACIÓN // CALLING CARD',
     badge: 'SOLICITUD DE MISIÓN',
@@ -170,9 +165,10 @@ const es: Dictionary = {
     sent: '¡SOLICITUD ENVIADA!',
     successTitle: '¡OBJETIVO IDENTIFICADO!',
     successStamp: 'SOLICITUD ACEPTADA',
-    successMsg: 'Tu solicitud ha sido transmitida con éxito a los Ladrones de Corazones. Javier responderá a tu frecuencia en menos de 24 horas.',
+    successMsg: 'Tu solicitud ha sido enviada con éxito. Javier te responderá en menos de 24 horas.',
     sendAnother: 'ENVIAR OTRA SOLICITUD',
     errorTitle: 'ERROR EN LA TRANSMISIÓN',
+    errorFallback: 'Tu mensaje no se envió. Escríbeme directamente a',
     retry: 'REINTENTAR ENVÍO',
     copyEmail: 'Copiar correo',
     copiedEmail: '¡COPIADO!',
@@ -187,7 +183,6 @@ const es: Dictionary = {
   },
   footer: {
     rights: 'Todos los derechos reservados.',
-    signature: '— el ladrón fantasma del código',
   },
   status: {
     onDuty: 'DE TURNO',

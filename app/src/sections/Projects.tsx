@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Layers } from 'lucide-react';
+import { ArrowUpRight, Github, Layers } from 'lucide-react';
+import SectionHeading from '@/components/persona/SectionHeading';
 import { useI18n } from '@/i18n/context';
 import type { Dictionary } from '@/i18n/en';
 
@@ -17,7 +18,7 @@ interface Project {
 const projects: Project[] = [
   {
     key: 'origen',
-    tech: ['Next.js', 'TypeScript', 'E-commerce'],
+    tech: ['Next.js', 'React', 'Tailwind CSS', 'Three.js'],
     image: '/projects/origen-cafe.jpg',
     demo: 'https://origen.bestkofi.com/',
     featured: true,
@@ -29,10 +30,10 @@ const projects: Project[] = [
     demo: 'https://andresavelinolongas.app/',
   },
   {
-    key: 'fuego',
-    tech: ['HTML', 'CSS', 'JavaScript'],
-    image: '/projects/restaurantefuego.png',
-    demo: 'https://restaurantefuego.duckdns.org',
+    key: 'elSolar',
+    tech: ['React', 'TypeScript', 'Tailwind CSS', 'Vercel'],
+    image: '/projects/el-solar-neiva.png',
+    demo: 'https://el-solar-neiva.vercel.app/',
   },
   {
     key: 'movie',
@@ -46,195 +47,235 @@ const projects: Project[] = [
     image: '/projects/ofertas-amazon-co.jpg',
     demo: 'https://ofertas-amazon-co.vercel.app/#juegos',
   },
-  {
-    key: 'socialApi',
-    tech: ['Node.js', 'Express', 'Redis', 'Docker'],
-    image: 'gradient-4',
-    github: '#',
-    demo: '#',
-  },
 ];
+
+const hasRealUrl = (url?: string) => Boolean(url && url !== '#');
+
+const ProjectMedia = ({
+  project,
+  title,
+  index,
+  targetLabel,
+  featured = false,
+}: {
+  project: Project;
+  title: string;
+  index: number;
+  targetLabel: string;
+  featured?: boolean;
+}) => (
+  <div
+    className={`relative overflow-hidden bg-[#111111] ${
+      featured ? 'aspect-[16/10] lg:aspect-auto lg:h-full' : 'aspect-[16/10]'
+    }`}
+  >
+    {/* Crisp Persona target stamp */}
+    <div className="pointer-events-none absolute left-3 top-3 z-20 -rotate-2 bg-[#e60012] px-3 py-1 shadow-[4px_4px_0_#0a0a0a]">
+      <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-white">
+        {targetLabel} {String(index + 1).padStart(2, '0')}
+      </span>
+    </div>
+
+    {project.image.startsWith('/') ? (
+      <img
+        src={project.image}
+        alt={title}
+        loading={featured ? 'eager' : 'lazy'}
+        className="h-full w-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+      />
+    ) : (
+      <div className="relative flex h-full w-full items-center justify-center bg-[#0c0c0c]">
+        <div aria-hidden="true" className="absolute inset-0 halftone opacity-25" />
+        <div className="relative flex h-16 w-16 -rotate-3 items-center justify-center border-2 border-white bg-black shadow-[5px_5px_0_#e60012]">
+          <Layers className="h-7 w-7 text-[#e60012]" />
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+const ProjectActions = ({ project }: { project: Project }) => {
+  const { t } = useI18n();
+  const showDemo = hasRealUrl(project.demo);
+  const showGithub = hasRealUrl(project.github);
+
+  if (!showDemo && !showGithub) return null;
+
+  return (
+    <div className="mt-auto flex flex-wrap items-center gap-3 pt-5">
+      {showDemo && (
+        <a
+          href={project.demo}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 border-2 border-white bg-[#e60012] px-4 py-2 font-display text-sm uppercase tracking-wider text-white shadow-[4px_4px_0_#ffffff] transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-white hover:text-black hover:shadow-[4px_4px_0_#e60012]"
+        >
+          <span>{t.projects.infiltrate}</span>
+          <ArrowUpRight className="h-4 w-4" />
+        </a>
+      )}
+      {showGithub && (
+        <a
+          href={project.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 border-2 border-white/40 bg-black px-4 py-2 font-display text-sm uppercase tracking-wider text-white transition-colors duration-150 hover:border-white hover:bg-white hover:text-black"
+        >
+          <Github className="h-4 w-4" />
+          <span>{t.projects.treasure}</span>
+        </a>
+      )}
+    </div>
+  );
+};
+
+const FeaturedProjectCard = ({ project, index }: { project: Project; index: number }) => {
+  const { t } = useI18n();
+  const { title, description } = t.projects.items[project.key];
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className="group md:col-span-2"
+    >
+      <div className="border-[4px] border-white bg-black p-1.5 shadow-[10px_10px_0_#e60012]">
+        <div className="grid bg-[#0d0d0d] lg:grid-cols-[1.35fr_1fr]">
+          <ProjectMedia
+            project={project}
+            title={title}
+            index={index}
+            targetLabel={t.projects.target}
+            featured
+          />
+
+          <div className="flex flex-col border-t-2 border-white/15 p-6 sm:p-7 lg:border-l-2 lg:border-t-0">
+            <h3 className="font-display text-2xl uppercase leading-tight tracking-wide text-white transition-colors duration-200 group-hover:text-[#e60012] md:text-3xl">
+              {title}
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-white/75 md:text-base">
+              {description}
+            </p>
+
+            {/* Tech Stack */}
+            <div className="mt-5 flex flex-wrap gap-2">
+              {project.tech.map((tech) => (
+                <span
+                  key={tech}
+                  className="bg-white/10 px-2.5 py-1 font-mono text-xs font-medium text-white/90"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <ProjectActions project={project} />
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+};
 
 const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
   const { t } = useI18n();
   const { title, description } = t.projects.items[project.key];
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 60 }}
+    <motion.article
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
+      viewport={{ once: true, margin: '-40px' }}
       transition={{
-        duration: 0.6,
-        delay: index * 0.15,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        duration: 0.4,
+        delay: (index % 2) * 0.08,
+        ease: [0.16, 1, 0.3, 1],
       }}
-      className={`group relative ${project.featured ? 'md:col-span-2' : ''}`}
+      className="group flex h-full flex-col border-2 border-white/20 bg-[#0d0d0d] transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:border-white hover:shadow-[8px_8px_0_#e60012]"
     >
-      <motion.div
-        whileHover={{ y: -8 }}
-        transition={{ duration: 0.35, ease: 'easeOut' }}
-        className="relative h-full border-2 border-white/15 hover:border-red cut-corners overflow-hidden transition-colors duration-300"
-      >
-        {/* Target tag */}
-        <div className="absolute top-0 left-0 z-20 bg-red border-b-2 border-r-2 border-black px-4 py-1.5 cut-corner-tag">
-          <span className="font-mono text-[10px] text-black tracking-[0.2em] font-bold">
-            {t.projects.target} {String(index + 1).padStart(2, '0')}
-          </span>
+      <ProjectMedia
+        project={project}
+        title={title}
+        index={index}
+        targetLabel={t.projects.target}
+      />
+
+      <div className="flex flex-1 flex-col border-t-2 border-white/10 p-6">
+        <h3 className="font-display text-xl uppercase leading-snug tracking-wide text-white transition-colors duration-200 group-hover:text-[#e60012] md:text-2xl">
+          {title}
+        </h3>
+        <p className="mt-2.5 text-sm leading-relaxed text-white/70 md:text-[15px]">
+          {description}
+        </p>
+
+        {/* Tech Stack */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {project.tech.map((tech) => (
+            <span
+              key={tech}
+              className="bg-white/10 px-2.5 py-1 font-mono text-xs font-medium text-white/85"
+            >
+              {tech}
+            </span>
+          ))}
         </div>
 
-        {/* Image/Gradient Area */}
-        <div className={`relative h-48 md:h-56 overflow-hidden ${project.image.startsWith('/') ? 'bg-black' : 'bg-ink'}`}>
-          {project.image.startsWith('/') ? (
-            <img
-              src={project.image}
-              alt={title}
-              className="w-full h-full object-cover object-top grayscale-[20%] group-hover:grayscale-0 transition-all duration-500"
-            />
-          ) : (
-            <>
-              <div className="absolute inset-0 halftone opacity-40" />
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              >
-                <div className="w-16 h-16 bg-black border-2 border-red cut-corners flex items-center justify-center">
-                  <Layers className="w-8 h-8 text-red" />
-                </div>
-              </motion.div>
-            </>
-          )}
-
-          {/* Hover Overlay */}
-          <div className="absolute inset-0 bg-black/70 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            {project.demo && (
-              <motion.a
-                href={project.demo}
-                whileHover={{ scale: 1.1, rotate: -4 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 px-4 py-2.5 bg-red text-black font-display text-xs tracking-wide cut-corners border-2 border-black"
-              >
-                <ExternalLink className="w-4 h-4" />
-                {t.projects.infiltrate}
-              </motion.a>
-            )}
-            {project.github && (
-              <motion.a
-                href={project.github}
-                whileHover={{ scale: 1.1, rotate: 4 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 px-4 py-2.5 bg-white text-black font-display text-xs tracking-wide cut-corners border-2 border-black"
-              >
-                <Github className="w-4 h-4" />
-                {t.projects.treasure}
-              </motion.a>
-            )}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 bg-dark-grey/90">
-          <h3 className="font-display text-xl md:text-2xl font-normal text-white mb-2 group-hover:text-red transition-colors duration-300">
-            {title}
-          </h3>
-          <p className="text-white/60 text-sm md:text-base leading-relaxed mb-4">
-            {description}
-          </p>
-
-          {/* Tech Stack */}
-          <div className="flex flex-wrap gap-2">
-            {project.tech.map((tech, techIndex) => (
-              <motion.span
-                key={tech}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: 0.3 + techIndex * 0.05 }}
-                className="px-3 py-1 text-xs font-mono border border-white/20 text-white/70 hover:border-red hover:text-red transition-all duration-200"
-              >
-                {tech}
-              </motion.span>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
+        <ProjectActions project={project} />
+      </div>
+    </motion.article>
   );
 };
 
 const Projects = () => {
   const { t } = useI18n();
-  return (
-    <section id="projects" className="relative min-h-screen w-full bg-black py-24 md:py-32 overflow-hidden">
-      {/* Section Header */}
-      <div className="max-w-7xl mx-auto px-6 md:px-10 mb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="inline-block font-mono text-xs tracking-[0.3em] text-red mb-2">
-            {t.projects.kicker}
-          </span>
-          <h2 className="font-display text-5xl md:text-7xl font-normal text-white/10 uppercase tracking-[0.06em]">
-            {t.projects.backdrop}
-          </h2>
-          <motion.h3
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-display text-3xl md:text-4xl font-normal text-white -mt-8 md:-mt-12 ml-2"
-          >
-            {t.projects.title.before}
-            <span className="text-red">{t.projects.title.accent}</span>
-            {t.projects.title.after}
-          </motion.h3>
-        </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-6 text-white/60 text-lg max-w-2xl"
-        >
-          {t.projects.intro}
-        </motion.p>
+  return (
+    <section id="projects" className="relative w-full overflow-hidden bg-black py-24 md:py-32">
+      {/* Subtle halftone texture */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 halftone opacity-[0.05]"
+      />
+
+      {/* Section Header */}
+      <div className="relative z-10 mx-auto mb-14 max-w-7xl px-6 md:mb-16 md:px-10">
+        <SectionHeading section="projects" intro={t.projects.intro} />
       </div>
 
       {/* Projects Grid */}
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.key} project={project} index={index} />
-          ))}
+      <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-10">
+        <div className="grid gap-8 md:grid-cols-2">
+          {projects.map((project, index) =>
+            project.featured ? (
+              <FeaturedProjectCard key={project.key} project={project} index={index} />
+            ) : (
+              <ProjectCard key={project.key} project={project} index={index} />
+            ),
+          )}
         </div>
 
         {/* View More CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.4 }}
           className="mt-16 text-center"
         >
-          <motion.a
+          <a
             href="https://github.com/JavierAnd0"
-            whileHover={{ scale: 1.05, rotate: -1 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-3 px-8 py-4 border-2 border-white/30 text-white font-display tracking-wide cut-corners hover:border-red hover:text-red transition-all duration-300"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 border-2 border-white bg-black px-8 py-4 font-display text-base uppercase tracking-wider text-white shadow-[6px_6px_0_#e60012] transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-[#e60012] hover:text-white hover:shadow-[6px_6px_0_#ffffff]"
           >
-            <Github className="w-5 h-5" />
-            {t.projects.viewAll}
-          </motion.a>
+            <Github className="h-5 w-5" />
+            <span>{t.projects.viewAll}</span>
+            <ArrowUpRight className="h-4 w-4" />
+          </a>
         </motion.div>
       </div>
-
-      {/* Background Decorations */}
-      <div className="absolute top-1/3 left-0 w-96 h-96 bg-red/5 rounded-full blur-[150px] -z-10" />
-      <div className="absolute bottom-1/3 right-0 w-64 h-64 halftone opacity-10 -z-10" />
     </section>
   );
 };

@@ -27,9 +27,6 @@ const Footer = () => {
             <p className="text-white/70 text-sm">
               © {currentYear} <span className="text-white font-medium">Javier Andrade</span>. {t.footer.rights}
             </p>
-            <p className="font-hand text-red text-xs mt-1">
-              {t.footer.signature}
-            </p>
           </motion.div>
 
           {/* Quick Links */}
